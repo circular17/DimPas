@@ -227,8 +227,12 @@ type
   TDayIdentifier = specialize TFactoredUnitIdentifier<TSecond, TDay>;
   TDays = specialize TFactoredDimensionedQuantity<TSecond, TDay>;
 
+  // this unit is not really to be used directly because
+  // time is divided one exponent at a time: m/s2 -> (m/s)/s
+  // thus acceleration are "per second squared" instead of "per square second"
   TSquareSecond = specialize TUnitSquared<TSecond>;
   TSquareSecondIdentifier = specialize TUnitSquaredIdentifier<TSecond>;
+  TSquareSeconds = specialize TSquaredDimensionedQuantity<TSecond>;
 
 var
   ms: TMillisecondIdentifier;
@@ -299,7 +303,10 @@ type
   TGrams = specialize TDimensionedQuantity<TGram>;
 
   TMilligrams = specialize TFactoredDimensionedQuantity<TGram, specialize TMilliUnit<TGram>>;
-  TKilograms = specialize TFactoredDimensionedQuantity<TGram, specialize TKiloUnit<TGram>>;
+
+  TKilogram = specialize TKiloUnit<TGram>;
+  TKilogramIdentifier = specialize TFactoredUnitIdentifier<TGram, TKilogram>;
+  TKilograms = specialize TFactoredDimensionedQuantity<TGram, TKilogram>;
 
   TMegagrams = specialize TFactoredDimensionedQuantity<TGram, specialize TMegaUnit<TGram>>;
   TTon = specialize TMegaUnit<TGram>;
@@ -308,7 +315,7 @@ type
 var
   mg: specialize TFactoredUnitIdentifier<TGram, specialize TMilliUnit<TGram>>;
   g: TGramIdentifier;
-  kg: specialize TFactoredUnitIdentifier<TGram, specialize TKiloUnit<TGram>>;
+  kg: TKilogramIdentifier;
   ton: specialize TFactoredUnitIdentifier<TGram, specialize TMegaUnit<TGram>>;
 
 { Units of amount of substance }
@@ -399,13 +406,7 @@ operator /(const ALength: TKilometers; const ADuration: THours): TKilometersPerH
 { Units of acceleration }
 
 type
-  TSeconds2 = specialize TSquaredDimensionedQuantity<TSecond>;
-
-  // this is not the unit of acceleration but it has same dimensions
-  TMeterPerSquareSecondIdentifier = specialize TRatioUnitIdentifier<TMeter, specialize TUnitSquared<TSecond>>;
-  TMetersPerSquareSecondIdentifier = specialize TRatioDimensionedQuantity<TMeter, specialize TUnitSquared<TSecond>>;
-
-  // this is the unit of acceleration
+  TMeterPerSecondSquared = specialize TRatioUnit<TMeterPerSecond, TSecond>;
   TMeterPerSecondSquaredIdentifier = specialize TRatioUnitIdentifier<TMeterPerSecond, TSecond>;
   TMetersPerSecondSquared = specialize TRatioDimensionedQuantity<TMeterPerSecond, TSecond>;
 
@@ -416,18 +417,13 @@ type
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMeterPerSquareSecondIdentifier; inline;
+operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMeterPerSecondSquaredIdentifier; inline;
 operator /(const {%H-}km_h: TKilometerPerHourIdentifier; const {%H-}s: TSecondIdentifier): TKilometerPerHourPerSecondIdentifier; inline;
 
 // combining dimensioned quantities
 operator /(const ASpeed: TMetersPerSecond; const ATime: TSeconds): TMetersPerSecondSquared; inline;
-operator /(const ALength: TMeters; const ASquareTime: TSeconds2): TMetersPerSquareSecondIdentifier; inline;
+operator /(const ALength: TMeters; const ASquareTime: TSquareSeconds): TMetersPerSecondSquared; inline;
 operator /(const ASpeed: TKilometersPerHour; const ATime: TSeconds): TKilometersPerHourPerSecond; inline;
-
-// dimension equivalence
-operator :=(const {%H-}m_s2: TMeterPerSquareSecondIdentifier): TMeterPerSecondSquaredIdentifier; inline;
-operator :=(const {%H-}m_s2: TMetersPerSquareSecondIdentifier): TMetersPerSecondSquared; inline;
-operator *(const {%H-}m_s2: TMeterPerSquareSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondIdentifier; inline;
 
 { Special units }
 type
@@ -438,9 +434,20 @@ type
   TRadianIdentifier = specialize TUnitIdentifier<TRadian>;
   TRadians = specialize TDimensionedQuantity<TRadian>;
 
+  TRadianPerSecond = specialize TRatioUnit<TRadian, TSecond>;
+  TRadianPerSecondIdentifier = specialize TRatioUnitIdentifier<TRadian, TSecond>;
+  TRadiansPerSecond = specialize TRatioDimensionedQuantity<TRadian, TSecond>;
+
+  TRadianPerSecondSquaredIdentifier = specialize TRatioUnitIdentifier<TRadianPerSecond, TSecond>;
+  TRadiansPerSecondSquared = specialize TRatioDimensionedQuantity<TRadianPerSecond, TSecond>;
+
   TDegree = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   TDegreeIdentifier = specialize TFactoredUnitIdentifier<TRadian, TDegree>;
   TDegrees = specialize TFactoredDimensionedQuantity<TRadian, TDegree>;
+
+  TNewton = specialize TUnitProduct<TKilogram, TMeterPerSecondSquared>;
+  TNewtonIdentifier = specialize TUnitProductIdentifier<TKilogram, TMeterPerSecondSquared>;
+  TNewtons = specialize TDimensionedQuantityProduct<TKilogram, TMeterPerSecondSquared>;
 
   TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
@@ -458,12 +465,25 @@ var
   Hz: THertzIdentifier;
   rad: TRadianIdentifier;
   deg: TDegreeIdentifier;
+  N: TNewtonIdentifier;
   C: TCoulombIdentifer;
   lx: TLuxIdentifier;
   Sv: TSievertIdentifier;
   kat: TKatalIdentifier;
 
+// combining units
+operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondIdentifier; inline;
+operator /(const {%H-}rad_s: TRadianPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
+operator /(const {%H-}m: TRadianIdentifier; const {%H-}s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
+operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier; inline;
+
 // combining dimensioned quantities
+operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
+operator /(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared; inline;
+operator /(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared; inline;
+operator *(const AWeight: TGrams; const AAcceleration: TMetersPerSecondSquared): TNewtons; inline;
+operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TNewtons; inline;
+
 operator /(const AValue: double; const ADuration: TSeconds): TFrequency; inline;
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
 
@@ -590,6 +610,7 @@ begin
 
   case result of
   's.A', 'A.s': result := 'C';
+  'kg.m/s2': result := 'N';
   end;
 end;
 
@@ -598,7 +619,8 @@ begin
   result := U1.Name + '-' + U2.Name;
 
   case result of
-  'ampere-second', 'second-ampere': result := 'C';
+  'ampere-second', 'second-ampere': result := 'coulomb';
+  'kilogram-meter per second squared': result := 'newton';
   end;
 end;
 
@@ -830,6 +852,19 @@ begin end;
 operator /(const {%H-}km: TKilometerIdentifier; const {%H-}h: THourIdentifier): TKilometerPerHourIdentifier;
 begin end;
 
+operator/(const rad: TRadianIdentifier; const s: TSecondIdentifier): TRadianPerSecondIdentifier;
+begin end;
+
+operator/(const rad_s: TRadianPerSecondIdentifier; const s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier;
+begin end;
+
+operator/(const m: TRadianIdentifier; const s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier;
+begin end;
+
+operator/(const kg: TKilogramIdentifier;
+  const m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier;
+begin end;
+
 // combining dimensioned quantities
 operator/(const ALength: TMeters; const ADuration: TSeconds): TMetersPerSecond;
 begin
@@ -841,28 +876,41 @@ begin
   result.Value:= ALength.Value / ADuration.Value;
 end;
 
+operator/(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond;
+begin
+ result.Value:= AAngle.Value / ADuration.Value;
+end;
+
+operator/(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared;
+begin
+  result.Value := ASpeed.Value / ATime.Value;
+end;
+
+operator/(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared;
+begin
+  result.Value := AAngle.Value / ASquareTime.Value;
+end;
+
+operator*(const AWeight: TGrams; const AAcceleration: TMetersPerSecondSquared ): TNewtons;
+begin
+  result.Value := AWeight.Value * 0.001 * AAcceleration.Value;
+end;
+
+operator*(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TNewtons;
+begin
+  result.Value := AWeight.Value * 0.001 * AAcceleration.Value;
+end;
+
 { Units of acceleration }
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondSquaredIdentifier;
 begin end;
 
-operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMeterPerSquareSecondIdentifier;
+operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMeterPerSecondSquaredIdentifier;
 begin end;
 
 operator/(const km_h: TKilometerPerHourIdentifier; const s: TSecondIdentifier): TKilometerPerHourPerSecondIdentifier;
-begin end;
-
-// unit equivalence
-operator:=(const m_s2: TMeterPerSquareSecondIdentifier): TMeterPerSecondSquaredIdentifier;
-begin end;
-
-operator:=(const m_s2: TMetersPerSquareSecondIdentifier): TMetersPerSecondSquared;
-begin
-  result.Value := m_s2.Value;
-end;
-
-operator*(const m_s2: TMeterPerSquareSecondIdentifier; const s: TSecondIdentifier): TMeterPerSecondIdentifier;
 begin end;
 
 // combining dimensioned quantities
@@ -871,7 +919,7 @@ begin
   result.Value := ASpeed.Value / ATime.Value;
 end;
 
-operator/(const ALength: TMeters; const ASquareTime: TSeconds2): TMetersPerSquareSecondIdentifier;
+operator/(const ALength: TMeters; const ASquareTime: TSquareSeconds): TMetersPerSecondSquared;
 begin
   result.Value := ALength.Value / ASquareTime.Value;
 end;
