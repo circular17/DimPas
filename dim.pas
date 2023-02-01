@@ -481,6 +481,7 @@ operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondS
 operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
 operator /(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared; inline;
 operator /(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared; inline;
+
 operator *(const AWeight: TGrams; const AAcceleration: TMetersPerSecondSquared): TNewtons; inline;
 operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TNewtons; inline;
 
@@ -963,8 +964,14 @@ public
   class operator -(const AQuantity1, AQuantity2: TSelf): TSelf;
   class operator *(const AFactor: double; const AQuantity: TSelf): TSelf;
   class operator *(const AQuantity: TSelf; const AFactor: double): TSelf;
+  class operator /(const AQuantity: TSelf; const AFactor: double): TSelf;
   class operator /(const AQuantity1, AQuantity2: TSelf): double;
   class operator mod(const AQuantity1, AQuantity2: TSelf): TSelf;
+  class operator <(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator <=(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator =(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator >(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator >=(const AQuantity1, AQuantity2: TSelf): boolean;
 {$ENDIF}{$UNDEF DIM_QTY_INTF}
 {$IFDEF SQUARABLE_QTY_INTF}
   class operator *(const AQuantity1, AQuantity2: TSelf): TSquaredQuantity;
@@ -1031,6 +1038,11 @@ public
     result.Value := AQuantity.Value * AFactor;
   end;
 
+  class operator T_DIM_QUANTITY./(const AQuantity: TSelf; const AFactor: double): TSelf;
+  begin
+    result.Value := AQuantity.Value / AFactor;
+  end;
+
   class operator T_DIM_QUANTITY./(const AQuantity1, AQuantity2: TSelf): double;
   begin
     result := AQuantity1.Value / AQuantity2.Value;
@@ -1040,6 +1052,32 @@ public
   begin
     result.Value := AQuantity1.Value mod AQuantity2.Value;
   end;
+
+  class operator T_DIM_QUANTITY.<(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value < AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.<=(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value <= AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.=(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value = AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.>(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value > AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.>=(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value >= AQuantity2.Value;
+  end;
+
 {$ENDIF}{$UNDEF DIM_QTY_IMPL}
 {$IFDEF SQUARABLE_QTY_IMPL}
   class operator T_DIM_QUANTITY.*(const AQuantity1, AQuantity2: TSelf): TSquaredQuantity;
