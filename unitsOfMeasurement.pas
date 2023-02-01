@@ -13,6 +13,8 @@ var
   mass: TKilograms;
   scoop: TGrams;
   volume: TCubicMeters;
+  temperature: TDegreesCelsius;
+  tempDiff: TKelvins;
 
 begin
   // Assign helps to convert to target unit "km" as the value here is in "m"
@@ -79,5 +81,23 @@ begin
   writeln('has an horizontal face of ', (volume/side).ToString);
   // explicit conversion from m3 to litre
   writeln('It is equivalent to ', L.From(volume).ToString);
-end.
 
+  writeln('3 t = ', (3*ton).ToString);
+  writeln('1 lux = ', (1*lx).ToVerboseString);
+  writeln('1 / 0.01 s = ', (1 / (0.01*s)).ToString);
+  writeln('100 Hz * 10 s = ', FormatValue(100*Hz*(10*s)));
+  writeln('180 º = ', rad.From(180*deg).ToString);
+  writeln('1 A * 1 s = ', (1*A*(1*s)).ToString);
+  writeln('1 C / 1 s = ', (1*C/(1*s)).ToString);
+
+  temperature.Assign(20*degC);
+  writeln(temperature.ToString,' is the same as ', K.From(temperature).ToString,
+    ' and ', degF.From(temperature).ToString);
+
+  tempDiff := 25*degC - (20*degC);
+  writeln('The difference between 20 and 25 degrees Celsius is: ', tempDiff.ToString);
+  writeln('From 30 ºC that would be: ', (30*degC + tempDiff).ToString);
+
+  temperature := degC.From(0*K);
+  writeln('The absolute zero is: ', temperature.ToString);
+end.
