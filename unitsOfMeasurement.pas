@@ -50,7 +50,7 @@ begin
   gravity := 9.81*(m/s2) + 0*(m/s/s);
   writeln('Gravity is: ', gravity.ToVerboseString);
   writeln('s2 = s*s? ', s2 = s*(s*s/s));
-  writeln('m/s2*s = m/s? ', (m/s2)*s = m/s);
+  writeln('m/s2*s = m/s? ', ((m/s2)*s).Symbol = (m/s).Symbol);
   writeln;
 
   // supposing there is local variable called "cm"
@@ -100,4 +100,7 @@ begin
 
   temperature := degC.From(0*K);
   writeln('The absolute zero is: ', temperature.ToString);
+  writeln;
+
+  writeln('Accelerating 100 g by 1/s2 is: ', (1*(m/s2)*(100*g)).ToVerboseString);
 end.
