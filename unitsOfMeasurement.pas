@@ -103,4 +103,8 @@ begin
   writeln;
 
   writeln('Accelerating 100 g by 1/s2 is: ', (1*(m/s2)*(100*g)).ToVerboseString);
+  writeln;
+  writeln('10 cm < 1 m ? ', 10*cm < 1*m);
+  writeln('100 cm = 1 m ? ', 100*cm = 1*m);
+  writeln('101 cm <> 1 m ? ', 101*cm <> 1*m);
 end.
