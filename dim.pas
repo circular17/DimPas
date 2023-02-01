@@ -37,6 +37,8 @@ type
   generic TUnitSquared<BaseU> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TUnitCubed<BaseU> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TRatioUnit<NumeratorU, DenomU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  generic TReciprocalUnit<DenomU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  generic TUnitProduct<U1, U2: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
  
   { TFactoredRatioUnit }
 
@@ -74,12 +76,32 @@ type
     {$DEFINE DIM_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
   end;
 
+  generic TBasicDimensionedQuantity<U: TUnit> = record
+    type TSelf = specialize TBasicDimensionedQuantity<U>;
+    {$DEFINE BASIC_DIM_QTY_INTF}{$i dim.pas}
+  end;
+
+  generic TReciprocalDimensionedQuantity<DenomU: TUnit> = record
+    type U = specialize TReciprocalUnit<DenomU>;
+    type TSelf = specialize TReciprocalDimensionedQuantity<DenomU>;
+    type TDenomQuantity = specialize TDimensionedQuantity<DenomU>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE RECIP_QTY_INTF}{$i dim.pas}
+  end;
+
   generic TRatioDimensionedQuantity<NumeratorU, DenomU: TUnit> = record
     type U = specialize TRatioUnit<NumeratorU, DenomU>;
     type TSelf = specialize TRatioDimensionedQuantity<NumeratorU, DenomU>;
     type TNumeratorQuantity = specialize TDimensionedQuantity<NumeratorU>;
     type TDenomQuantity = specialize TDimensionedQuantity<DenomU>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
+  end;
+
+  generic TDimensionedQuantityProduct<U1, U2: TUnit> = record
+    type U = specialize TUnitProduct<U1, U2>;
+    type TSelf = specialize TDimensionedQuantityProduct<U1, U2>;
+    type TQuantity1 = specialize TDimensionedQuantity<U1>;
+    type TQuantity2 = specialize TDimensionedQuantity<U2>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
   generic TFactoredDimensionedQuantity<BaseU: TUnit; U: TUnit> = record
@@ -102,6 +124,8 @@ type
 
   { Unit identifiers }
 
+  { TUnitCubedIdentifier }
+
   generic TUnitCubedIdentifier<BaseU: TUnit> = record
     type U = specialize TUnitCubed<BaseU>;
     type TSelf = specialize TUnitCubedIdentifier<BaseU>;
@@ -113,6 +137,12 @@ type
     type U = specialize TUnitSquared<BaseU>;
     type TSelf = specialize TUnitSquaredIdentifier<BaseU>;
     type TQuantity = specialize TSquaredDimensionedQuantity<BaseU>;
+    {$DEFINE UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TBasicUnitIdentifier<U: TUnit> = record
+    type TSelf = specialize TBasicUnitIdentifier<U>;
+    type TQuantity = specialize TBasicDimensionedQuantity<U>;
     {$DEFINE UNIT_ID_INTF}{$i dim.pas}
   end;
 
@@ -132,6 +162,16 @@ type
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
   end;
 
+  { TReciprocalUnitIdentifier }
+
+  generic TReciprocalUnitIdentifier<DenomU: TUnit> = record
+    type U = specialize TReciprocalUnit<DenomU>;
+    type TSelf = specialize TReciprocalUnitIdentifier<DenomU>;
+    type TQuantity = specialize TReciprocalDimensionedQuantity<DenomU>;
+    type TDenomIdentifier = specialize TUnitIdentifier<DenomU>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE RECIP_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
   generic TRatioUnitIdentifier<NumeratorU, DenomU: TUnit> = record
     type U = specialize TRatioUnit<NumeratorU, DenomU>;
     type TSelf = specialize TRatioUnitIdentifier<NumeratorU, DenomU>;
@@ -139,6 +179,15 @@ type
     type TNumeratorIdentifier = specialize TUnitIdentifier<NumeratorU>;
     type TDenomIdentifier = specialize TUnitIdentifier<DenomU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TUnitProductIdentifier<U1, U2: TUnit> = record
+    type U = specialize TUnitProduct<U1, U2>;
+    type TSelf = specialize TUnitProductIdentifier<U1, U2>;
+    type TQuantity = specialize TDimensionedQuantityProduct<U1, U2>;
+    type TIdentifier1 = specialize TUnitIdentifier<U1>;
+    type TIdentifier2 = specialize TUnitIdentifier<U2>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
   end;
 
   generic TFactoredRatioUnitIdentifier<BaseNumeratorU, BaseDenomU: TUnit;
@@ -178,12 +227,13 @@ type
   TDayIdentifier = specialize TFactoredUnitIdentifier<TSecond, TDay>;
   TDays = specialize TFactoredDimensionedQuantity<TSecond, TDay>;
 
-  TSecond2Identifier = specialize TUnitSquaredIdentifier<TSecond>;
+  TSquareSecond = specialize TUnitSquared<TSecond>;
+  TSquareSecondIdentifier = specialize TUnitSquaredIdentifier<TSecond>;
 
 var
   ms: TMillisecondIdentifier;
   s: TSecondIdentifier;
-  s2: TSecond2Identifier;
+  s2: TSquareSecondIdentifier;
   mn: TMinuteIdentifier;
   h: THourIdentifier;
   day: TDayIdentifier;
@@ -195,6 +245,7 @@ type
   TMeterIdentifier = specialize TUnitIdentifier<TMeter>;
   TMeters = specialize TDimensionedQuantity<TMeter>;
 
+  TSquareMeter = specialize TUnitSquared<TMeter>;
   TSquareMeters = specialize TSquaredDimensionedQuantity<TMeter>;
   TSquareMeterIdentifier = specialize TUnitSquaredIdentifier<TMeter>;
 
@@ -251,20 +302,14 @@ type
   TKilograms = specialize TFactoredDimensionedQuantity<TGram, specialize TKiloUnit<TGram>>;
 
   TMegagrams = specialize TFactoredDimensionedQuantity<TGram, specialize TMegaUnit<TGram>>;
-  TTon = class(specialize TMegaUnit<TGram>)
-    class function Symbol: string; override;
-    class function Name: string; override;
-  end;
+  TTon = specialize TMegaUnit<TGram>;
   TTons = specialize TFactoredDimensionedQuantity<TGram, TTon>;
 
 var
   mg: specialize TFactoredUnitIdentifier<TGram, specialize TMilliUnit<TGram>>;
   g: TGramIdentifier;
   kg: specialize TFactoredUnitIdentifier<TGram, specialize TKiloUnit<TGram>>;
-  tons: specialize TFactoredUnitIdentifier<TGram, specialize TMegaUnit<TGram>>;
-
-// dimension equivalence
-operator :=(const AWeight: TMegagrams): TTons; inline;
+  ton: specialize TFactoredUnitIdentifier<TGram, specialize TMegaUnit<TGram>>;
 
 { Units of amount of substance }
 
@@ -294,8 +339,31 @@ type
   TKelvinIdentifier = specialize TUnitIdentifier<TKelvin>;
   TKelvins = specialize TDimensionedQuantity<TKelvin>;
 
+  TDegreeCelsius = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  TDegreeCelsiusIdentifier = specialize TBasicUnitIdentifier<TDegreeCelsius>;
+  TDegreesCelsius = specialize TBasicDimensionedQuantity<TDegreeCelsius>;
+  TDegreeCelsiusIdentifierHelper = record helper for TDegreeCelsiusIdentifier
+    class function From(const ATemperature: TKelvins): TDegreesCelsius; inline; static; overload;
+  end;
+
+  TDegreeFahrenheit = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  TDegreeFahrenheitIdentifier = specialize TBasicUnitIdentifier<TDegreeFahrenheit>;
+  TDegreesFahrenheit = specialize TBasicDimensionedQuantity<TDegreeFahrenheit>;
+  TDegreeFahrenheitIdentifierHelper = record helper for TDegreeFahrenheitIdentifier
+    class function From(const ATemperature: TKelvins): TDegreesFahrenheit; inline; static; overload;
+  end;
+
 var
-  K: TKelvin;
+  K: TKelvinIdentifier;
+  degC: TDegreeCelsiusIdentifier;
+  degF: TDegreeFahrenheitIdentifier;
+
+operator :=(const ATemperature: TDegreesCelsius): TKelvins;
+operator :=(const ATemperature: TDegreesFahrenheit): TDegreesCelsius;
+operator :=(const ATemperature: TDegreesFahrenheit): TKelvins;
+operator -(const ATemperature1, ATemperature2: TDegreesCelsius): TKelvins;
+operator +(const ATemperature: TDegreesCelsius; const ADifference: TKelvins): TDegreesCelsius;
+operator +(const ADifference: TKelvins; const ATemperature: TDegreesCelsius): TDegreesCelsius;
 
 { Units of luminous energy }
 
@@ -348,7 +416,7 @@ type
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSecond2Identifier): TMeterPerSquareSecondIdentifier; inline;
+operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMeterPerSquareSecondIdentifier; inline;
 operator /(const {%H-}km_h: TKilometerPerHourIdentifier; const {%H-}s: TSecondIdentifier): TKilometerPerHourPerSecondIdentifier; inline;
 
 // combining dimensioned quantities
@@ -360,6 +428,44 @@ operator /(const ASpeed: TKilometersPerHour; const ATime: TSeconds): TKilometers
 operator :=(const {%H-}m_s2: TMeterPerSquareSecondIdentifier): TMeterPerSecondSquaredIdentifier; inline;
 operator :=(const {%H-}m_s2: TMetersPerSquareSecondIdentifier): TMetersPerSecondSquared; inline;
 operator *(const {%H-}m_s2: TMeterPerSquareSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondIdentifier; inline;
+
+{ Special units }
+type
+  THertzIdentifier = specialize TReciprocalUnitIdentifier<TSecond>;
+  TFrequency = specialize TReciprocalDimensionedQuantity<TSecond>;
+
+  TRadian = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  TRadianIdentifier = specialize TUnitIdentifier<TRadian>;
+  TRadians = specialize TDimensionedQuantity<TRadian>;
+
+  TDegree = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  TDegreeIdentifier = specialize TFactoredUnitIdentifier<TRadian, TDegree>;
+  TDegrees = specialize TFactoredDimensionedQuantity<TRadian, TDegree>;
+
+  TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
+  TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
+
+  TLuxIdentifier = specialize TRatioUnitIdentifier<TCandela, TSquareMeter>;
+  TLuxQuantity = specialize TRatioDimensionedQuantity<TCandela, TSquareMeter>;
+
+  TSievertIdentifier = specialize TRatioUnitIdentifier<TSquareMeter, TSquareSecond>;
+  TSieverts = specialize TRatioDimensionedQuantity<TSquareMeter, TSquareSecond>;
+
+  TKatalIdentifier = specialize TRatioUnitIdentifier<TMole, TSecond>;
+  TKatals = specialize TRatioDimensionedQuantity<TMole, TSecond>;
+
+var
+  Hz: THertzIdentifier;
+  rad: TRadianIdentifier;
+  deg: TDegreeIdentifier;
+  C: TCoulombIdentifer;
+  lx: TLuxIdentifier;
+  Sv: TSievertIdentifier;
+  kat: TKatalIdentifier;
+
+// combining dimensioned quantities
+operator /(const AValue: double; const ADuration: TSeconds): TFrequency; inline;
+operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
 
 { Formatting }
 
@@ -452,6 +558,12 @@ begin
     result := copy(NumeratorU.Symbol, 1, length(NumeratorU.Symbol)-1) + '3'
   else
     result := NumeratorU.Symbol + '/' + DenomU.Symbol;
+
+  case result of
+  'cd/m2': result := 'lx';
+  'm2/s2': result := 'Sv';
+  'mol/s': result := 'kat';
+  end;
 end;
 
 class function TRatioUnit.Name: string;
@@ -462,6 +574,57 @@ begin
     result := copy(NumeratorU.Name, 1, length(NumeratorU.Name)-8) + ' cubed'
   else
     result := NumeratorU.Name + ' per ' + DenomU.Name;
+
+  case result of
+  'candela per square meter': result := 'lux';
+  'square meter per square second': result := 'sievert';
+  'mole per second': result := 'katal';
+  end;
+end;
+
+{ TUnitProduct }
+
+class function TUnitProduct.Symbol: string;
+begin
+  result := U1.Symbol + '.' + U2.Symbol;
+
+  case result of
+  's.A', 'A.s': result := 'C';
+  end;
+end;
+
+class function TUnitProduct.Name: string;
+begin
+  result := U1.Name + '-' + U2.Name;
+
+  case result of
+  'ampere-second', 'second-ampere': result := 'C';
+  end;
+end;
+
+{ TReciprocalUnit }
+
+class function TReciprocalUnit.Symbol: string;
+var denomSymbol: string;
+begin
+  denomSymbol := DenomU.Symbol;
+  if denomSymbol[length(denomSymbol)] in['2'..'9'] then
+    result := denomSymbol.Insert(length(denomSymbol), '-')
+  else
+    result := denomSymbol + '-1';
+
+  case result of
+  's-1': result := 'Hz';
+  end;
+end;
+
+class function TReciprocalUnit.Name: string;
+begin
+  result := 'reciprocal ' + DenomU.Name;
+
+  case result of
+  'reciprocal second': result := 'hertz';
+  end;
 end;
 
 { TFactoredRatioUnit }
@@ -508,8 +671,17 @@ end;
 {$DEFINE UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TUnitIdentifier}{$i dim.pas}
 
+{$DEFINE UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TBasicUnitIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE RECIP_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TReciprocalUnitIdentifier}{$i dim.pas}
+
 {$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TRatioUnitIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TUnitProductIdentifier}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredUnitIdentifier}{$i dim.pas}
@@ -528,8 +700,17 @@ end;
 {$DEFINE DIM_QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TDimensionedQuantity}{$i dim.pas}
 
+{$DEFINE BASIC_DIM_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TBasicDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE RECIP_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TReciprocalDimensionedQuantity}{$i dim.pas}
+
 {$DEFINE DIM_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TRatioDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TDimensionedQuantityProduct}{$i dim.pas}
 
 {$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TFactoredDimensionedQuantity}{$i dim.pas}
@@ -581,14 +762,6 @@ end;
 class function TGram.Symbol: string; begin result := 'g'; end;
 class function TGram.Name: string;   begin result := 'gram'; end;
 
-class function TTon.Symbol: string; begin result := 't'; end;
-class function TTon.Name: string;   begin result := 'ton'; end;
-
-operator:=(const AWeight: TMegagrams): TTons;
-begin
-  result.Value := AWeight.Value;
-end;
-
 class function TMole.Symbol: string; begin result := 'mol'; end;
 class function TMole.Name: string;   begin result := 'mole'; end;
 
@@ -597,6 +770,53 @@ class function TAmpere.Name: string;   begin result := 'ampere'; end;
 
 class function TKelvin.Symbol: string; begin result := 'K'; end;
 class function TKelvin.Name: string;   begin result := 'kelvin'; end;
+
+class function TDegreeCelsius.Symbol: string; begin result := 'ºC'; end;
+class function TDegreeCelsius.Name: string;   begin result := 'degree Celsius'; end;
+
+class function TDegreeFahrenheit.Symbol: string; begin result := 'ºF'; end;
+class function TDegreeFahrenheit.Name: string;   begin result := 'degree Fahrenheit'; end;
+
+operator:=(const ATemperature: TDegreesCelsius): TKelvins;
+begin
+  result.Value := ATemperature.Value + 273.15;
+end;
+
+class function TDegreeCelsiusIdentifierHelper.From(const ATemperature: TKelvins): TDegreesCelsius;
+begin
+  result.Value := ATemperature.Value - 273.15;
+end;
+
+operator:=(const ATemperature: TDegreesFahrenheit): TDegreesCelsius;
+begin
+  result.Value := (ATemperature.Value - 32)/1.8;
+end;
+
+class function TDegreeFahrenheitIdentifierHelper.From(
+  const ATemperature: TKelvins): TDegreesFahrenheit;
+begin
+  result.Value := degC.From(ATemperature).Value*1.8 + 32;
+end;
+
+operator:=(const ATemperature: TDegreesFahrenheit): TKelvins;
+begin
+  result := TDegreesCelsius(ATemperature);
+end;
+
+operator-(const ATemperature1, ATemperature2: TDegreesCelsius): TKelvins;
+begin
+  result.Value := ATemperature1.Value - ATemperature2.Value;
+end;
+
+operator+(const ATemperature: TDegreesCelsius; const ADifference: TKelvins): TDegreesCelsius;
+begin
+ result.Value := ATemperature.Value + ADifference.Value;
+end;
+
+operator+(const ADifference: TKelvins; const ATemperature: TDegreesCelsius): TDegreesCelsius;
+begin
+  result.Value := ATemperature.Value + ADifference.Value;
+end;
 
 class function TCandela.Symbol: string; begin result := 'cd'; end;
 class function TCandela.Name: string;   begin result := 'candela'; end;
@@ -627,7 +847,7 @@ end;
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondSquaredIdentifier;
 begin end;
 
-operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSecond2Identifier): TMeterPerSquareSecondIdentifier;
+operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMeterPerSquareSecondIdentifier;
 begin end;
 
 operator/(const km_h: TKilometerPerHourIdentifier; const s: TSecondIdentifier): TKilometerPerHourPerSecondIdentifier;
@@ -661,14 +881,36 @@ begin
   result.Value := ASpeed.Value / ATime.Value;
 end;
 
+{ Special units }
+
+class function TRadian.Symbol: string; begin result := 'rad'; end;
+class function TRadian.Name: string;   begin result := 'radian'; end;
+
+class function TDegree.Factor: double; begin result := Pi/180; end;
+class function TDegree.Symbol: string; begin result := 'º'; end;
+class function TDegree.Name: string;   begin result := 'degree'; end;
+
+operator/(const AValue: double; const ADuration: TSeconds): TFrequency;
+begin
+  result.Value := AValue / ADuration.Value;
+end;
+
+operator*(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs;
+begin
+  result.Value := ACurrent.Value * ADuration.Value;
+end;
+
 end.
 {$ENDIF}
 
-{$IFDEF DIM_QTY_INTF}
+{$IF defined(BASIC_DIM_QTY_INTF) or defined(DIM_QTY_INTF)}
 public
   Value: double;
   function ToString: string;
   function ToVerboseString: string;
+  constructor Assign(const AQuantity: TSelf); overload;
+{$ENDIF}{$UNDEF BASIC_DIM_QTY_INTF}
+{$IFDEF DIM_QTY_INTF}
   class operator +(const AQuantity1, AQuantity2: TSelf): TSelf;
   class operator -(const AQuantity1, AQuantity2: TSelf): TSelf;
   class operator *(const AFactor: double; const AQuantity: TSelf): TSelf;
@@ -685,18 +927,26 @@ public
 {$ENDIF}{$UNDEF SQUARABLE_QTY_INTF}
 {$IFDEF RATIO_QTY_INTF}
   class operator /(const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
-  class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): TSelf;
-  class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): TSelf;
+  class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): TNumeratorQuantity;
+  class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
 {$ENDIF}{$UNDEF RATIO_QTY_INTF}
+{$IFDEF QTY_PROD_INTF}
+  //class operator /(const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
+  class operator /(const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
+{$ENDIF}{$UNDEF QTY_PROD_INTF}
+{$IFDEF RECIP_QTY_INTF}
+  class operator /(const AValue: double; const ASelf: TSelf): TDenomQuantity;
+  class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): double;
+  class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): double;
+{$ENDIF}{$UNDEF RECIP_QTY_INTF}
 {$IFDEF FACTORED_QTY_INTF}
   function ToBase: TBaseDimensionedQuantity;
-  constructor Assign(const AQuantity: TSelf); overload;
   constructor Assign(const AQuantity: TBaseDimensionedQuantity); overload;
   class operator :=(const AQuantity: TSelf): TBaseDimensionedQuantity;
   class function From(const AQuantity: TBaseDimensionedQuantity): TSelf; static; inline;
 {$ENDIF}{$UNDEF FACTORED_QTY_INTF}
 
-{$IFDEF DIM_QTY_IMPL}
+{$IF defined(BASIC_DIM_QTY_IMPL) or defined(DIM_QTY_IMPL)}
   function T_DIM_QUANTITY.ToString: string;
   begin
     result := FormatValue(Value) + ' ' + U.Symbol;
@@ -707,6 +957,12 @@ public
     result := FormatValue(Value) + ' ' + FormatUnitName(U.Name, Value);
   end;
 
+  constructor T_DIM_QUANTITY.Assign(const AQuantity: TSelf);
+  begin
+    self := AQuantity;
+  end;
+{$ENDIF}{$UNDEF BASIC_DIM_QTY_IMPL}
+{$IFDEF DIM_QTY_IMPL}
   class operator T_DIM_QUANTITY.+(const AQuantity1, AQuantity2: TSelf): TSelf;
   begin
     result.Value := AQuantity1.Value + AQuantity2.Value;
@@ -767,6 +1023,25 @@ public
     result.Value := ACubedQuantity.Value / AQuantity.Value;
   end;
 {$ENDIF}{$UNDEF SQUARABLE_QTY_IMPL}
+{$IFDEF RECIP_QTY_IMPL}
+  class operator T_DIM_QUANTITY./(
+    const AValue: double; const ASelf: TSelf): TDenomQuantity;
+  begin
+    result.Value := AValue / ASelf.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(const ASelf: TSelf;
+    const ADenominator: TDenomQuantity): double;
+  begin
+    result := ASelf.Value * ADenominator.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(
+    const ADenominator: TDenomQuantity; const ASelf: TSelf): double;
+  begin
+    result := ADenominator.Value * ASelf.Value;
+  end;
+{$ENDIF}{$UNDEF RECIP_QTY_IMPL}
 {$IFDEF RATIO_QTY_IMPL}
   class operator T_DIM_QUANTITY./(
     const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
@@ -775,26 +1050,34 @@ public
   end;
 
   class operator T_DIM_QUANTITY.*(const ASelf: TSelf;
-    const ADenominator: TDenomQuantity): TSelf;
+    const ADenominator: TDenomQuantity): TNumeratorQuantity;
   begin
     result.Value := ASelf.Value * ADenominator.Value;
   end;
 
   class operator T_DIM_QUANTITY.*(
-    const ADenominator: TDenomQuantity; const ASelf: TSelf): TSelf;
+    const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
   begin
     result.Value := ADenominator.Value * ASelf.Value;
   end;
 {$ENDIF}{$UNDEF RATIO_QTY_IMPL}
+{$IFDEF QTY_PROD_IMPL}
+  {class operator T_DIM_QUANTITY./(
+    const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
+  begin
+    result.Value := ASelf.Value / AQuantity1.Value;
+  end;}
+
+  class operator T_DIM_QUANTITY./(
+    const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
+  begin
+    result.Value := ASelf.Value / AQuantity2.Value;
+  end;
+{$ENDIF}{$UNDEF QTY_PROD_IMPL}
 {$IFDEF FACTORED_QTY_IMPL}
   function T_DIM_QUANTITY.ToBase: TBaseDimensionedQuantity;
   begin
     result := self;
-  end;
-
-  constructor T_DIM_QUANTITY.Assign(const AQuantity: TSelf);
-  begin
-    self := AQuantity;
   end;
 
   constructor T_DIM_QUANTITY.Assign(const AQuantity: TBaseDimensionedQuantity);
@@ -817,6 +1100,7 @@ public
 {$IFDEF UNIT_ID_INTF}
 public
   class operator *(const AValue: double; const {%H-}TheUnit: TSelf): TQuantity;
+  class operator /(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): double;
   class operator =(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): boolean;
   class function Name: string; inline; static;
   class function Symbol: string; inline; static;
@@ -834,15 +1118,28 @@ public
   class function BaseUnit: TBaseUnitIdentifier; inline; static;
   class function Factor: double; inline; static;
 {$ENDIF}{$UNDEF FACTORED_UNIT_ID_INTF}
+{$IFDEF RECIP_UNIT_ID_INTF}
+  class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomIdentifier): double;
+  class function Inverse: TDenomIdentifier; inline; static;
+{$ENDIF}{$UNDEF RECIP_UNIT_ID_INTF}
 {$IFDEF RATIO_UNIT_ID_INTF}
   class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomIdentifier): TNumeratorIdentifier;
 {$ENDIF}{$UNDEF RATIO_UNIT_ID_INTF}
+{$IFDEF UNIT_PROD_ID_INTF}
+  //class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TIdentifier1): TIdentifier2;
+  class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
+{$ENDIF}{$UNDEF UNIT_PROD_ID_INTF}
 
 {$IFDEF UNIT_ID_IMPL}
   class operator T_UNIT_ID.*(const AValue: double;
     const TheUnit: TSelf): TQuantity;
   begin
     result.Value := AValue;
+  end;
+
+  class operator T_UNIT_ID./(const TheUnit1, TheUnit2: TSelf): double;
+  begin
+    result := 1;
   end;
 
   class operator T_UNIT_ID.=(const TheUnit1, TheUnit2: TSelf): boolean;
@@ -852,12 +1149,20 @@ public
 
   class function T_UNIT_ID.Name: string;
   begin
-    result := U.Name;
+    case U.Name of
+    'Mg': result := 't';
+    else
+      result := U.Name;
+    end;
   end;
 
   class function T_UNIT_ID.Symbol: string;
   begin
-    result := U.Symbol;
+    case U.Name of
+    'megagram': result := 'ton';
+    else
+      result := U.Symbol;
+    end;
   end;
 
   class function T_UNIT_ID.From(const AQuantity: TQuantity): TQuantity;
@@ -897,7 +1202,21 @@ public
     result := U.Factor;
   end;
 {$ENDIF}{$UNDEF FACTORED_UNIT_ID_IMPL}
+{$IFDEF RECIP_UNIT_ID_IMPL}
+  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomIdentifier): double;
+  begin result := 1; end;
+
+  class function T_UNIT_ID.Inverse: TDenomIdentifier;
+  begin end;
+{$ENDIF}{$UNDEF RECIP_UNIT_ID_IMPL}
 {$IFDEF RATIO_UNIT_ID_IMPL}
   class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomIdentifier): TNumeratorIdentifier;
   begin end;
 {$ENDIF}{$UNDEF RATIO_UNIT_ID_IMPL}
+{$IFDEF UNIT_PROD_ID_IMPL}
+  {class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TIdentifier1): TIdentifier2;
+  begin end;}
+
+  class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
+  begin end;
+{$ENDIF}{$UNDEF UNIT_PROD_ID_IMPL}
