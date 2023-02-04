@@ -83,7 +83,7 @@ begin
   // explicit conversion from m3 to litre
   writeln('It is equivalent to ', L.From(volume).ToString);
 
-  writeln('3 t = ', (3*ton).ToString);
+  writeln('3 t = ', kg.From(3*ton).ToString);
   writeln('1 lux = ', (1*lx).ToVerboseString);
   writeln('1 / 0.01 s = ', (1 / (0.01*s)).ToString);
   writeln('100 Hz * 10 s = ', FormatValue(100*Hz*(10*s)));

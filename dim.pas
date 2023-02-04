@@ -16,11 +16,12 @@ type
 
   TUnit = class(TCustomUnit);
   TFactoredUnit = class(TCustomUnit)
-    class function Factor: double; virtual;
+    class function Factor: double; virtual; abstract;
   end;
 
-{$UNDEF INCLUDING}{$ENDIF}
-{$IF defined(UNIT_OV_INTF) or defined(FACTORED_UNIT_INTF)}
+  {$UNDEF INCLUDING}{$ENDIF}
+  // derive TUnit and TFactoredUnit classes
+  {$IF defined(UNIT_OV_INTF) or defined(FACTORED_UNIT_INTF)}
   {$IFDEF FACTORED_UNIT_INTF}
   class(TFactoredUnit)
     class function Factor: double; override;
@@ -30,15 +31,8 @@ type
     class function Symbol: string; override;
     class function Name: string; override;
   end;
-{$ENDIF}{$UNDEF UNIT_OV_INTF}{$UNDEF FACTORED_UNIT_INTF}
-{$IF defined(UNIT_OV_IMPL) or defined(FACTORED_UNIT_IMPL)}
-  {$IFDEF FACTORED_UNIT_IMPL}
-    class function T_FACTORED_UNIT.Factor: double; begin result := V_FACTOR; end;
-  {$ENDIF}
-  class function T_FACTORED_UNIT.Symbol: string; begin result := V_SYMBOL + U.Symbol; end;
-  class function T_FACTORED_UNIT.Name: string; begin result := V_NAME + U.Name; end;
-{$ENDIF}{$UNDEF UNIT_OV_IMPL}{$UNDEF FACTORED_UNIT_IMPL}
-{$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+  {$ENDIF}{$UNDEF UNIT_OV_INTF}{$UNDEF FACTORED_UNIT_INTF}
+  {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
   generic TUnitSquared<BaseU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TUnitCubed<BaseU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
@@ -65,6 +59,58 @@ type
   generic TMicroUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
 
   { Dimensionned quantities }
+
+  {$UNDEF INCLUDING}{$ENDIF}
+  // simulate inheritance for TDimensionedQuantity record
+  {$IF defined(BASIC_DIM_QTY_INTF) or defined(DIM_QTY_INTF)}
+  public
+    Value: double;
+    function ToString: string;
+    function ToVerboseString: string;
+    constructor Assign(const AQuantity: TSelf); overload;
+  {$ENDIF}{$UNDEF BASIC_DIM_QTY_INTF}
+  {$IFDEF DIM_QTY_INTF}
+    class operator +(const AQuantity1, AQuantity2: TSelf): TSelf;
+    class operator -(const AQuantity1, AQuantity2: TSelf): TSelf;
+    class operator *(const AFactor: double; const AQuantity: TSelf): TSelf;
+    class operator *(const AQuantity: TSelf; const AFactor: double): TSelf;
+    class operator /(const AQuantity: TSelf; const AFactor: double): TSelf;
+    class operator /(const AQuantity1, AQuantity2: TSelf): double;
+    class operator mod(const AQuantity1, AQuantity2: TSelf): TSelf;
+    class operator <(const AQuantity1, AQuantity2: TSelf): boolean;
+    class operator <=(const AQuantity1, AQuantity2: TSelf): boolean;
+    class operator =(const AQuantity1, AQuantity2: TSelf): boolean;
+    class operator >(const AQuantity1, AQuantity2: TSelf): boolean;
+    class operator >=(const AQuantity1, AQuantity2: TSelf): boolean;
+  {$ENDIF}{$UNDEF DIM_QTY_INTF}
+  {$IFDEF SQUARABLE_QTY_INTF}
+    class operator *(const AQuantity1, AQuantity2: TSelf): TSquaredQuantity;
+    class operator /(const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TSelf;
+    class operator *(const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TCubedQuantity;
+    class operator *(const AQuantity: TSelf; const ASquaredQuantity: TSquaredQuantity): TCubedQuantity;
+    class operator /(const ACubedQuantity: TCubedQuantity; const AQuantity: TSelf): TSquaredQuantity;
+  {$ENDIF}{$UNDEF SQUARABLE_QTY_INTF}
+  {$IFDEF RATIO_QTY_INTF}
+    class operator /(const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
+    class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): TNumeratorQuantity;
+    class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
+  {$ENDIF}{$UNDEF RATIO_QTY_INTF}
+  {$IFDEF QTY_PROD_INTF}
+    //class operator /(const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
+    class operator /(const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
+  {$ENDIF}{$UNDEF QTY_PROD_INTF}
+  {$IFDEF RECIP_QTY_INTF}
+    class operator /(const AValue: double; const ASelf: TSelf): TDenomQuantity;
+    class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): double;
+    class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): double;
+  {$ENDIF}{$UNDEF RECIP_QTY_INTF}
+  {$IFDEF FACTORED_QTY_INTF}
+    function ToBase: TBaseDimensionedQuantity;
+    constructor Assign(const AQuantity: TBaseDimensionedQuantity); overload;
+    class operator :=(const AQuantity: TSelf): TBaseDimensionedQuantity;
+    class function From(const AQuantity: TBaseDimensionedQuantity): TSelf; static; inline;
+  {$ENDIF}{$UNDEF FACTORED_QTY_INTF}
+  {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
   generic TCubedDimensionedQuantity<BaseU: TUnit> = record
     type TSelf = specialize TCubedDimensionedQuantity<BaseU>;
@@ -202,6 +248,42 @@ type
   end;
 
   { Unit identifiers }
+
+  {$UNDEF INCLUDING}{$ENDIF}
+  // simulate inheritance for TUnitIdentifier record
+  {$IFDEF UNIT_ID_INTF}
+  public
+    class operator *(const AValue: double; const {%H-}TheUnit: TSelf): TQuantity;
+    class operator /(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): double;
+    class operator =(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): boolean;
+    class function Name: string; inline; static;
+    class function Symbol: string; inline; static;
+    class function From(const AQuantity: TQuantity): TQuantity; inline; static;
+  {$ENDIF}{$UNDEF UNIT_ID_INTF}
+  {$IFDEF SQUARABLE_UNIT_ID_INTF}
+    class operator *(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): TSquaredIdentifier;
+    class operator /(const {%H-}TheSquaredUnit: TSquaredIdentifier; const {%H-}TheUnit: TSelf): TSelf;
+    class operator *(const {%H-}TheSquaredUnit: TSquaredIdentifier; const {%H-}TheUnit: TSelf): TCubedIdentifier;
+    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheSquaredUnit: TSquaredIdentifier): TCubedIdentifier;
+    class operator /(const {%H-}TheCubedUnit: TCubedIdentifier; const {%H-}TheUnit: TSelf): TSquaredIdentifier;
+  {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_INTF}
+  {$IFDEF FACTORED_UNIT_ID_INTF}
+    class function From(const AQuantity: TBaseQuantity): TQuantity; inline; static;
+    class function BaseUnit: TBaseUnitIdentifier; inline; static;
+    class function Factor: double; inline; static;
+  {$ENDIF}{$UNDEF FACTORED_UNIT_ID_INTF}
+  {$IFDEF RECIP_UNIT_ID_INTF}
+    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomIdentifier): double;
+    class function Inverse: TDenomIdentifier; inline; static;
+  {$ENDIF}{$UNDEF RECIP_UNIT_ID_INTF}
+  {$IFDEF RATIO_UNIT_ID_INTF}
+    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomIdentifier): TNumeratorIdentifier;
+  {$ENDIF}{$UNDEF RATIO_UNIT_ID_INTF}
+  {$IFDEF UNIT_PROD_ID_INTF}
+    //class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TIdentifier1): TIdentifier2;
+    class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
+  {$ENDIF}{$UNDEF UNIT_PROD_ID_INTF}
+  {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
   generic TUnitCubedIdentifier<BaseU: TUnit> = record
     type U = specialize TUnitCubed<BaseU>;
@@ -758,13 +840,6 @@ begin
   end;
 end;
 
-{ TFactoredUnit }
-
-class function TFactoredUnit.Factor: double;
-begin
-  result := 1;
-end;
-
 { TUnitSquared }
 
 class function TUnitSquared.Symbol: string;
@@ -976,6 +1051,34 @@ end;
 
 { Factored units }
 
+{$UNDEF INCLUDING}{$ENDIF}
+// simulating generic const parameters
+{$IFDEF FACTORED_UNIT_IMPL}
+  class function T_FACTORED_UNIT.Factor: double;
+  begin
+    result := V_FACTOR;
+  end;
+
+  class function T_FACTORED_UNIT.Symbol: string;
+  begin
+    result := V_SYMBOL + U.Symbol;
+
+    case result of
+    'Mg': result := 't';
+    end;
+  end;
+
+  class function T_FACTORED_UNIT.Name: string;
+  begin
+    result := V_NAME + U.Name;
+
+    case result of
+    'megagram': result := 'ton';
+    end;
+  end;
+{$ENDIF}{$UNDEF FACTORED_UNIT_IMPL}
+{$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+
 {$DEFINE FACTORED_UNIT_IMPL}{$DEFINE T_FACTORED_UNIT:=TMegaUnit}
 {$DEFINE V_FACTOR:=1E6}{$DEFINE V_SYMBOL:='M'}{$DEFINE V_NAME:='mega'}{$i dim.pas}
 
@@ -1001,6 +1104,92 @@ end;
 {$DEFINE V_FACTOR:=1E-6}{$DEFINE V_SYMBOL:='µ'}{$DEFINE V_NAME:='micro'}{$i dim.pas}
 
 { Unit identifiers }
+
+{$UNDEF INCLUDING}{$ENDIF}
+// generic implementation of TUnitIdentifier
+{$IFDEF UNIT_ID_IMPL}
+  class operator T_UNIT_ID.*(const AValue: double;
+    const TheUnit: TSelf): TQuantity;
+  begin
+    result.Value := AValue;
+  end;
+
+  class operator T_UNIT_ID./(const TheUnit1, TheUnit2: TSelf): double;
+  begin
+    result := 1;
+  end;
+
+  class operator T_UNIT_ID.=(const TheUnit1, TheUnit2: TSelf): boolean;
+  begin
+    result := true;
+  end;
+
+  class function T_UNIT_ID.Name: string;
+  begin
+    result := U.Name;
+  end;
+
+  class function T_UNIT_ID.Symbol: string;
+  begin
+    result := U.Symbol;
+  end;
+
+  class function T_UNIT_ID.From(const AQuantity: TQuantity): TQuantity;
+  begin
+    result := AQuantity;
+  end;
+{$ENDIF}{$UNDEF UNIT_ID_IMPL}
+{$IFDEF SQUARABLE_UNIT_ID_IMPL}
+  class operator T_UNIT_ID.*(const TheUnit1, TheUnit2: TSelf): TSquaredIdentifier;
+  begin end;
+
+  class operator T_UNIT_ID./(const TheSquaredUnit: TSquaredIdentifier;
+                             const TheUnit: TSelf): TSelf;
+  begin end;
+
+  class operator T_UNIT_ID.*(const TheSquaredUnit: TSquaredIdentifier;
+    const TheUnit: TSelf): TCubedIdentifier;
+  begin end;
+
+  class operator T_UNIT_ID.*(const TheUnit: TSelf;
+    const TheSquaredUnit: TSquaredIdentifier): TCubedIdentifier;
+  begin end;
+
+  class operator T_UNIT_ID./(const TheCubedUnit: TCubedIdentifier;
+                             const TheUnit: TSelf): TSquaredIdentifier;
+  begin end;
+{$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_IMPL}
+{$IFDEF FACTORED_UNIT_ID_IMPL}
+  class function T_UNIT_ID.From(const AQuantity: TBaseQuantity): TQuantity;
+  begin
+    result.Assign(AQuantity);
+  end;
+  class function T_UNIT_ID.BaseUnit: TBaseUnitIdentifier;
+  begin end;
+  class function T_UNIT_ID.Factor: double;
+  begin
+    result := U.Factor;
+  end;
+{$ENDIF}{$UNDEF FACTORED_UNIT_ID_IMPL}
+{$IFDEF RECIP_UNIT_ID_IMPL}
+  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomIdentifier): double;
+  begin result := 1; end;
+
+  class function T_UNIT_ID.Inverse: TDenomIdentifier;
+  begin end;
+{$ENDIF}{$UNDEF RECIP_UNIT_ID_IMPL}
+{$IFDEF RATIO_UNIT_ID_IMPL}
+  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomIdentifier): TNumeratorIdentifier;
+  begin end;
+{$ENDIF}{$UNDEF RATIO_UNIT_ID_IMPL}
+{$IFDEF UNIT_PROD_ID_IMPL}
+  {class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TIdentifier1): TIdentifier2;
+  begin end;}
+
+  class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
+  begin end;
+{$ENDIF}{$UNDEF UNIT_PROD_ID_IMPL}
+{$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
 {$DEFINE UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TUnitCubedIdentifier}{$i dim.pas}
@@ -1051,6 +1240,190 @@ end;
 {$DEFINE T_UNIT_ID:=TRightFactoredUnitProductIdentifier}{$i dim.pas}
 
 { Dimensioned quantities }
+
+{$UNDEF INCLUDING}{$ENDIF}
+{$IF defined(BASIC_DIM_QTY_IMPL) or defined(DIM_QTY_IMPL)}
+  function T_DIM_QUANTITY.ToString: string;
+  begin
+    result := FormatValue(Value) + ' ' + U.Symbol;
+  end;
+
+  function T_DIM_QUANTITY.ToVerboseString: string;
+  begin
+    result := FormatValue(Value) + ' ' + FormatUnitName(U.Name, Value);
+  end;
+
+  constructor T_DIM_QUANTITY.Assign(const AQuantity: TSelf);
+  begin
+    self := AQuantity;
+  end;
+{$ENDIF}{$UNDEF BASIC_DIM_QTY_IMPL}
+{$IFDEF DIM_QTY_IMPL}
+  class operator T_DIM_QUANTITY.+(const AQuantity1, AQuantity2: TSelf): TSelf;
+  begin
+    result.Value := AQuantity1.Value + AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.-(const AQuantity1, AQuantity2: TSelf): TSelf;
+  begin
+    result.Value := AQuantity1.Value - AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(const AFactor: double; const AQuantity: TSelf): TSelf;
+  begin
+    result.Value := AFactor * AQuantity.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(const AQuantity: TSelf; const AFactor: double): TSelf;
+  begin
+    result.Value := AQuantity.Value * AFactor;
+  end;
+
+  class operator T_DIM_QUANTITY./(const AQuantity: TSelf; const AFactor: double): TSelf;
+  begin
+    result.Value := AQuantity.Value / AFactor;
+  end;
+
+  class operator T_DIM_QUANTITY./(const AQuantity1, AQuantity2: TSelf): double;
+  begin
+    result := AQuantity1.Value / AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.mod(const AQuantity1, AQuantity2: TSelf): TSelf;
+  begin
+    result.Value := AQuantity1.Value mod AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.<(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value < AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.<=(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value <= AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.=(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value = AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.>(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value > AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.>=(const AQuantity1, AQuantity2: TSelf): boolean;
+  begin
+    result := AQuantity1.Value >= AQuantity2.Value;
+  end;
+
+{$ENDIF}{$UNDEF DIM_QTY_IMPL}
+{$IFDEF SQUARABLE_QTY_IMPL}
+  class operator T_DIM_QUANTITY.*(const AQuantity1, AQuantity2: TSelf): TSquaredQuantity;
+  begin
+    result.Value := AQuantity1.Value * AQuantity2.Value;
+  end;
+
+  class operator T_DIM_QUANTITY./(const ASquaredQuantity: TSquaredQuantity;
+    const AQuantity: TSelf): TSelf;
+  begin
+    result.Value := ASquaredQuantity.Value / AQuantity.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(
+  const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TCubedQuantity;
+  begin
+    result.Value := ASquaredQuantity.Value * AQuantity.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(const AQuantity: TSelf;
+    const ASquaredQuantity: TSquaredQuantity): TCubedQuantity;
+  begin
+    result.Value := AQuantity.Value * ASquaredQuantity.Value;
+  end;
+
+  class operator T_DIM_QUANTITY./(const ACubedQuantity: TCubedQuantity;
+    const AQuantity: TSelf): TSquaredQuantity;
+  begin
+    result.Value := ACubedQuantity.Value / AQuantity.Value;
+  end;
+{$ENDIF}{$UNDEF SQUARABLE_QTY_IMPL}
+{$IFDEF RECIP_QTY_IMPL}
+  class operator T_DIM_QUANTITY./(
+    const AValue: double; const ASelf: TSelf): TDenomQuantity;
+  begin
+    result.Value := AValue / ASelf.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(const ASelf: TSelf;
+    const ADenominator: TDenomQuantity): double;
+  begin
+    result := ASelf.Value * ADenominator.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(
+    const ADenominator: TDenomQuantity; const ASelf: TSelf): double;
+  begin
+    result := ADenominator.Value * ASelf.Value;
+  end;
+{$ENDIF}{$UNDEF RECIP_QTY_IMPL}
+{$IFDEF RATIO_QTY_IMPL}
+  class operator T_DIM_QUANTITY./(
+    const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
+  begin
+    result.Value := ANumerator.Value / ASelf.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(const ASelf: TSelf;
+    const ADenominator: TDenomQuantity): TNumeratorQuantity;
+  begin
+    result.Value := ASelf.Value * ADenominator.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(
+    const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
+  begin
+    result.Value := ADenominator.Value * ASelf.Value;
+  end;
+{$ENDIF}{$UNDEF RATIO_QTY_IMPL}
+{$IFDEF QTY_PROD_IMPL}
+  {class operator T_DIM_QUANTITY./(
+    const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
+  begin
+    result.Value := ASelf.Value / AQuantity1.Value;
+  end;}
+
+  class operator T_DIM_QUANTITY./(
+    const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
+  begin
+    result.Value := ASelf.Value / AQuantity2.Value;
+  end;
+{$ENDIF}{$UNDEF QTY_PROD_IMPL}
+{$IFDEF FACTORED_QTY_IMPL}
+  function T_DIM_QUANTITY.ToBase: TBaseDimensionedQuantity;
+  begin
+    result := self;
+  end;
+
+  constructor T_DIM_QUANTITY.Assign(const AQuantity: TBaseDimensionedQuantity);
+  begin
+    self.Value := AQuantity.Value / U.Factor;
+  end;
+
+  class function T_DIM_QUANTITY.From(
+    const AQuantity: TBaseDimensionedQuantity): TSelf;
+  begin
+    result.Value := AQuantity.Value / U.Factor;
+  end;
+
+  class operator T_DIM_QUANTITY.:=(const AQuantity: TSelf): TBaseDimensionedQuantity;
+  begin
+    result.Value := AQuantity.Value * U.Factor;
+  end;
+{$ENDIF}{$UNDEF FACTORED_QTY_IMPL}
+{$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
 {$DEFINE DIM_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TCubedDimensionedQuantity}{$i dim.pas}
@@ -1310,358 +1683,3 @@ end;
 
 end.
 {$ENDIF}
-
-{$IF defined(BASIC_DIM_QTY_INTF) or defined(DIM_QTY_INTF)}
-public
-  Value: double;
-  function ToString: string;
-  function ToVerboseString: string;
-  constructor Assign(const AQuantity: TSelf); overload;
-{$ENDIF}{$UNDEF BASIC_DIM_QTY_INTF}
-{$IFDEF DIM_QTY_INTF}
-  class operator +(const AQuantity1, AQuantity2: TSelf): TSelf;
-  class operator -(const AQuantity1, AQuantity2: TSelf): TSelf;
-  class operator *(const AFactor: double; const AQuantity: TSelf): TSelf;
-  class operator *(const AQuantity: TSelf; const AFactor: double): TSelf;
-  class operator /(const AQuantity: TSelf; const AFactor: double): TSelf;
-  class operator /(const AQuantity1, AQuantity2: TSelf): double;
-  class operator mod(const AQuantity1, AQuantity2: TSelf): TSelf;
-  class operator <(const AQuantity1, AQuantity2: TSelf): boolean;
-  class operator <=(const AQuantity1, AQuantity2: TSelf): boolean;
-  class operator =(const AQuantity1, AQuantity2: TSelf): boolean;
-  class operator >(const AQuantity1, AQuantity2: TSelf): boolean;
-  class operator >=(const AQuantity1, AQuantity2: TSelf): boolean;
-{$ENDIF}{$UNDEF DIM_QTY_INTF}
-{$IFDEF SQUARABLE_QTY_INTF}
-  class operator *(const AQuantity1, AQuantity2: TSelf): TSquaredQuantity;
-  class operator /(const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TSelf;
-  class operator *(const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TCubedQuantity;
-  class operator *(const AQuantity: TSelf; const ASquaredQuantity: TSquaredQuantity): TCubedQuantity;
-  class operator /(const ACubedQuantity: TCubedQuantity; const AQuantity: TSelf): TSquaredQuantity;
-{$ENDIF}{$UNDEF SQUARABLE_QTY_INTF}
-{$IFDEF RATIO_QTY_INTF}
-  class operator /(const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
-  class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): TNumeratorQuantity;
-  class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
-{$ENDIF}{$UNDEF RATIO_QTY_INTF}
-{$IFDEF QTY_PROD_INTF}
-  //class operator /(const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
-  class operator /(const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
-{$ENDIF}{$UNDEF QTY_PROD_INTF}
-{$IFDEF RECIP_QTY_INTF}
-  class operator /(const AValue: double; const ASelf: TSelf): TDenomQuantity;
-  class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): double;
-  class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): double;
-{$ENDIF}{$UNDEF RECIP_QTY_INTF}
-{$IFDEF FACTORED_QTY_INTF}
-  function ToBase: TBaseDimensionedQuantity;
-  constructor Assign(const AQuantity: TBaseDimensionedQuantity); overload;
-  class operator :=(const AQuantity: TSelf): TBaseDimensionedQuantity;
-  class function From(const AQuantity: TBaseDimensionedQuantity): TSelf; static; inline;
-{$ENDIF}{$UNDEF FACTORED_QTY_INTF}
-
-{$IF defined(BASIC_DIM_QTY_IMPL) or defined(DIM_QTY_IMPL)}
-  function T_DIM_QUANTITY.ToString: string;
-  begin
-    result := FormatValue(Value) + ' ' + U.Symbol;
-  end;
-
-  function T_DIM_QUANTITY.ToVerboseString: string;
-  begin
-    result := FormatValue(Value) + ' ' + FormatUnitName(U.Name, Value);
-  end;
-
-  constructor T_DIM_QUANTITY.Assign(const AQuantity: TSelf);
-  begin
-    self := AQuantity;
-  end;
-{$ENDIF}{$UNDEF BASIC_DIM_QTY_IMPL}
-{$IFDEF DIM_QTY_IMPL}
-  class operator T_DIM_QUANTITY.+(const AQuantity1, AQuantity2: TSelf): TSelf;
-  begin
-    result.Value := AQuantity1.Value + AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.-(const AQuantity1, AQuantity2: TSelf): TSelf;
-  begin
-    result.Value := AQuantity1.Value - AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.*(const AFactor: double; const AQuantity: TSelf): TSelf;
-  begin
-    result.Value := AFactor * AQuantity.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.*(const AQuantity: TSelf; const AFactor: double): TSelf;
-  begin
-    result.Value := AQuantity.Value * AFactor;
-  end;
-
-  class operator T_DIM_QUANTITY./(const AQuantity: TSelf; const AFactor: double): TSelf;
-  begin
-    result.Value := AQuantity.Value / AFactor;
-  end;
-
-  class operator T_DIM_QUANTITY./(const AQuantity1, AQuantity2: TSelf): double;
-  begin
-    result := AQuantity1.Value / AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.mod(const AQuantity1, AQuantity2: TSelf): TSelf;
-  begin
-    result.Value := AQuantity1.Value mod AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.<(const AQuantity1, AQuantity2: TSelf): boolean;
-  begin
-    result := AQuantity1.Value < AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.<=(const AQuantity1, AQuantity2: TSelf): boolean;
-  begin
-    result := AQuantity1.Value <= AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.=(const AQuantity1, AQuantity2: TSelf): boolean;
-  begin
-    result := AQuantity1.Value = AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.>(const AQuantity1, AQuantity2: TSelf): boolean;
-  begin
-    result := AQuantity1.Value > AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.>=(const AQuantity1, AQuantity2: TSelf): boolean;
-  begin
-    result := AQuantity1.Value >= AQuantity2.Value;
-  end;
-
-{$ENDIF}{$UNDEF DIM_QTY_IMPL}
-{$IFDEF SQUARABLE_QTY_IMPL}
-  class operator T_DIM_QUANTITY.*(const AQuantity1, AQuantity2: TSelf): TSquaredQuantity;
-  begin
-    result.Value := AQuantity1.Value * AQuantity2.Value;
-  end;
-
-  class operator T_DIM_QUANTITY./(const ASquaredQuantity: TSquaredQuantity;
-    const AQuantity: TSelf): TSelf;
-  begin
-    result.Value := ASquaredQuantity.Value / AQuantity.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.*(
-  const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TCubedQuantity;
-  begin
-    result.Value := ASquaredQuantity.Value * AQuantity.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.*(const AQuantity: TSelf;
-    const ASquaredQuantity: TSquaredQuantity): TCubedQuantity;
-  begin
-    result.Value := AQuantity.Value * ASquaredQuantity.Value;
-  end;
-
-  class operator T_DIM_QUANTITY./(const ACubedQuantity: TCubedQuantity;
-    const AQuantity: TSelf): TSquaredQuantity;
-  begin
-    result.Value := ACubedQuantity.Value / AQuantity.Value;
-  end;
-{$ENDIF}{$UNDEF SQUARABLE_QTY_IMPL}
-{$IFDEF RECIP_QTY_IMPL}
-  class operator T_DIM_QUANTITY./(
-    const AValue: double; const ASelf: TSelf): TDenomQuantity;
-  begin
-    result.Value := AValue / ASelf.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.*(const ASelf: TSelf;
-    const ADenominator: TDenomQuantity): double;
-  begin
-    result := ASelf.Value * ADenominator.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.*(
-    const ADenominator: TDenomQuantity; const ASelf: TSelf): double;
-  begin
-    result := ADenominator.Value * ASelf.Value;
-  end;
-{$ENDIF}{$UNDEF RECIP_QTY_IMPL}
-{$IFDEF RATIO_QTY_IMPL}
-  class operator T_DIM_QUANTITY./(
-    const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
-  begin
-    result.Value := ANumerator.Value / ASelf.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.*(const ASelf: TSelf;
-    const ADenominator: TDenomQuantity): TNumeratorQuantity;
-  begin
-    result.Value := ASelf.Value * ADenominator.Value;
-  end;
-
-  class operator T_DIM_QUANTITY.*(
-    const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
-  begin
-    result.Value := ADenominator.Value * ASelf.Value;
-  end;
-{$ENDIF}{$UNDEF RATIO_QTY_IMPL}
-{$IFDEF QTY_PROD_IMPL}
-  {class operator T_DIM_QUANTITY./(
-    const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
-  begin
-    result.Value := ASelf.Value / AQuantity1.Value;
-  end;}
-
-  class operator T_DIM_QUANTITY./(
-    const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
-  begin
-    result.Value := ASelf.Value / AQuantity2.Value;
-  end;
-{$ENDIF}{$UNDEF QTY_PROD_IMPL}
-{$IFDEF FACTORED_QTY_IMPL}
-  function T_DIM_QUANTITY.ToBase: TBaseDimensionedQuantity;
-  begin
-    result := self;
-  end;
-
-  constructor T_DIM_QUANTITY.Assign(const AQuantity: TBaseDimensionedQuantity);
-  begin
-    self.Value := AQuantity.Value / U.Factor;
-  end;
-
-  class function T_DIM_QUANTITY.From(
-    const AQuantity: TBaseDimensionedQuantity): TSelf;
-  begin
-    result.Value := AQuantity.Value / U.Factor;
-  end;
-
-  class operator T_DIM_QUANTITY.:=(const AQuantity: TSelf): TBaseDimensionedQuantity;
-  begin
-    result.Value := AQuantity.Value * U.Factor;
-  end;
-{$ENDIF}{$UNDEF FACTORED_QTY_IMPL}
-
-{$IFDEF UNIT_ID_INTF}
-public
-  class operator *(const AValue: double; const {%H-}TheUnit: TSelf): TQuantity;
-  class operator /(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): double;
-  class operator =(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): boolean;
-  class function Name: string; inline; static;
-  class function Symbol: string; inline; static;
-  class function From(const AQuantity: TQuantity): TQuantity; inline; static;
-{$ENDIF}{$UNDEF UNIT_ID_INTF}
-{$IFDEF SQUARABLE_UNIT_ID_INTF}
-  class operator *(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): TSquaredIdentifier;
-  class operator /(const {%H-}TheSquaredUnit: TSquaredIdentifier; const {%H-}TheUnit: TSelf): TSelf;
-  class operator *(const {%H-}TheSquaredUnit: TSquaredIdentifier; const {%H-}TheUnit: TSelf): TCubedIdentifier;
-  class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheSquaredUnit: TSquaredIdentifier): TCubedIdentifier;
-  class operator /(const {%H-}TheCubedUnit: TCubedIdentifier; const {%H-}TheUnit: TSelf): TSquaredIdentifier;
-{$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_INTF}
-{$IFDEF FACTORED_UNIT_ID_INTF}
-  class function From(const AQuantity: TBaseQuantity): TQuantity; inline; static;
-  class function BaseUnit: TBaseUnitIdentifier; inline; static;
-  class function Factor: double; inline; static;
-{$ENDIF}{$UNDEF FACTORED_UNIT_ID_INTF}
-{$IFDEF RECIP_UNIT_ID_INTF}
-  class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomIdentifier): double;
-  class function Inverse: TDenomIdentifier; inline; static;
-{$ENDIF}{$UNDEF RECIP_UNIT_ID_INTF}
-{$IFDEF RATIO_UNIT_ID_INTF}
-  class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomIdentifier): TNumeratorIdentifier;
-{$ENDIF}{$UNDEF RATIO_UNIT_ID_INTF}
-{$IFDEF UNIT_PROD_ID_INTF}
-  //class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TIdentifier1): TIdentifier2;
-  class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
-{$ENDIF}{$UNDEF UNIT_PROD_ID_INTF}
-
-{$IFDEF UNIT_ID_IMPL}
-  class operator T_UNIT_ID.*(const AValue: double;
-    const TheUnit: TSelf): TQuantity;
-  begin
-    result.Value := AValue;
-  end;
-
-  class operator T_UNIT_ID./(const TheUnit1, TheUnit2: TSelf): double;
-  begin
-    result := 1;
-  end;
-
-  class operator T_UNIT_ID.=(const TheUnit1, TheUnit2: TSelf): boolean;
-  begin
-    result := true;
-  end;
-
-  class function T_UNIT_ID.Name: string;
-  begin
-    case U.Name of
-    'Mg': result := 't';
-    else
-      result := U.Name;
-    end;
-  end;
-
-  class function T_UNIT_ID.Symbol: string;
-  begin
-    case U.Name of
-    'megagram': result := 'ton';
-    else
-      result := U.Symbol;
-    end;
-  end;
-
-  class function T_UNIT_ID.From(const AQuantity: TQuantity): TQuantity;
-  begin
-    result := AQuantity;
-  end;
-{$ENDIF}{$UNDEF UNIT_ID_IMPL}
-{$IFDEF SQUARABLE_UNIT_ID_IMPL}
-  class operator T_UNIT_ID.*(const TheUnit1, TheUnit2: TSelf): TSquaredIdentifier;
-  begin end;
-
-  class operator T_UNIT_ID./(const TheSquaredUnit: TSquaredIdentifier;
-                             const TheUnit: TSelf): TSelf;
-  begin end;
-
-  class operator T_UNIT_ID.*(const TheSquaredUnit: TSquaredIdentifier;
-    const TheUnit: TSelf): TCubedIdentifier;
-  begin end;
-
-  class operator T_UNIT_ID.*(const TheUnit: TSelf;
-    const TheSquaredUnit: TSquaredIdentifier): TCubedIdentifier;
-  begin end;
-
-  class operator T_UNIT_ID./(const TheCubedUnit: TCubedIdentifier;
-                             const TheUnit: TSelf): TSquaredIdentifier;
-  begin end;
-{$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_IMPL}
-{$IFDEF FACTORED_UNIT_ID_IMPL}
-  class function T_UNIT_ID.From(const AQuantity: TBaseQuantity): TQuantity;
-  begin
-    result.Assign(AQuantity);
-  end;
-  class function T_UNIT_ID.BaseUnit: TBaseUnitIdentifier;
-  begin end;
-  class function T_UNIT_ID.Factor: double;
-  begin
-    result := U.Factor;
-  end;
-{$ENDIF}{$UNDEF FACTORED_UNIT_ID_IMPL}
-{$IFDEF RECIP_UNIT_ID_IMPL}
-  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomIdentifier): double;
-  begin result := 1; end;
-
-  class function T_UNIT_ID.Inverse: TDenomIdentifier;
-  begin end;
-{$ENDIF}{$UNDEF RECIP_UNIT_ID_IMPL}
-{$IFDEF RATIO_UNIT_ID_IMPL}
-  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomIdentifier): TNumeratorIdentifier;
-  begin end;
-{$ENDIF}{$UNDEF RATIO_UNIT_ID_IMPL}
-{$IFDEF UNIT_PROD_ID_IMPL}
-  {class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TIdentifier1): TIdentifier2;
-  begin end;}
-
-  class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
-  begin end;
-{$ENDIF}{$UNDEF UNIT_PROD_ID_IMPL}
