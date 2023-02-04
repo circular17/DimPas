@@ -9,18 +9,24 @@ interface
 uses SysUtils;
 
 type
-  TUnit = class
-    class function Factor: double; virtual;
+  TCustomUnit = class
     class function Symbol: string; virtual; abstract;
     class function Name: string; virtual; abstract;
   end;
 
+  TUnit = class(TCustomUnit);
+  TFactoredUnit = class(TCustomUnit)
+    class function Factor: double; virtual;
+  end;
+
 {$UNDEF INCLUDING}{$ENDIF}
 {$IF defined(UNIT_OV_INTF) or defined(FACTORED_UNIT_INTF)}
+  {$IFDEF FACTORED_UNIT_INTF}
+  class(TFactoredUnit)
+    class function Factor: double; override;
+  {$ELSE}
   class(TUnit)
-    {$IFDEF FACTORED_UNIT_INTF}
-      class function Factor: double; override;
-    {$ENDIF}
+  {$ENDIF}
     class function Symbol: string; override;
     class function Name: string; override;
   end;
@@ -34,17 +40,20 @@ type
 {$ENDIF}{$UNDEF UNIT_OV_IMPL}{$UNDEF FACTORED_UNIT_IMPL}
 {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
-  generic TUnitSquared<BaseU> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  generic TUnitCubed<BaseU> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  generic TUnitSquared<BaseU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  generic TUnitCubed<BaseU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TRatioUnit<NumeratorU, DenomU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TReciprocalUnit<DenomU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TUnitProduct<U1, U2: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
- 
-  { TFactoredRatioUnit }
 
-  generic TFactoredRatioUnit<NumeratorU, DenomU: TUnit> = class(specialize TRatioUnit<NumeratorU, DenomU>)
-    class function Factor: double; override;
-  end;
+  generic TFactoredUnitSquared<BaseU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TFactoredUnitCubed<BaseU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TFactoredRatioUnit<NumeratorU, DenomU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TFactoredNumeratorUnit<NumeratorU: TFactoredUnit; DenomU: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TFactoredDenominatorUnit<NumeratorU: TUnit; DenomU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TFactoredUnitProduct<U1, U2: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TLeftFactoredUnitProduct<U1: TFactoredUnit; U2: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TRightFactoredUnitProduct<U1: TUnit; U2: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
 
   generic TMegaUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TKiloUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
@@ -104,27 +113,95 @@ type
     {$DEFINE DIM_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredDimensionedQuantity<BaseU: TUnit; U: TUnit> = record
-    type TSelf = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    type TBaseDimensionedQuantity = specialize TDimensionedQuantity<BaseU>;
+  generic TFactoredCubedDimensionedQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
+    type TSelf = specialize TFactoredCubedDimensionedQuantity<BaseU, U1>;
+    type U = specialize TFactoredUnitCubed<U1>;
+    type TBaseDimensionedQuantity = specialize TCubedDimensionedQuantity<BaseU>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
   end;
 
+  generic TFactoredSquaredDimensionedQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
+    type TSelf = specialize TFactoredSquaredDimensionedQuantity<BaseU, U1>;
+    type U = specialize TFactoredUnitSquared<U1>;
+    type TBaseDimensionedQuantity = specialize TSquaredDimensionedQuantity<BaseU>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredDimensionedQuantity<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredDimensionedQuantity<BaseU, U>;
+    type TBaseDimensionedQuantity = specialize TDimensionedQuantity<BaseU>;
+    type TSquaredQuantity = specialize TFactoredSquaredDimensionedQuantity<BaseU, U>;
+    type TCubedQuantity = specialize TFactoredCubedDimensionedQuantity<BaseU, U>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
+  end;
+
   generic TFactoredRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU: TUnit;
-                                            NumeratorU, DenomU: TUnit> = record
-    type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
+                                            NumeratorU, DenomU: TFactoredUnit> = record
+    type TBaseDimensionedQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
     type U = specialize TFactoredRatioUnit<NumeratorU, DenomU>;
     type TSelf = specialize TFactoredRatioDimensionedQuantity
                  <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
-    type TBaseDimensionedQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
     type TNumeratorQuantity = specialize TFactoredDimensionedQuantity<BaseNumeratorU, NumeratorU>;
     type TDenomQuantity = specialize TFactoredDimensionedQuantity<BaseDenomU, DenomU>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
-  { Unit identifiers }
+  generic TFactoredNumeratorDimensionedQuantity<BaseNumeratorU, BaseDenomU: TUnit;
+                                                NumeratorU: TFactoredUnit> = record
+    type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
+    type TBaseDimensionedQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type DenomU = BaseDenomU;
+    type U = specialize TFactoredNumeratorUnit<NumeratorU, DenomU>;
+    type TSelf = specialize TFactoredNumeratorDimensionedQuantity
+                 <BaseNumeratorU, BaseDenomU, NumeratorU>;
+    type TNumeratorQuantity = specialize TFactoredDimensionedQuantity<BaseNumeratorU, NumeratorU>;
+    type TDenomQuantity = specialize TDimensionedQuantity<DenomU>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
+  end;
 
-  { TUnitCubedIdentifier }
+  generic TFactoredDenominatorDimensionedQuantity<BaseNumeratorU, BaseDenomU: TUnit;
+                                                  DenomU: TFactoredUnit> = record
+    type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
+    type TBaseDimensionedQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type NumeratorU = BaseNumeratorU;
+    type U = specialize TFactoredDenominatorUnit<NumeratorU, DenomU>;
+    type TSelf = specialize TFactoredDenominatorDimensionedQuantity
+                 <BaseNumeratorU, BaseDenomU, DenomU>;
+    type TNumeratorQuantity = specialize TDimensionedQuantity<NumeratorU>;
+    type TDenomQuantity = specialize TFactoredDimensionedQuantity<BaseDenomU, DenomU>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
+    type TSelf = specialize TFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1, U2>;
+    type U = specialize TFactoredUnitProduct<U1, U2>;
+    type TQuantity1 = specialize TFactoredDimensionedQuantity<BaseU1, U1>;
+    type TQuantity2 = specialize TFactoredDimensionedQuantity<BaseU2, U2>;
+    type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
+  end;
+
+  generic TLeftFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U1: TFactoredUnit> = record
+    type U2 = BaseU2;
+    type TSelf = specialize TLeftFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1>;
+    type U = specialize TLeftFactoredUnitProduct<U1, U2>;
+    type TQuantity1 = specialize TFactoredDimensionedQuantity<BaseU1, U1>;
+    type TQuantity2 = specialize TDimensionedQuantity<U2>;
+    type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
+  end;
+
+  generic TRightFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U2: TFactoredUnit> = record
+    type U1 = BaseU1;
+    type TSelf = specialize TRightFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U2>;
+    type U = specialize TRightFactoredUnitProduct<U1, U2>;
+    type TQuantity1 = specialize TDimensionedQuantity<U1>;
+    type TQuantity2 = specialize TFactoredDimensionedQuantity<BaseU2, U2>;
+    type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
+  end;
+
+  { Unit identifiers }
 
   generic TUnitCubedIdentifier<BaseU: TUnit> = record
     type U = specialize TUnitCubed<BaseU>;
@@ -154,15 +231,29 @@ type
     {$DEFINE UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredUnitIdentifier<BaseU: TUnit; U: TUnit> = record
+  generic TFactoredUnitCubedIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredUnitCubedIdentifier<BaseU, U>;
+    type TQuantity = specialize TFactoredCubedDimensionedQuantity<BaseU, U>;
+    type TBaseQuantity = specialize TCubedDimensionedQuantity<BaseU>;
+    type TBaseUnitIdentifier = specialize TUnitCubedIdentifier<BaseU>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredUnitSquaredIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredUnitSquaredIdentifier<BaseU, U>;
+    type TQuantity = specialize TFactoredSquaredDimensionedQuantity<BaseU, U>;
+    type TBaseQuantity = specialize TSquaredDimensionedQuantity<BaseU>;
+    type TBaseUnitIdentifier = specialize TUnitSquaredIdentifier<BaseU>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredUnitIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
     type TSelf = specialize TFactoredUnitIdentifier<BaseU, U>;
     type TQuantity = specialize TFactoredDimensionedQuantity<BaseU, U>;
     type TBaseQuantity = specialize TDimensionedQuantity<BaseU>;
     type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
   end;
-
-  { TReciprocalUnitIdentifier }
 
   generic TReciprocalUnitIdentifier<DenomU: TUnit> = record
     type U = specialize TReciprocalUnit<DenomU>;
@@ -182,22 +273,89 @@ type
   end;
 
   generic TUnitProductIdentifier<U1, U2: TUnit> = record
-    type U = specialize TUnitProduct<U1, U2>;
     type TSelf = specialize TUnitProductIdentifier<U1, U2>;
+    type U = specialize TUnitProduct<U1, U2>;
     type TQuantity = specialize TDimensionedQuantityProduct<U1, U2>;
     type TIdentifier1 = specialize TUnitIdentifier<U1>;
     type TIdentifier2 = specialize TUnitIdentifier<U2>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
   end;
 
+  generic TFactoredUnitProductIdentifier<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
+    type TSelf = specialize TFactoredUnitProductIdentifier<BaseU1, BaseU2, U1, U2>;
+    type U = specialize TFactoredUnitProduct<U1, U2>;
+    type TBaseQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type TBaseUnitIdentifier = specialize TUnitProductIdentifier<BaseU1, BaseU2>;
+    type TQuantity = specialize TFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1, U2>;
+    type TIdentifier1 = specialize TFactoredUnitIdentifier<BaseU1, U1>;
+    type TIdentifier2 = specialize TFactoredUnitIdentifier<BaseU2, U2>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TLeftFactoredUnitProductIdentifier<BaseU1, BaseU2: TUnit; U1: TFactoredUnit> = record
+    type U2 = BaseU2;
+    type TSelf = specialize TLeftFactoredUnitProductIdentifier<BaseU1, BaseU2, U1>;
+    type U = specialize TLeftFactoredUnitProduct<U1, U2>;
+    type TBaseQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type TBaseUnitIdentifier = specialize TUnitProductIdentifier<BaseU1, BaseU2>;
+    type TQuantity = specialize TLeftFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1>;
+    type TIdentifier1 = specialize TFactoredUnitIdentifier<BaseU1, U1>;
+    type TIdentifier2 = specialize TUnitIdentifier<U2>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TRightFactoredUnitProductIdentifier<BaseU1, BaseU2: TUnit; U2: TFactoredUnit> = record
+    type U1 = BaseU1;
+    type TSelf = specialize TRightFactoredUnitProductIdentifier<BaseU1, BaseU2, U2>;
+    type U = specialize TRightFactoredUnitProduct<U1, U2>;
+    type TBaseQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type TBaseUnitIdentifier = specialize TUnitProductIdentifier<BaseU1, BaseU2>;
+    type TQuantity = specialize TRightFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U2>;
+    type TIdentifier1 = specialize TUnitIdentifier<U1>;
+    type TIdentifier2 = specialize TFactoredUnitIdentifier<BaseU2, U2>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
+  end;
+
   generic TFactoredRatioUnitIdentifier<BaseNumeratorU, BaseDenomU: TUnit;
-                                       NumeratorU, DenomU: TUnit> = record
-    type U = specialize TFactoredRatioUnit<NumeratorU, DenomU>;
+                                       NumeratorU, DenomU: TFactoredUnit> = record
     type TSelf = specialize TFactoredRatioUnitIdentifier
                  <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
+    type U = specialize TFactoredRatioUnit<NumeratorU, DenomU>;
     type TQuantity = specialize TFactoredRatioDimensionedQuantity
                      <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
     type TNumeratorIdentifier = specialize TFactoredUnitIdentifier<BaseNumeratorU, NumeratorU>;
+    type TDenomIdentifier = specialize TFactoredUnitIdentifier<BaseDenomU, DenomU>;
+    type TBaseQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
+    type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredNumeratorUnitIdentifier<BaseNumeratorU, BaseDenomU: TUnit;
+                                       NumeratorU: TFactoredUnit> = record
+    type TSelf = specialize TFactoredNumeratorUnitIdentifier
+                 <BaseNumeratorU, BaseDenomU, NumeratorU>;
+    type DenomU = BaseDenomU;
+    type U = specialize TFactoredNumeratorUnit<NumeratorU, DenomU>;
+    type TQuantity = specialize TFactoredNumeratorDimensionedQuantity
+                     <BaseNumeratorU, BaseDenomU, NumeratorU>;
+    type TNumeratorIdentifier = specialize TFactoredUnitIdentifier<BaseNumeratorU, NumeratorU>;
+    type TDenomIdentifier = specialize TUnitIdentifier<DenomU>;
+    type TBaseQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
+    type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredDenominatorUnitIdentifier<BaseNumeratorU, BaseDenomU: TUnit;
+                                       DenomU: TFactoredUnit> = record
+    type TSelf = specialize TFactoredDenominatorUnitIdentifier
+                 <BaseNumeratorU, BaseDenomU, DenomU>;
+    type NumeratorU = BaseNumeratorU;
+    type U = specialize TFactoredDenominatorUnit<NumeratorU, DenomU>;
+    type TQuantity = specialize TFactoredDenominatorDimensionedQuantity
+                     <BaseNumeratorU, BaseDenomU, DenomU>;
+    type TNumeratorIdentifier = specialize TUnitIdentifier<NumeratorU>;
     type TDenomIdentifier = specialize TFactoredUnitIdentifier<BaseDenomU, DenomU>;
     type TBaseQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
@@ -273,6 +431,10 @@ type
   TKilometer = specialize TKiloUnit<TMeter>;
   TKilometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TKilometer>;
   TKilometers = specialize TFactoredDimensionedQuantity<TMeter, TKilometer>;
+  TSquareKilometer = specialize TFactoredUnitSquared<TKilometer>;
+  TSquareKilometers = specialize TFactoredSquaredDimensionedQuantity<TMeter, TKilometer>;
+  TSquareKilometerIdentifier = specialize TFactoredUnitSquaredIdentifier<TMeter, TKilometer>;
+
   TCentimeters = specialize TFactoredDimensionedQuantity<TMeter, specialize TCentiUnit<TMeter>>;
   TMillimeters = specialize TFactoredDimensionedQuantity<TMeter, specialize TMilliUnit<TMeter>>;
 
@@ -283,6 +445,7 @@ var
   km: TKilometerIdentifier;
 
   m2: TSquareMeterIdentifier;
+  km2: TSquareKilometerIdentifier;
   m3: TCubicMeterIdentifier;
   L: TLitreIdentifier;
 
@@ -410,10 +573,10 @@ type
   TMeterPerSecondSquaredIdentifier = specialize TRatioUnitIdentifier<TMeterPerSecond, TSecond>;
   TMetersPerSecondSquared = specialize TRatioDimensionedQuantity<TMeterPerSecond, TSecond>;
 
-  TKilometerPerHourPerSecondIdentifier = specialize TFactoredRatioUnitIdentifier
-                                                    <TMeterPerSecond, TSecond, TKilometerPerHour, TSecond>;
-  TKilometersPerHourPerSecond = specialize TFactoredRatioDimensionedQuantity
-                                           <TMeterPerSecond, TSecond, TKilometerPerHour, TSecond>;
+  TKilometerPerHourPerSecondIdentifier = specialize TFactoredNumeratorUnitIdentifier
+                                                    <TMeterPerSecond, TSecond, TKilometerPerHour>;
+  TKilometersPerHourPerSecond = specialize TFactoredNumeratorDimensionedQuantity
+                                           <TMeterPerSecond, TSecond, TKilometerPerHour>;
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondSquaredIdentifier; inline;
@@ -445,9 +608,9 @@ type
   TDegreeIdentifier = specialize TFactoredUnitIdentifier<TRadian, TDegree>;
   TDegrees = specialize TFactoredDimensionedQuantity<TRadian, TDegree>;
 
-  TNewton = specialize TUnitProduct<TKilogram, TMeterPerSecondSquared>;
-  TNewtonIdentifier = specialize TUnitProductIdentifier<TKilogram, TMeterPerSecondSquared>;
-  TNewtons = specialize TDimensionedQuantityProduct<TKilogram, TMeterPerSecondSquared>;
+  TNewton = specialize TLeftFactoredUnitProduct<TKilogram, TMeterPerSecondSquared>;
+  TNewtonIdentifier = specialize TLeftFactoredUnitProductIdentifier<TGram, TMeterPerSecondSquared, TKilogram>;
+  TNewtons = specialize TLeftFactoredDimensionedQuantityProduct<TGram, TMeterPerSecondSquared, TKilogram>;
 
   TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
@@ -493,6 +656,10 @@ operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inli
 function GetPluralName(ASingularName: string): string;
 function FormatValue(ANumber: double): string;
 function FormatUnitName(AName: string; AQuantity: double): string;
+function GetRatioSymbol(ANumSymbol, ADenomSymbol: string): string;
+function GetRatioName(ANumName, ADenomName: string): string;
+function GetProductSymbol(ALeftSymbol, ARightSymbol: string): string;
+function GetProductName(ALeftName, ARightName: string): string;
 
 implementation
 
@@ -513,7 +680,7 @@ var
   i: Int64;
   posE, pos0: SizeInt;
 begin
-  if abs(ANumber) < 1000000 then
+  if abs(ANumber) < 1000000000 then
   begin
     i :=  Round(ANumber);
     if SameValue(ANumber, i, abs(ANumber)*1E-15) then
@@ -527,6 +694,7 @@ begin
   begin
     pos0 := posE;
     while result[pos0-1] = '0' do dec(pos0);
+    if result[pos0-1] = '.' then dec(pos0);
     delete(result, pos0, posE-pos0);
   end;
 end;
@@ -538,9 +706,61 @@ begin
     else result := AName;
 end;
 
-{ TUnit }
+function GetRatioSymbol(ANumSymbol, ADenomSymbol: string): string;
+begin
+  if ANumSymbol.EndsWith('/' + ADenomSymbol) then
+    result := ANumSymbol + '2'
+  else if ANumSymbol.EndsWith('/' + ADenomSymbol + '2') then
+    result := copy(ANumSymbol, 1, length(ANumSymbol)-1) + '3'
+  else
+    result := ANumSymbol + '/' + ADenomSymbol;
 
-class function TUnit.Factor: double;
+  case result of
+  'cd/m2': result := 'lx';
+  'm2/s2': result := 'Sv';
+  'mol/s': result := 'kat';
+  end;
+end;
+
+function GetRatioName(ANumName, ADenomName: string): string;
+begin
+  if ANumName.EndsWith(' per ' + ADenomName) then
+    result := ANumName + ' squared'
+  else if ANumName.EndsWith(' per ' + ADenomName + ' squared') then
+    result := copy(ANumName, 1, length(ANumName)-8) + ' cubed'
+  else
+    result := ANumName + ' per ' + ADenomName;
+
+  case result of
+  'candela per square meter': result := 'lux';
+  'square meter per square second': result := 'sievert';
+  'mole per second': result := 'katal';
+  end;
+end;
+
+function GetProductSymbol(ALeftSymbol, ARightSymbol: string): string;
+begin
+  result := ALeftSymbol + '.' + ARightSymbol;
+
+  case result of
+  's.A', 'A.s': result := 'C';
+  'kg.m/s2': result := 'N';
+  end;
+end;
+
+function GetProductName(ALeftName, ARightName: string): string;
+begin
+  result := ALeftName + '-' + ARightName;
+
+  case result of
+  'ampere-second', 'second-ampere': result := 'coulomb';
+  'kilogram-meter per second squared': result := 'newton';
+  end;
+end;
+
+{ TFactoredUnit }
+
+class function TFactoredUnit.Factor: double;
 begin
   result := 1;
 end;
@@ -573,56 +793,24 @@ end;
 
 class function TRatioUnit.Symbol: string;
 begin
-  if NumeratorU.Symbol.EndsWith('/' + DenomU.Symbol) then
-    result := NumeratorU.Symbol + '2'
-  else if NumeratorU.Symbol.EndsWith('/' + DenomU.Symbol + '2') then
-    result := copy(NumeratorU.Symbol, 1, length(NumeratorU.Symbol)-1) + '3'
-  else
-    result := NumeratorU.Symbol + '/' + DenomU.Symbol;
-
-  case result of
-  'cd/m2': result := 'lx';
-  'm2/s2': result := 'Sv';
-  'mol/s': result := 'kat';
-  end;
+  result := GetRatioSymbol(NumeratorU.Symbol, DenomU.Symbol);
 end;
 
 class function TRatioUnit.Name: string;
 begin
-  if NumeratorU.Name.EndsWith(' per ' + DenomU.Name) then
-    result := NumeratorU.Name + ' squared'
-  else if NumeratorU.Name.EndsWith(' per ' + DenomU.Name + ' squared') then
-    result := copy(NumeratorU.Name, 1, length(NumeratorU.Name)-8) + ' cubed'
-  else
-    result := NumeratorU.Name + ' per ' + DenomU.Name;
-
-  case result of
-  'candela per square meter': result := 'lux';
-  'square meter per square second': result := 'sievert';
-  'mole per second': result := 'katal';
-  end;
+  result := GetRatioName(NumeratorU.Name, DenomU.Name);
 end;
 
 { TUnitProduct }
 
 class function TUnitProduct.Symbol: string;
 begin
-  result := U1.Symbol + '.' + U2.Symbol;
-
-  case result of
-  's.A', 'A.s': result := 'C';
-  'kg.m/s2': result := 'N';
-  end;
+  result := GetProductSymbol(U1.Symbol, U2.Symbol);
 end;
 
 class function TUnitProduct.Name: string;
 begin
-  result := U1.Name + '-' + U2.Name;
-
-  case result of
-  'ampere-second', 'second-ampere': result := 'coulomb';
-  'kilogram-meter per second squared': result := 'newton';
-  end;
+  result := GetProductName(U1.Name, U2.Name);
 end;
 
 { TReciprocalUnit }
@@ -650,11 +838,140 @@ begin
   end;
 end;
 
+{ TFactoredUnitSquared }
+
+class function TFactoredUnitSquared.Symbol: string;
+begin
+  result := BaseU.Symbol + '2';
+end;
+
+class function TFactoredUnitSquared.Name: string;
+begin
+  result := 'square ' + BaseU.Name
+end;
+
+class function TFactoredUnitSquared.Factor: double;
+begin
+  result := sqr(BaseU.Factor);
+end;
+
+{ TFactoredUnitCubed }
+
+class function TFactoredUnitCubed.Symbol: string;
+begin
+  result := BaseU.Symbol + '3';
+end;
+
+class function TFactoredUnitCubed.Name: string;
+begin
+  result := 'cubic ' + BaseU.Name
+end;
+
+class function TFactoredUnitCubed.Factor: double;
+begin
+  result := sqr(BaseU.Factor)*BaseU.Factor;
+end;
+
 { TFactoredRatioUnit }
+
+class function TFactoredRatioUnit.Symbol: string;
+begin
+  result := GetRatioSymbol(NumeratorU.Symbol, DenomU.Symbol);
+end;
+
+class function TFactoredRatioUnit.Name: string;
+begin
+  result := GetRatioName(NumeratorU.Name, DenomU.Name);
+end;
 
 class function TFactoredRatioUnit.Factor: double;
 begin
   result := NumeratorU.Factor / DenomU.Factor;
+end;
+
+{ TFactoredNumeratorUnit }
+
+class function TFactoredNumeratorUnit.Symbol: string;
+begin
+  result := GetRatioSymbol(NumeratorU.Symbol, DenomU.Symbol);
+end;
+
+class function TFactoredNumeratorUnit.Name: string;
+begin
+  result := GetRatioName(NumeratorU.Name, DenomU.Name);
+end;
+
+class function TFactoredNumeratorUnit.Factor: double;
+begin
+  result := NumeratorU.Factor;
+end;
+
+{ TFactoredDenominatorUnit }
+
+class function TFactoredDenominatorUnit.Symbol: string;
+begin
+  result := GetRatioSymbol(NumeratorU.Symbol, DenomU.Symbol);
+end;
+
+class function TFactoredDenominatorUnit.Name: string;
+begin
+  result := GetRatioName(NumeratorU.Name, DenomU.Name);
+end;
+
+class function TFactoredDenominatorUnit.Factor: double;
+begin
+  result := 1 / DenomU.Factor;
+end;
+
+{ TFactoredUnitProduct }
+
+class function TFactoredUnitProduct.Symbol: string;
+begin
+  result := GetProductSymbol(U1.Symbol, U2.Symbol);
+end;
+
+class function TFactoredUnitProduct.Name: string;
+begin
+  result := GetProductName(U1.Name, U2.Name);
+end;
+
+class function TFactoredUnitProduct.Factor: double;
+begin
+  result := U1.Factor * U2.Factor;
+end;
+
+{ TLeftFactoredUnitProduct }
+
+class function TLeftFactoredUnitProduct.Symbol: string;
+begin
+  result := GetProductSymbol(U1.Symbol, U2.Symbol);
+end;
+
+class function TLeftFactoredUnitProduct.Name: string;
+begin
+  result := GetProductName(U1.Name, U2.Name);
+end;
+
+class function TLeftFactoredUnitProduct.Factor: double;
+begin
+  result := U1.Factor;
+end;
+
+{ TRightFactoredUnitProduct }
+
+class function TRightFactoredUnitProduct.Symbol: string;
+begin
+  result := GetProductSymbol(U1.Symbol, U2.Symbol);
+end;
+
+class function TRightFactoredUnitProduct.Name: string;
+begin
+  result := GetProductName(U1.Name, U2.Name);
+end;
+
+class function TRightFactoredUnitProduct.Factor: double;
+begin
+  result := U2.Factor;
 end;
 
 { Factored units }
@@ -707,10 +1024,31 @@ end;
 {$DEFINE T_UNIT_ID:=TUnitProductIdentifier}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TFactoredUnitCubedIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TFactoredUnitSquaredIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredUnitIdentifier}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredRatioUnitIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TFactoredNumeratorUnitIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TFactoredDenominatorUnitIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TFactoredUnitProductIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TLeftFactoredUnitProductIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TRightFactoredUnitProductIdentifier}{$i dim.pas}
 
 { Dimensioned quantities }
 
@@ -736,10 +1074,31 @@ end;
 {$DEFINE T_DIM_QUANTITY:=TDimensionedQuantityProduct}{$i dim.pas}
 
 {$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TFactoredCubedDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TFactoredSquaredDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TFactoredDimensionedQuantity}{$i dim.pas}
 
 {$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TFactoredRatioDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TFactoredNumeratorDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TFactoredDenominatorDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TFactoredDimensionedQuantityProduct}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TLeftFactoredDimensionedQuantityProduct}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TRightFactoredDimensionedQuantityProduct}{$i dim.pas}
 
 { Base units }
 

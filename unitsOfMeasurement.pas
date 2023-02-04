@@ -15,6 +15,7 @@ var
   volume: TCubicMeters;
   temperature: TDegreesCelsius;
   tempDiff: TKelvins;
+  bigSurface: TSquareKilometers;
 
 begin
   // Assign helps to convert to target unit "km" as the value here is in "m"
@@ -107,4 +108,9 @@ begin
   writeln('10 cm < 1 m ? ', 10*cm < 1*m);
   writeln('100 cm = 1 m ? ', 100*cm = 1*m);
   writeln('101 cm <> 1 m ? ', 101*cm <> 1*m);
+  writeln;
+
+  bigSurface := 1*km * (1*km);
+  writeln('1 km * 1 km = ', bigSurface.ToString, ' = ',
+    (1*km2).ToString, ' = ', bigSurface.ToBase.ToString);
 end.
