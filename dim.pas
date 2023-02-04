@@ -89,6 +89,8 @@ type
     class operator *(const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TCubedQuantity;
     class operator *(const AQuantity: TSelf; const ASquaredQuantity: TSquaredQuantity): TCubedQuantity;
     class operator /(const ACubedQuantity: TCubedQuantity; const AQuantity: TSelf): TSquaredQuantity;
+    function Squared: TSquaredQuantity;
+    function Cubed: TCubedQuantity;
   {$ENDIF}{$UNDEF SQUARABLE_QTY_INTF}
   {$IFDEF RATIO_QTY_INTF}
     class operator /(const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
@@ -266,6 +268,8 @@ type
     class operator *(const {%H-}TheSquaredUnit: TSquaredIdentifier; const {%H-}TheUnit: TSelf): TCubedIdentifier;
     class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheSquaredUnit: TSquaredIdentifier): TCubedIdentifier;
     class operator /(const {%H-}TheCubedUnit: TCubedIdentifier; const {%H-}TheUnit: TSelf): TSquaredIdentifier;
+    function Squared: TSquaredIdentifier;
+    function Cubed: TCubedIdentifier;
   {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_INTF}
   {$IFDEF FACTORED_UNIT_ID_INTF}
     class function From(const AQuantity: TBaseQuantity): TQuantity; inline; static;
@@ -486,7 +490,9 @@ type
   TMeter = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   TMeterIdentifier = specialize TUnitIdentifier<TMeter>;
   TMeters = specialize TDimensionedQuantity<TMeter>;
+  TSquareMeterIdentifier = specialize TUnitSquaredIdentifier<TMeter>;
   TSquareMeters = specialize TSquaredDimensionedQuantity<TMeter>;
+  TCubicMeterIdentifier = specialize TUnitCubedIdentifier<TMeter>;
   TCubicMeters = specialize TCubedDimensionedQuantity<TMeter>;
 
   TKilometer = specialize TKiloUnit<TMeter>;
@@ -529,8 +535,8 @@ var
   km2:specialize TFactoredUnitSquaredIdentifier<TMeter, TKilometer>;
   km3:specialize TFactoredUnitCubedIdentifier<TMeter, TKilometer>;
   m:  TMeterIdentifier;
-  m2: specialize TUnitSquaredIdentifier<TMeter>;
-  m3: specialize TUnitCubedIdentifier<TMeter>;
+  m2: TSquareMeterIdentifier;
+  m3: TCubicMeterIdentifier;
   cm: specialize TFactoredUnitIdentifier<TMeter, TCentimeter>;
   cm2:specialize TFactoredUnitSquaredIdentifier<TMeter, TCentimeter>;
   cm3:specialize TFactoredUnitCubedIdentifier<TMeter, TCentimeter>;
@@ -1170,6 +1176,10 @@ end;
   class operator T_UNIT_ID./(const TheCubedUnit: TCubedIdentifier;
                              const TheUnit: TSelf): TSquaredIdentifier;
   begin end;
+
+  function T_UNIT_ID.Squared: TSquaredIdentifier; begin end;
+
+  function T_UNIT_ID.Cubed: TCubedIdentifier; begin end;
 {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_IMPL}
 {$IFDEF FACTORED_UNIT_ID_IMPL}
   class function T_UNIT_ID.From(const AQuantity: TBaseQuantity): TQuantity;
@@ -1361,6 +1371,16 @@ end;
   begin
     result.Value := ACubedQuantity.Value / AQuantity.Value;
   end;
+
+  function T_DIM_QUANTITY.Squared: TSquaredQuantity;
+  begin
+    result.Value := sqr(self.Value);
+  end;
+
+  function T_DIM_QUANTITY.Cubed: TCubedQuantity;
+  begin
+    result.Value := sqr(self.Value) * self.Value;
+  end;
 {$ENDIF}{$UNDEF SQUARABLE_QTY_IMPL}
 {$IFDEF RECIP_QTY_IMPL}
   class operator T_DIM_QUANTITY./(
@@ -1507,6 +1527,9 @@ class function TMeter.Name: string;   begin result := 'meter'; end;
 
 class function TLitre.Symbol: string; begin result := 'L'; end;
 class function TLitre.Name: string;   begin result := 'litre'; end;
+
+operator /(const {%H-}m3: TCubicMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TMeterIdentifier;
+begin end;
 
 operator /(const AVolume: TCubicMeters; const ASurface: TSquareMeters): TMeters;
 begin

@@ -48,7 +48,7 @@ begin
   writeln;
 
   // testing equivalence of derived units
-  gravity := 9.81*(m/s2) + 0*(m/s/s);
+  gravity := 9.81*(m/s.Squared) + 0*(m/s/s);
   writeln('Gravity is: ', gravity.ToVerboseString);
   writeln('s2 = s*s? ', s2 = s*(s*s/s));
   writeln('m/s2*s = m/s? ', ((m/s2)*s).Symbol = (m/s).Symbol);
@@ -110,7 +110,7 @@ begin
   writeln('101 cm <> 1 m ? ', 101*cm <> 1*m);
   writeln;
 
-  bigSurface := 1*km * (1*km);
+  bigSurface := (1*km).Squared;
   writeln('1 km * 1 km = ', bigSurface.ToString, ' = ',
     (1*km2).ToString, ' = ', bigSurface.ToBase.ToString);
 end.
