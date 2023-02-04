@@ -1,7 +1,7 @@
 {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 unit Dim;
 
-{$H+}{$modeSwitch advancedRecords}{$modeSwitch advancedRecords}
+{$H+}{$modeSwitch advancedRecords}
 {$WARN NO_RETVAL OFF}{$MACRO ON}
 
 interface
