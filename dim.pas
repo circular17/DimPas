@@ -334,7 +334,9 @@ type
     type TQuantity = specialize TFactoredDimensionedQuantity<BaseU, U>;
     type TBaseQuantity = specialize TDimensionedQuantity<BaseU>;
     type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
+    type TSquaredIdentifier = specialize TFactoredUnitSquaredIdentifier<BaseU, U>;
+    type TCubedIdentifier = specialize TFactoredUnitCubedIdentifier<BaseU, U>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
   generic TReciprocalUnitIdentifier<DenomU: TUnit> = record
@@ -452,11 +454,9 @@ type
   TSecondIdentifier = specialize TUnitIdentifier<TSecond>;
   TSeconds = specialize TDimensionedQuantity<TSecond>;
 
-  TMillisecondIdentifier = specialize TFactoredUnitIdentifier<TSecond, specialize TMilliUnit<TSecond>>;
   TMilliseconds = specialize TFactoredDimensionedQuantity<TSecond, specialize TMilliUnit<TSecond>>;
 
   TMinute = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  TMinuteIdentifier = specialize TFactoredUnitIdentifier<TSecond, TMinute>;
   TMinutes = specialize TFactoredDimensionedQuantity<TSecond, TMinute>;
 
   THour = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
@@ -464,23 +464,21 @@ type
   THours = specialize TFactoredDimensionedQuantity<TSecond, THour>;
 
   TDay = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  TDayIdentifier = specialize TFactoredUnitIdentifier<TSecond, TDay>;
   TDays = specialize TFactoredDimensionedQuantity<TSecond, TDay>;
 
   // this unit is not really to be used directly because
   // time is divided one exponent at a time: m/s2 -> (m/s)/s
   // thus acceleration are "per second squared" instead of "per square second"
-  TSquareSecond = specialize TUnitSquared<TSecond>;
   TSquareSecondIdentifier = specialize TUnitSquaredIdentifier<TSecond>;
   TSquareSeconds = specialize TSquaredDimensionedQuantity<TSecond>;
 
 var
-  ms: TMillisecondIdentifier;
+  ms: specialize TFactoredUnitIdentifier<TSecond, specialize TMilliUnit<TSecond>>;
   s: TSecondIdentifier;
   s2: TSquareSecondIdentifier;
-  mn: TMinuteIdentifier;
+  mn: specialize TFactoredUnitIdentifier<TSecond, TMinute>;
   h: THourIdentifier;
-  day: TDayIdentifier;
+  day: specialize TFactoredUnitIdentifier<TSecond, TDay>;
 
 { Units of length }
 
@@ -488,14 +486,29 @@ type
   TMeter = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   TMeterIdentifier = specialize TUnitIdentifier<TMeter>;
   TMeters = specialize TDimensionedQuantity<TMeter>;
-
-  TSquareMeter = specialize TUnitSquared<TMeter>;
   TSquareMeters = specialize TSquaredDimensionedQuantity<TMeter>;
-  TSquareMeterIdentifier = specialize TUnitSquaredIdentifier<TMeter>;
-
-  TCubicMeter = specialize TUnitCubed<TMeter>;
   TCubicMeters = specialize TCubedDimensionedQuantity<TMeter>;
-  TCubicMeterIdentifier = specialize TUnitCubedIdentifier<TMeter>;
+
+  TKilometer = specialize TKiloUnit<TMeter>;
+  TKilometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TKilometer>;
+  TKilometers = specialize TFactoredDimensionedQuantity<TMeter, TKilometer>;
+  TSquareKilometers = specialize TFactoredSquaredDimensionedQuantity<TMeter, TKilometer>;
+  TCubicKilometers = specialize TFactoredCubedDimensionedQuantity<TMeter, TKilometer>;
+
+  TDecimeter = specialize TDeciUnit<TMeter>;
+  TDecimeters = specialize TFactoredDimensionedQuantity<TMeter, TDecimeter>;
+  TSquareDecimeters = specialize TFactoredSquaredDimensionedQuantity<TMeter, TDecimeter>;
+  TCubicDecimeters = specialize TFactoredCubedDimensionedQuantity<TMeter, TDecimeter>;
+
+  TCentimeter = specialize TCentiUnit<TMeter>;
+  TCentimeters = specialize TFactoredDimensionedQuantity<TMeter, TCentimeter>;
+  TSquareCentimeters = specialize TFactoredSquaredDimensionedQuantity<TMeter, TCentimeter>;
+  TCubicCentimeters = specialize TFactoredCubedDimensionedQuantity<TMeter, TCentimeter>;
+
+  TMillimeter = specialize TMilliUnit<TMeter>;
+  TMillimeters = specialize TFactoredDimensionedQuantity<TMeter, TMillimeter>;
+  TSquareMillimeters = specialize TFactoredSquaredDimensionedQuantity<TMeter, TMillimeter>;
+  TCubicMillimeters = specialize TFactoredCubedDimensionedQuantity<TMeter, TMillimeter>;
 
   TLitre = class(TUnit)
     class function Symbol: string; override;
@@ -508,76 +521,34 @@ type
 
   TLitreHelper = record helper for TLitreIdentifier
     function From(const AVolume: TCubicMeters): TLitres;
+    function From(const AVolume: TCubicDecimeters): TLitres;
   end;
-
-  TKilometer = specialize TKiloUnit<TMeter>;
-  TKilometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TKilometer>;
-  TKilometers = specialize TFactoredDimensionedQuantity<TMeter, TKilometer>;
-
-  TCentimeter = specialize TCentiUnit<TMeter>;
-  TCentimeterIdentifier = specialize TFactoredUnitIdentifier<TMeter, TCentimeter>;
-  TCentimeters = specialize TFactoredDimensionedQuantity<TMeter, specialize TCentiUnit<TMeter>>;
-
-  TMillimeter = specialize TMilliUnit<TMeter>;
-  TMillimeterIdentifier = specialize TFactoredUnitIdentifier<TMeter, TMillimeter>;
-  TMillimeters = specialize TFactoredDimensionedQuantity<TMeter, specialize TMilliUnit<TMeter>>;
-
-  // Square
-  TSquareKilometer = specialize TFactoredUnitSquared<TKilometer>;
-  TSquareKilometers = specialize TFactoredSquaredDimensionedQuantity<TMeter, TKilometer>;
-  TSquareKilometerIdentifier = specialize TFactoredUnitSquaredIdentifier<TMeter, TKilometer>;
-
-  TSquareCemtimeter = specialize TFactoredUnitSquared<TCentimeter>;
-  TSquareCentimeters = specialize TFactoredSquaredDimensionedQuantity<TMeter, TCentimeter>;
-  TSquareCentimeterIdentifier = specialize TFactoredUnitSquaredIdentifier<TMeter, TCentimeter>;
-
-  TSquareMillimeter = specialize TFactoredUnitSquared<TMillimeter>;
-  TSquareMillimeters = specialize TFactoredSquaredDimensionedQuantity<TMeter, TMillimeter>;
-  TSquareMillimeterIdentifier = specialize TFactoredUnitSquaredIdentifier<TMeter, TMillimeter>;
-
-  // Cubic
-  TCubicKilometer = specialize TFactoredUnitCubed<TKilometer>;
-  TCubicKilometers = specialize TFactoredCubedDimensionedQuantity<TMeter, TKilometer>;
-  TCubicKilometerIdentifier = specialize TFactoredUnitCubedIdentifier<TMeter, TKilometer>;
-
-  TCubicCemtimeter = specialize TFactoredUnitCubed<TCentimeter>;
-  TCubicCentimeters = specialize TFactoredCubedDimensionedQuantity<TMeter, TCentimeter>;
-  TCubicCentimeterIdentifier = specialize TFactoredUnitCubedIdentifier<TMeter, TCentimeter>;
-
-  TCubicMillimeter = specialize TFactoredUnitCubed<TMillimeter>;
-  TCubicMillimeters = specialize TFactoredCubedDimensionedQuantity<TMeter, TMillimeter>;
-  TCubicMillimeterIdentifier = specialize TFactoredUnitCubedIdentifier<TMeter, TMillimeter>;
 
 var
   km: TKilometerIdentifier;
+  km2:specialize TFactoredUnitSquaredIdentifier<TMeter, TKilometer>;
+  km3:specialize TFactoredUnitCubedIdentifier<TMeter, TKilometer>;
   m:  TMeterIdentifier;
-  cm: TCentimeterIdentifier;
-  mm: TMillimeterIdentifier;
-
-  km2: TSquareKilometerIdentifier;
-  m2:  TSquareMeterIdentifier;
-  cm2: TSquareCentimeterIdentifier;
-  mm2: TSquareMillimeterIdentifier;
-
-  km3: TCubicKilometerIdentifier;
-  m3:  TCubicMeterIdentifier;
-  cm3: TCubicCentimeterIdentifier;
-  mm3: TCubicMillimeterIdentifier;
+  m2: specialize TUnitSquaredIdentifier<TMeter>;
+  m3: specialize TUnitCubedIdentifier<TMeter>;
+  cm: specialize TFactoredUnitIdentifier<TMeter, TCentimeter>;
+  cm2:specialize TFactoredUnitSquaredIdentifier<TMeter, TCentimeter>;
+  cm3:specialize TFactoredUnitCubedIdentifier<TMeter, TCentimeter>;
+  mm: specialize TFactoredUnitIdentifier<TMeter, TMillimeter>;
+  mm2:specialize TFactoredUnitSquaredIdentifier<TMeter, TMillimeter>;
+  mm3:specialize TFactoredUnitCubedIdentifier<TMeter, TMillimeter>;
 
   L: TLitreIdentifier;
 
 // combining units
 operator /(const {%H-}m3: TCubicMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TMeterIdentifier; inline;
-operator /(const {%H-}cm3: TCubicCentiMeterIdentifier; const {%H-}cm2: TSquareCentiMeterIdentifier): TCentiMeterIdentifier; inline;
-operator /(const {%H-}mm3: TCubicMilliMeterIdentifier; const {%H-}mm2: TSquareMilliMeterIdentifier): TMilliMeterIdentifier; inline;
 
 // combining dimensioned quantities
 operator /(const AVolume: TCubicMeters; const ASurface: TSquareMeters): TMeters; inline;
-operator /(const AVolume: TCubicCentiMeters; const ASurface: TSquareCentiMeters): TCentiMeters; inline;
-operator /(const AVolume: TCubicMilliMeters; const ASurface: TSquareMilliMeters): TMilliMeters; inline;
 
 // dimension equivalence
 operator:=(const AVolume: TLitres): TCubicMeters;
+operator:=(const AVolume: TLitres): TCubicDecimeters;
 
 { Units of mass }
 
@@ -586,21 +557,21 @@ type
   TGramIdentifier = specialize TUnitIdentifier<TGram>;
   TGrams = specialize TDimensionedQuantity<TGram>;
 
-  TMilligrams = specialize TFactoredDimensionedQuantity<TGram, specialize TMilliUnit<TGram>>;
+  TMilligram = specialize TMilliUnit<TGram>;
+  TMilligrams = specialize TFactoredDimensionedQuantity<TGram, TMilligram>;
 
   TKilogram = specialize TKiloUnit<TGram>;
   TKilogramIdentifier = specialize TFactoredUnitIdentifier<TGram, TKilogram>;
   TKilograms = specialize TFactoredDimensionedQuantity<TGram, TKilogram>;
 
-  TMegagrams = specialize TFactoredDimensionedQuantity<TGram, specialize TMegaUnit<TGram>>;
   TTon = specialize TMegaUnit<TGram>;
   TTons = specialize TFactoredDimensionedQuantity<TGram, TTon>;
 
 var
-  mg: specialize TFactoredUnitIdentifier<TGram, specialize TMilliUnit<TGram>>;
+  mg: specialize TFactoredUnitIdentifier<TGram, TMilligram>;
   g: TGramIdentifier;
   kg: TKilogramIdentifier;
-  ton: specialize TFactoredUnitIdentifier<TGram, specialize TMegaUnit<TGram>>;
+  ton: specialize TFactoredUnitIdentifier<TGram, TTon>;
 
 { Units of amount of substance }
 
@@ -736,11 +707,13 @@ type
   TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
 
-  TLuxIdentifier = specialize TRatioUnitIdentifier<TCandela, TSquareMeter>;
-  TLuxQuantity = specialize TRatioDimensionedQuantity<TCandela, TSquareMeter>;
+  TLuxIdentifier = specialize TRatioUnitIdentifier<TCandela, specialize TUnitSquared<TMeter>>;
+  TLuxQuantity = specialize TRatioDimensionedQuantity<TCandela, specialize TUnitSquared<TMeter>>;
 
-  TSievertIdentifier = specialize TRatioUnitIdentifier<TSquareMeter, TSquareSecond>;
-  TSieverts = specialize TRatioDimensionedQuantity<TSquareMeter, TSquareSecond>;
+  TSievertIdentifier = specialize TRatioUnitIdentifier
+                                  <specialize TUnitSquared<TMeter>, specialize TUnitSquared<TSecond>>;
+  TSieverts = specialize TRatioDimensionedQuantity
+                         <specialize TUnitSquared<TMeter>, specialize TUnitSquared<TSecond>>;
 
   TKatalIdentifier = specialize TRatioUnitIdentifier<TMole, TSecond>;
   TKatals = specialize TRatioDimensionedQuantity<TMole, TSecond>;
@@ -1257,7 +1230,7 @@ end;
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredUnitSquaredIdentifier}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredUnitIdentifier}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
@@ -1532,29 +1505,10 @@ class function TDay.Name: string;   begin result := 'day'; end;
 class function TMeter.Symbol: string; begin result := 'm'; end;
 class function TMeter.Name: string;   begin result := 'meter'; end;
 
-operator /(const m3: TCubicMeterIdentifier; const m2: TSquareMeterIdentifier): TMeterIdentifier;
-begin end;
-
-operator /(const cm3: TCubicCentiMeterIdentifier; const cm2: TSquareCentiMeterIdentifier): TCentiMeterIdentifier;
-begin end;
-
-operator /(const mm3: TCubicMilliMeterIdentifier; const mm2: TSquareMilliMeterIdentifier): TMilliMeterIdentifier;
-begin end;
-
 class function TLitre.Symbol: string; begin result := 'L'; end;
 class function TLitre.Name: string;   begin result := 'litre'; end;
 
 operator /(const AVolume: TCubicMeters; const ASurface: TSquareMeters): TMeters;
-begin
-  result.Value := AVolume.Value / ASurface.Value;
-end;
-
-operator /(const AVolume: TCubicCentiMeters; const ASurface: TSquareCentiMeters): TCentiMeters;
-begin
-  result.Value := AVolume.Value / ASurface.Value;
-end;
-
-operator /(const AVolume: TCubicMilliMeters; const ASurface: TSquareMilliMeters): TMilliMeters;
 begin
   result.Value := AVolume.Value / ASurface.Value;
 end;
@@ -1564,9 +1518,19 @@ begin
   result.Value := AVolume.Value * 0.001;
 end;
 
+operator:=(const AVolume: TLitres): TCubicDecimeters;
+begin
+  result.Value := AVolume.Value;
+end;
+
 function TLitreHelper.From(const AVolume: TCubicMeters): TLitres;
 begin
   result.Value := AVolume.Value * 1000;
+end;
+
+function TLitreHelper.From(const AVolume: TCubicDecimeters): TLitres;
+begin
+  result.Value := AVolume.Value;
 end;
 
 class function TGram.Symbol: string; begin result := 'g'; end;
