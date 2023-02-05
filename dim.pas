@@ -36,12 +36,14 @@ type
 
   generic TUnitSquared<BaseU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TUnitCubed<BaseU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  generic TUnitQuarticed<BaseU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TRatioUnit<NumeratorU, DenomU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TReciprocalUnit<DenomU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   generic TUnitProduct<U1, U2: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
 
   generic TFactoredUnitSquared<BaseU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TFactoredUnitCubed<BaseU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TFactoredUnitQuarticed<BaseU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TFactoredRatioUnit<NumeratorU, DenomU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TFactoredNumeratorUnit<NumeratorU: TFactoredUnit; DenomU: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TFactoredDenominatorUnit<NumeratorU: TUnit; DenomU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
@@ -86,9 +88,15 @@ type
   {$IFDEF SQUARABLE_QTY_INTF}
     class operator *(const AQuantity1, AQuantity2: TSelf): TSquaredQuantity;
     class operator /(const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TSelf;
+
     class operator *(const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TCubedQuantity;
     class operator *(const AQuantity: TSelf; const ASquaredQuantity: TSquaredQuantity): TCubedQuantity;
     class operator /(const ACubedQuantity: TCubedQuantity; const AQuantity: TSelf): TSquaredQuantity;
+
+    class operator *(const AQuantity: TSelf; const ACubedQuantity: TCubedQuantity): TQuarticedQuantity;
+    class operator *(const ACubedQuantity: TCubedQuantity; const AQuantity: TSelf): TQuarticedQuantity;
+    class operator /(const AQuarticedQuantity: TQuarticedQuantity; const AQuantity: TSelf): TCubedQuantity;
+    function Quarticed: TQuarticedQuantity;
     function Squared: TSquaredQuantity;
     function Cubed: TCubedQuantity;
   {$ENDIF}{$UNDEF SQUARABLE_QTY_INTF}
@@ -114,6 +122,12 @@ type
   {$ENDIF}{$UNDEF FACTORED_QTY_INTF}
   {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
+  generic TQuarticedDimensionedQuantity<BaseU: TUnit> = record
+    type TSelf = specialize TQuarticedDimensionedQuantity<BaseU>;
+    type U = specialize TUnitQuarticed<BaseU>;
+    {$DEFINE DIM_QTY_INTF}{$i dim.pas}
+  end;
+
   generic TCubedDimensionedQuantity<BaseU: TUnit> = record
     type TSelf = specialize TCubedDimensionedQuantity<BaseU>;
     type U = specialize TUnitCubed<BaseU>;
@@ -130,6 +144,7 @@ type
     type TSelf = specialize TDimensionedQuantity<U>;
     type TSquaredQuantity = specialize TSquaredDimensionedQuantity<U>;
     type TCubedQuantity = specialize TCubedDimensionedQuantity<U>;
+    type TQuarticedQuantity = specialize TQuarticedDimensionedQuantity<U>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
   end;
 
@@ -161,6 +176,13 @@ type
     {$DEFINE DIM_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
+  generic TFactoredQuarticedDimensionedQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
+    type TSelf = specialize TFactoredQuarticedDimensionedQuantity<BaseU, U1>;
+    type U = specialize TFactoredUnitQuarticed<U1>;
+    type TBaseDimensionedQuantity = specialize TQuarticedDimensionedQuantity<BaseU>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
+  end;
+
   generic TFactoredCubedDimensionedQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
     type TSelf = specialize TFactoredCubedDimensionedQuantity<BaseU, U1>;
     type U = specialize TFactoredUnitCubed<U1>;
@@ -180,6 +202,7 @@ type
     type TBaseDimensionedQuantity = specialize TDimensionedQuantity<BaseU>;
     type TSquaredQuantity = specialize TFactoredSquaredDimensionedQuantity<BaseU, U>;
     type TCubedQuantity = specialize TFactoredCubedDimensionedQuantity<BaseU, U>;
+    type TQuarticedQuantity = specialize TFactoredQuarticedDimensionedQuantity<BaseU, U>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
   end;
 
@@ -265,11 +288,17 @@ type
   {$IFDEF SQUARABLE_UNIT_ID_INTF}
     class operator *(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): TSquaredIdentifier;
     class operator /(const {%H-}TheSquaredUnit: TSquaredIdentifier; const {%H-}TheUnit: TSelf): TSelf;
+
     class operator *(const {%H-}TheSquaredUnit: TSquaredIdentifier; const {%H-}TheUnit: TSelf): TCubedIdentifier;
     class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheSquaredUnit: TSquaredIdentifier): TCubedIdentifier;
     class operator /(const {%H-}TheCubedUnit: TCubedIdentifier; const {%H-}TheUnit: TSelf): TSquaredIdentifier;
+
+    class operator *(const {%H-}TheCubedUnit: TCubedIdentifier; const {%H-}TheUnit: TSelf): TQuarticedIdentifier;
+    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheCubedUnit: TCubedIdentifier): TQuarticedIdentifier;
+    class operator /(const {%H-}TheQuarticedUnit: TQuarticedIdentifier; const {%H-}TheUnit: TSelf): TCubedIdentifier;
     function Squared: TSquaredIdentifier;
     function Cubed: TCubedIdentifier;
+    function Quarticed: TQuarticedIdentifier;
   {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_INTF}
   {$IFDEF FACTORED_UNIT_ID_INTF}
     class function From(const AQuantity: TBaseQuantity): TQuantity; inline; static;
@@ -288,6 +317,13 @@ type
     class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
   {$ENDIF}{$UNDEF UNIT_PROD_ID_INTF}
   {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+
+  generic TUnitQuarticedIdentifier<BaseU: TUnit> = record
+    type U = specialize TUnitQuarticed<BaseU>;
+    type TSelf = specialize TUnitQuarticedIdentifier<BaseU>;
+    type TQuantity = specialize TQuarticedDimensionedQuantity<BaseU>;
+    {$DEFINE UNIT_ID_INTF}{$i dim.pas}
+  end;
 
   generic TUnitCubedIdentifier<BaseU: TUnit> = record
     type U = specialize TUnitCubed<BaseU>;
@@ -314,7 +350,16 @@ type
     type TQuantity = specialize TDimensionedQuantity<U>;
     type TSquaredIdentifier = specialize TUnitSquaredIdentifier<U>;
     type TCubedIdentifier = specialize TUnitCubedIdentifier<U>;
+    type TQuarticedIdentifier = specialize TUnitQuarticedIdentifier<U>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredUnitQuarticedIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredUnitQuarticedIdentifier<BaseU, U>;
+    type TQuantity = specialize TFactoredQuarticedDimensionedQuantity<BaseU, U>;
+    type TBaseQuantity = specialize TQuarticedDimensionedQuantity<BaseU>;
+    type TBaseUnitIdentifier = specialize TUnitQuarticedIdentifier<BaseU>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
   end;
 
   generic TFactoredUnitCubedIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
@@ -340,6 +385,7 @@ type
     type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
     type TSquaredIdentifier = specialize TFactoredUnitSquaredIdentifier<BaseU, U>;
     type TCubedIdentifier = specialize TFactoredUnitCubedIdentifier<BaseU, U>;
+    type TQuarticedIdentifier = specialize TFactoredUnitQuarticedIdentifier<BaseU, U>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
@@ -494,27 +540,33 @@ type
   TSquareMeters = specialize TSquaredDimensionedQuantity<TMeter>;
   TCubicMeterIdentifier = specialize TUnitCubedIdentifier<TMeter>;
   TCubicMeters = specialize TCubedDimensionedQuantity<TMeter>;
+  TQuarticMeterIdentifier = specialize TUnitQuarticedIdentifier<TMeter>;
+  TQuarticMeters = specialize TQuarticedDimensionedQuantity<TMeter>;
 
   TKilometer = specialize TKiloUnit<TMeter>;
   TKilometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TKilometer>;
   TKilometers = specialize TFactoredDimensionedQuantity<TMeter, TKilometer>;
   TSquareKilometers = specialize TFactoredSquaredDimensionedQuantity<TMeter, TKilometer>;
   TCubicKilometers = specialize TFactoredCubedDimensionedQuantity<TMeter, TKilometer>;
+  TQuarticKilometers = specialize TFactoredQuarticedDimensionedQuantity<TMeter, TKilometer>;
 
   TDecimeter = specialize TDeciUnit<TMeter>;
   TDecimeters = specialize TFactoredDimensionedQuantity<TMeter, TDecimeter>;
   TSquareDecimeters = specialize TFactoredSquaredDimensionedQuantity<TMeter, TDecimeter>;
   TCubicDecimeters = specialize TFactoredCubedDimensionedQuantity<TMeter, TDecimeter>;
+  TQuarticDecimeters = specialize TFactoredQuarticedDimensionedQuantity<TMeter, TDecimeter>;
 
   TCentimeter = specialize TCentiUnit<TMeter>;
   TCentimeters = specialize TFactoredDimensionedQuantity<TMeter, TCentimeter>;
   TSquareCentimeters = specialize TFactoredSquaredDimensionedQuantity<TMeter, TCentimeter>;
   TCubicCentimeters = specialize TFactoredCubedDimensionedQuantity<TMeter, TCentimeter>;
+  TQuarticCentimeters = specialize TFactoredQuarticedDimensionedQuantity<TMeter, TCentimeter>;
 
   TMillimeter = specialize TMilliUnit<TMeter>;
   TMillimeters = specialize TFactoredDimensionedQuantity<TMeter, TMillimeter>;
   TSquareMillimeters = specialize TFactoredSquaredDimensionedQuantity<TMeter, TMillimeter>;
   TCubicMillimeters = specialize TFactoredCubedDimensionedQuantity<TMeter, TMillimeter>;
+  TQuarticMillimeters = specialize TFactoredQuarticedDimensionedQuantity<TMeter, TMillimeter>;
 
   TLitre = class(TUnit)
     class function Symbol: string; override;
@@ -534,23 +586,31 @@ var
   km: TKilometerIdentifier;
   km2:specialize TFactoredUnitSquaredIdentifier<TMeter, TKilometer>;
   km3:specialize TFactoredUnitCubedIdentifier<TMeter, TKilometer>;
+  km4:specialize TFactoredUnitQuarticedIdentifier<TMeter, TKilometer>;
   m:  TMeterIdentifier;
   m2: TSquareMeterIdentifier;
   m3: TCubicMeterIdentifier;
+  m4: TQuarticMeterIdentifier;
   cm: specialize TFactoredUnitIdentifier<TMeter, TCentimeter>;
   cm2:specialize TFactoredUnitSquaredIdentifier<TMeter, TCentimeter>;
   cm3:specialize TFactoredUnitCubedIdentifier<TMeter, TCentimeter>;
+  cm4:specialize TFactoredUnitQuarticedIdentifier<TMeter, TCentimeter>;
   mm: specialize TFactoredUnitIdentifier<TMeter, TMillimeter>;
   mm2:specialize TFactoredUnitSquaredIdentifier<TMeter, TMillimeter>;
   mm3:specialize TFactoredUnitCubedIdentifier<TMeter, TMillimeter>;
+  mm4:specialize TFactoredUnitQuarticedIdentifier<TMeter, TMillimeter>;
 
   L: TLitreIdentifier;
 
 // combining units
 operator /(const {%H-}m3: TCubicMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TMeterIdentifier; inline;
+operator /(const {%H-}m4: TQuarticMeterIdentifier; const {%H-}m3: TCubicMeterIdentifier): TMeterIdentifier; inline;
+operator /(const {%H-}m4: TQuarticMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TSquareMeterIdentifier; inline;
 
 // combining dimensioned quantities
 operator /(const AVolume: TCubicMeters; const ASurface: TSquareMeters): TMeters; inline;
+operator /(const AMomentOfArea: TQuarticMeters; const AVolume: TCubicMeters): TMeters; inline;
+operator /(const AMomentOfArea: TQuarticMeters; const AArea: TSquareMeters): TSquareMeters; inline;
 
 // dimension equivalence
 operator:=(const AVolume: TLitres): TCubicMeters;
@@ -882,6 +942,18 @@ begin
   result := 'cubic ' + BaseU.Name
 end;
 
+{ TUnitQuarticed }
+
+class function TUnitQuarticed.Symbol: string;
+begin
+  result := BaseU.Symbol + '4';
+end;
+
+class function TUnitQuarticed.Name: string;
+begin
+  result := 'quartic ' + BaseU.Name
+end;
+
 { TRatioUnit }
 
 class function TRatioUnit.Symbol: string;
@@ -963,6 +1035,23 @@ end;
 class function TFactoredUnitCubed.Factor: double;
 begin
   result := sqr(BaseU.Factor)*BaseU.Factor;
+end;
+
+{ TFactoredUnitQuarticed }
+
+class function TFactoredUnitQuarticed.Symbol: string;
+begin
+  result := BaseU.Symbol + '4';
+end;
+
+class function TFactoredUnitQuarticed.Name: string;
+begin
+  result := 'quartic ' + BaseU.Name
+end;
+
+class function TFactoredUnitQuarticed.Factor: double;
+begin
+  result := sqr(BaseU.Factor)*sqr(BaseU.Factor);
 end;
 
 { TFactoredRatioUnit }
@@ -1165,21 +1254,37 @@ end;
                              const TheUnit: TSelf): TSelf;
   begin end;
 
-  class operator T_UNIT_ID.*(const TheSquaredUnit: TSquaredIdentifier;
-    const TheUnit: TSelf): TCubedIdentifier;
-  begin end;
 
   class operator T_UNIT_ID.*(const TheUnit: TSelf;
     const TheSquaredUnit: TSquaredIdentifier): TCubedIdentifier;
+  begin end;
+
+  class operator T_UNIT_ID.*(const TheSquaredUnit: TSquaredIdentifier;
+    const TheUnit: TSelf): TCubedIdentifier;
   begin end;
 
   class operator T_UNIT_ID./(const TheCubedUnit: TCubedIdentifier;
                              const TheUnit: TSelf): TSquaredIdentifier;
   begin end;
 
-  function T_UNIT_ID.Squared: TSquaredIdentifier; begin end;
 
+  class operator T_UNIT_ID.*(const TheCubedUnit: TCubedIdentifier;
+    const TheUnit: TSelf): TQuarticedIdentifier;
+  begin end;
+
+  class operator T_UNIT_ID.*(const TheUnit: TSelf;
+    const TheCubedUnit: TCubedIdentifier): TQuarticedIdentifier;
+  begin end;
+
+  class operator T_UNIT_ID./(const TheQuarticedUnit: TQuarticedIdentifier;
+                             const TheUnit: TSelf): TCubedIdentifier;
+  begin end;
+
+
+  function T_UNIT_ID.Squared: TSquaredIdentifier; begin end;
   function T_UNIT_ID.Cubed: TCubedIdentifier; begin end;
+  function T_UNIT_ID.Quarticed: TQuarticedIdentifier; begin end;
+
 {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_IMPL}
 {$IFDEF FACTORED_UNIT_ID_IMPL}
   class function T_UNIT_ID.From(const AQuantity: TBaseQuantity): TQuantity;
@@ -1214,6 +1319,9 @@ end;
 {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
 {$DEFINE UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TUnitQuarticedIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TUnitCubedIdentifier}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}
@@ -1233,6 +1341,9 @@ end;
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TUnitProductIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TFactoredUnitQuarticedIdentifier}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredUnitCubedIdentifier}{$i dim.pas}
@@ -1354,6 +1465,7 @@ end;
     result.Value := ASquaredQuantity.Value / AQuantity.Value;
   end;
 
+
   class operator T_DIM_QUANTITY.*(
   const ASquaredQuantity: TSquaredQuantity; const AQuantity: TSelf): TCubedQuantity;
   begin
@@ -1361,7 +1473,7 @@ end;
   end;
 
   class operator T_DIM_QUANTITY.*(const AQuantity: TSelf;
-    const ASquaredQuantity: TSquaredQuantity): TCubedQuantity;
+  const ASquaredQuantity: TSquaredQuantity): TCubedQuantity;
   begin
     result.Value := AQuantity.Value * ASquaredQuantity.Value;
   end;
@@ -1372,6 +1484,26 @@ end;
     result.Value := ACubedQuantity.Value / AQuantity.Value;
   end;
 
+
+  class operator T_DIM_QUANTITY.*(const AQuantity: TSelf;
+  const ACubedQuantity: TCubedQuantity): TQuarticedQuantity;
+  begin
+    result.Value := AQuantity.Value * ACubedQuantity.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.*(const ACubedQuantity: TCubedQuantity;
+  const AQuantity: TSelf): TQuarticedQuantity;
+  begin
+    result.Value := ACubedQuantity.Value * AQuantity.Value;
+  end;
+
+  class operator T_DIM_QUANTITY./(const AQuarticedQuantity: TQuarticedQuantity;
+  const AQuantity: TSelf): TCubedQuantity;
+  begin
+    result.Value := AQuarticedQuantity.Value / AQuantity.Value;
+  end;
+
+
   function T_DIM_QUANTITY.Squared: TSquaredQuantity;
   begin
     result.Value := sqr(self.Value);
@@ -1381,6 +1513,12 @@ end;
   begin
     result.Value := sqr(self.Value) * self.Value;
   end;
+
+  function T_DIM_QUANTITY.Quarticed: TQuarticedQuantity;
+  begin
+    result.Value := sqr(self.Value) * sqr(self.Value);
+  end;
+
 {$ENDIF}{$UNDEF SQUARABLE_QTY_IMPL}
 {$IFDEF RECIP_QTY_IMPL}
   class operator T_DIM_QUANTITY./(
@@ -1458,6 +1596,9 @@ end;
 {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
 {$DEFINE DIM_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TQuarticedDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TCubedDimensionedQuantity}{$i dim.pas}
 
 {$DEFINE DIM_QTY_IMPL}
@@ -1477,6 +1618,9 @@ end;
 
 {$DEFINE DIM_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TDimensionedQuantityProduct}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TFactoredQuarticedDimensionedQuantity}{$i dim.pas}
 
 {$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TFactoredCubedDimensionedQuantity}{$i dim.pas}
@@ -1531,9 +1675,25 @@ class function TLitre.Name: string;   begin result := 'litre'; end;
 operator /(const {%H-}m3: TCubicMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TMeterIdentifier;
 begin end;
 
+operator /(const {%H-}m4: TQuarticMeterIdentifier; const {%H-}m3: TCubicMeterIdentifier): TMeterIdentifier;
+begin end;
+
+operator /(const {%H-}m4: TQuarticMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TSquareMeterIdentifier;
+begin end;
+
 operator /(const AVolume: TCubicMeters; const ASurface: TSquareMeters): TMeters;
 begin
   result.Value := AVolume.Value / ASurface.Value;
+end;
+
+operator /(const AMomentOfArea: TQuarticMeters; const AVolume: TCubicMeters): TMeters;
+begin
+  result.Value := AMomentOfArea.Value / AVolume.Value;
+end;
+
+operator /(const AMomentOfArea: TQuarticMeters; const AArea: TSquareMeters): TSquareMeters;
+begin
+  result.Value := AMomentOfArea.Value / AArea.Value;
 end;
 
 operator:=(const AVolume: TLitres): TCubicMeters;
