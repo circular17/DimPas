@@ -664,6 +664,10 @@ type
   TKilogramIdentifier = specialize TFactoredUnitIdentifier<TGram, TKilogram>;
   TKilograms = specialize TFactoredDimensionedQuantity<TGram, TKilogram>;
 
+  // the kg is also a base unit for special units in SI
+  TBaseKilogram = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  TBaseKilograms = specialize TDimensionedQuantity<TBaseKilogram>;
+
   TTon = specialize TMegaUnit<TGram>;
   TTons = specialize TFactoredDimensionedQuantity<TGram, TTon>;
 
@@ -672,6 +676,10 @@ var
   g: TGramIdentifier;
   kg: TKilogramIdentifier;
   ton: specialize TFactoredUnitIdentifier<TGram, TTon>;
+
+// dimension equivalence
+operator:=(const AWeight: TKilograms): TBaseKilograms;
+operator:=(const AWeight: TBaseKilograms): TGrams;
 
 { Units of amount of substance }
 
@@ -800,9 +808,11 @@ type
   TDegreeIdentifier = specialize TFactoredUnitIdentifier<TRadian, TDegree>;
   TDegrees = specialize TFactoredDimensionedQuantity<TRadian, TDegree>;
 
-  TNewton = specialize TLeftFactoredUnitProduct<TKilogram, TMeterPerSecondSquared>;
-  TNewtonIdentifier = specialize TLeftFactoredUnitProductIdentifier<TGram, TMeterPerSecondSquared, TKilogram>;
-  TNewtons = specialize TLeftFactoredDimensionedQuantityProduct<TGram, TMeterPerSecondSquared, TKilogram>;
+  TKilogramMeterIdentifier = specialize TUnitProductIdentifier<TBaseKilogram, TMeter>;
+
+  TNewton = specialize TUnitProduct<TBaseKilogram, TMeterPerSecondSquared>;
+  TNewtonIdentifier = specialize TUnitProductIdentifier<TBaseKilogram, TMeterPerSecondSquared>;
+  TNewtons = specialize TDimensionedQuantityProduct<TBaseKilogram, TMeterPerSecondSquared>;
 
   TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
@@ -832,7 +842,12 @@ var
 operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondIdentifier; inline;
 operator /(const {%H-}rad_s: TRadianPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
 operator /(const {%H-}m: TRadianIdentifier; const {%H-}s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier; inline;
+
+operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m: TMeterIdentifier): TKilogramMeterIdentifier; inline;
+operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier; inline;
+operator /(const {%H-}kg: TKilogramMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TNewtonIdentifier; inline;
+
+operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifer; inline;
 
 // combining dimensioned quantities
 operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
@@ -841,6 +856,8 @@ operator /(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansP
 
 operator *(const AWeight: TGrams; const AAcceleration: TMetersPerSecondSquared): TNewtons; inline;
 operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TNewtons; inline;
+operator *(const AWeight: TBaseKilograms; const AAcceleration: TMetersPerSecondSquared): TNewtons; inline;
+operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TBaseKilograms): TNewtons; inline;
 
 operator /(const AValue: double; const ADuration: TSeconds): TFrequency; inline;
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
@@ -1758,6 +1775,19 @@ end;
 class function TGram.Symbol: string; begin result := 'g'; end;
 class function TGram.Name: string;   begin result := 'gram'; end;
 
+class function TBaseKilogram.Symbol: string; begin result := 'kg'; end;
+class function TBaseKilogram.Name: string;   begin result := 'kilogram'; end;
+
+operator:=(const AWeight: TKilograms): TBaseKilograms;
+begin
+  result.Value := AWeight.Value;
+end;
+
+operator:=(const AWeight: TBaseKilograms): TGrams;
+begin
+  result.Value := AWeight.Value * 1000;
+end;
+
 class function TMole.Symbol: string; begin result := 'mol'; end;
 class function TMole.Name: string;   begin result := 'mole'; end;
 
@@ -1835,8 +1865,17 @@ begin end;
 operator/(const m: TRadianIdentifier; const s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier;
 begin end;
 
-operator/(const kg: TKilogramIdentifier;
+operator*(const kg: TKilogramIdentifier; const m: TMeterIdentifier): TKilogramMeterIdentifier;
+begin end;
+
+operator*(const kg: TKilogramIdentifier;
   const m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier;
+begin end;
+
+operator/(const kg: TKilogramMeterIdentifier; const s2: TSquareSecondIdentifier): TNewtonIdentifier;
+begin end;
+
+operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifer;
 begin end;
 
 // combining dimensioned quantities
@@ -1873,6 +1912,18 @@ end;
 operator*(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TNewtons;
 begin
   result.Value := AWeight.Value * 0.001 * AAcceleration.Value;
+end;
+
+operator*(const AWeight: TBaseKilograms;
+  const AAcceleration: TMetersPerSecondSquared): TNewtons;
+begin
+  result.Value := AWeight.Value * AAcceleration.Value;
+end;
+
+operator*(const AAcceleration: TMetersPerSecondSquared;
+  const AWeight: TBaseKilograms): TNewtons;
+begin
+  result.Value := AWeight.Value * AAcceleration.Value;
 end;
 
 { Units of acceleration }
