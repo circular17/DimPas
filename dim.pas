@@ -598,6 +598,8 @@ type
 
   TMillimeter = specialize TMilliUnit<TMeter>;
   TMillimeters = specialize TFactoredDimensionedQuantity<TMeter, TMillimeter>;
+
+  TSquareMillimeterIdentifier = specialize TFactoredUnitSquaredIdentifier<TMeter, TMillimeter>;
   TSquareMillimeters = specialize TFactoredSquareDimensionedQuantity<TMeter, TMillimeter>;
   TCubicMillimeters = specialize TFactoredCubicDimensionedQuantity<TMeter, TMillimeter>;
   TQuarticMillimeters = specialize TFactoredQuarticDimensionedQuantity<TMeter, TMillimeter>;
@@ -814,6 +816,22 @@ type
   TNewtonIdentifier = specialize TUnitProductIdentifier<TBaseKilogram, TMeterPerSecondSquared>;
   TNewtons = specialize TDimensionedQuantityProduct<TBaseKilogram, TMeterPerSecondSquared>;
 
+  TNewtonPerMeter = specialize TRatioUnit<TNewton, TMeter>;
+  TNewtonPerMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TMeter>;
+  TNewtonsPerMeter = specialize TRatioDimensionedQuantity<TNewton, TMeter>;
+
+  TPascal = specialize TRatioUnit<TNewtonPerMeter, TMeter>;
+  TPascalIdentifier = specialize TRatioUnitIdentifier<TNewtonPerMeter, TMeter>;
+  TPascals = specialize TRatioDimensionedQuantity<TNewtonPerMeter, TMeter>;
+
+  TMegaPascal = specialize TMegaUnit<TPascal>;
+  TMegaPascalIdentifier = specialize TFactoredUnitIdentifier<TPascal, TMegaPascal>;
+  TMegaPascals = specialize TFactoredDimensionedQuantity<TPascal, TMegaPascal>;
+
+  TJoule = specialize TUnitProduct<TNewton, TMeter>;
+  TJouleIdentifer = specialize TUnitProductIdentifier<TNewton, TMeter>;
+  TJoules = specialize TDimensionedQuantityProduct<TNewton, TMeter>;
+
   TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
 
@@ -837,6 +855,9 @@ var
   lx: TLuxIdentifier;
   Sv: TSievertIdentifier;
   kat: TKatalIdentifier;
+  Pa: TPascalIdentifier;
+  MPa: TMegaPascalIdentifier;
+  J: TJouleIdentifer;
 
 // combining units
 operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondIdentifier; inline;
@@ -848,6 +869,18 @@ operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondS
 operator /(const {%H-}kg: TKilogramMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TNewtonIdentifier; inline;
 
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifer; inline;
+
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TPascalIdentifier; inline;
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}Pa: TPascalIdentifier): TSquareMeterIdentifier; inline;
+operator *(const {%H-}m2: TSquareMeterIdentifier; const {%H-}Pa: TPascalIdentifier): TNewtonIdentifier; inline;
+operator *(const {%H-}Pa: TPascalIdentifier; const {%H-}m2: TSquareMeterIdentifier): TNewtonIdentifier; inline;
+
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm2: TSquareMilliMeterIdentifier): TMegaPascalIdentifier; inline;
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}MPa: TMegaPascalIdentifier): TSquareMilliMeterIdentifier; inline;
+operator *(const {%H-}mm2: TSquareMilliMeterIdentifier; const {%H-}MPa: TMegaPascalIdentifier): TNewtonIdentifier; inline;
+operator *(const {%H-}MPa: TMegaPascalIdentifier; const {%H-}mm2: TSquareMilliMeterIdentifier): TNewtonIdentifier; inline;
+
+operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
 
 // combining dimensioned quantities
 operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
@@ -861,6 +894,18 @@ operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TBaseKil
 
 operator /(const AValue: double; const ADuration: TSeconds): TFrequency; inline;
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
+
+operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals; inline;
+operator /(const AForce: TNewtons; const APressure: TPascals): TSquareMeters; inline;
+operator *(const AArea: TSquareMeters; const APressure: TPascals): TNewtons; inline;
+operator *(const APressure: TPascals; const AArea: TSquareMeters): TNewtons; inline;
+
+operator /(const AForce: TNewtons; const AArea: TSquareMilliMeters): TMegaPascals; inline;
+operator /(const AForce: TNewtons; const APressure: TMegaPascals): TSquareMilliMeters; inline;
+operator *(const AArea: TSquareMilliMeters; const APressure: TMegaPascals): TNewtons; inline;
+operator *(const APressure: TMegaPascals; const AArea: TSquareMilliMeters): TNewtons; inline;
+
+operator *(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 
 { Formatting }
 
@@ -930,6 +975,7 @@ begin
   'cd/m2': result := 'lx';
   'm2/s2': result := 'Sv';
   'mol/s': result := 'kat';
+  'N/m2': result := 'Pa';
   end;
 end;
 
@@ -946,6 +992,7 @@ begin
   'candela per square meter': result := 'lux';
   'square meter per square second': result := 'sievert';
   'mole per second': result := 'katal';
+  'newton per square meter': result := 'pascal';
   end;
 end;
 
@@ -1952,6 +1999,90 @@ end;
 operator/(const ASpeed: TKilometersPerHour; const ATime: TSeconds): TKilometersPerHourPerSecond;
 begin
   result.Value := ASpeed.Value / ATime.Value;
+end;
+
+{ Units of Pressure }
+
+// combining units
+
+operator /(const N: TNewtonIdentifier; const m2: TSquareMeterIdentifier): TPascalIdentifier;
+begin end;
+
+operator /(const N: TNewtonIdentifier; const Pa: TPascalIdentifier): TSquareMeterIdentifier;
+begin end;
+
+operator *(const m2: TSquareMeterIdentifier; const Pa: TPascalIdentifier): TNewtonIdentifier;
+begin end;
+
+operator *(const Pa: TPascalIdentifier; const m2: TSquareMeterIdentifier): TNewtonIdentifier;
+begin end;
+
+operator /(const N: TNewtonIdentifier; const mm2: TSquareMilliMeterIdentifier): TMegaPascalIdentifier;
+begin end;
+
+operator /(const N: TNewtonIdentifier; const MPa: TMegaPascalIdentifier): TSquareMilliMeterIdentifier;
+begin end;
+
+operator *(const mm2: TSquareMilliMeterIdentifier; const MPa: TMegaPascalIdentifier): TNewtonIdentifier;
+begin end;
+
+operator *(const MPa: TMegaPascalIdentifier; const mm2: TSquareMilliMeterIdentifier): TNewtonIdentifier;
+begin end;
+
+// combining dimensioned quantities
+
+operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals;
+begin
+  result.Value := AForce.Value / AArea.Value;
+end;
+
+operator /(const AForce: TNewtons; const APressure: TPascals): TSquareMeters;
+begin
+  result.Value := AForce.Value / APressure.Value;
+end;
+
+operator *(const AArea: TSquareMeters; const APressure: TPascals): TNewtons;
+begin
+  result.Value := AArea.Value * APressure.Value;
+end;
+
+operator *(const APressure: TPascals; const AArea: TSquareMeters): TNewtons;
+begin
+  result.Value := APressure.Value * AArea.Value;
+end;
+
+operator /(const AForce: TNewtons; const AArea: TSquareMillimeters): TMegaPascals;
+begin
+  result.Value := AForce.Value / AArea.Value;
+end;
+
+operator /(const AForce: TNewtons; const APressure: TMegaPascals ): TSquareMillimeters;
+begin
+  result.Value := AForce.Value / APressure.Value;
+end;
+
+operator *(const AArea: TSquareMilliMeters; const APressure: TMegaPascals): TNewtons;
+begin
+  result.Value := AArea.Value * APressure.Value;
+end;
+
+operator *(const APressure: TMegaPascals; const AArea: TSquareMilliMeters): TNewtons;
+begin
+  result.Value := APressure.Value * AArea.Value;
+end;
+
+{ Others units }
+
+// combining units
+
+operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TNewtonPerMeterIdentifier;
+begin end;
+
+// combining dimensioned quantities
+
+operator *(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
+begin
+  result.Value := AForce.Value * ALength.Value;
 end;
 
 { Special units }
