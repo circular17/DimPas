@@ -880,7 +880,7 @@ operator /(const {%H-}N: TNewtonIdentifier; const {%H-}MPa: TMegaPascalIdentifie
 operator *(const {%H-}mm2: TSquareMilliMeterIdentifier; const {%H-}MPa: TMegaPascalIdentifier): TNewtonIdentifier; inline;
 operator *(const {%H-}MPa: TMegaPascalIdentifier; const {%H-}mm2: TSquareMilliMeterIdentifier): TNewtonIdentifier; inline;
 
-operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
 
 // combining dimensioned quantities
 operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
@@ -905,7 +905,7 @@ operator /(const AForce: TNewtons; const APressure: TMegaPascals): TSquareMilliM
 operator *(const AArea: TSquareMilliMeters; const APressure: TMegaPascals): TNewtons; inline;
 operator *(const APressure: TMegaPascals; const AArea: TSquareMilliMeters): TNewtons; inline;
 
-operator *(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
+operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 
 { Formatting }
 
@@ -2075,14 +2075,14 @@ end;
 
 // combining units
 
-operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TNewtonPerMeterIdentifier;
+operator /(const N: TNewtonIdentifier; const m: TMeterIdentifier): TNewtonPerMeterIdentifier;
 begin end;
 
 // combining dimensioned quantities
 
-operator *(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
+operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 begin
-  result.Value := AForce.Value * ALength.Value;
+  result.Value := AForce.Value / ALength.Value;
 end;
 
 { Special units }
