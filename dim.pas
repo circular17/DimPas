@@ -881,6 +881,7 @@ operator *(const {%H-}mm2: TSquareMilliMeterIdentifier; const {%H-}MPa: TMegaPas
 operator *(const {%H-}MPa: TMegaPascalIdentifier; const {%H-}mm2: TSquareMilliMeterIdentifier): TNewtonIdentifier; inline;
 
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
+operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJouleIdentifer; inline;
 
 // combining dimensioned quantities
 operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
@@ -906,6 +907,7 @@ operator *(const AArea: TSquareMilliMeters; const APressure: TMegaPascals): TNew
 operator *(const APressure: TMegaPascals; const AArea: TSquareMilliMeters): TNewtons; inline;
 
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
+operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
 
 { Formatting }
 
@@ -1003,6 +1005,7 @@ begin
   case result of
   's.A', 'A.s': result := 'C';
   'kg.m/s2': result := 'N';
+  'N.m': result := 'J';
   end;
 end;
 
@@ -1013,6 +1016,7 @@ begin
   case result of
   'ampere-second', 'second-ampere': result := 'coulomb';
   'kilogram-meter per second squared': result := 'newton';
+  'newton-meter': result := 'joule';
   end;
 end;
 
@@ -2078,11 +2082,19 @@ end;
 operator /(const N: TNewtonIdentifier; const m: TMeterIdentifier): TNewtonPerMeterIdentifier;
 begin end;
 
+operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentifer;
+begin end;
+
 // combining dimensioned quantities
 
-operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
+operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter;
 begin
   result.Value := AForce.Value / ALength.Value;
+end;
+
+operator *(const AForce: TNewtons; const ALength: TMeters): TJoules;
+begin
+  result.Value := AForce.Value * ALength.Value;
 end;
 
 { Special units }
