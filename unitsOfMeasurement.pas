@@ -128,7 +128,7 @@ begin
   writeln('Sigma is: ', (force/area).ToString);
 
 
-  stiffness := 50*(N*m);
+  stiffness := 50*(N/m);
   stroke := (100/1000)*m;
   writeln;
   writeln('The stiffness is: ', stiffness.ToString);
