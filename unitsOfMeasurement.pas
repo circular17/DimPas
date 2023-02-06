@@ -21,6 +21,8 @@ var
   sigma: TMegaPascals;
   stiffness: TNewtonsPerMeter;
   stroke: TMeters;
+  density: TKilogramsPerCubicMeter;
+  weight: TKilograms;
 
 begin
   // Assign helps to convert to target unit "km" as the value here is in "m"
@@ -125,8 +127,7 @@ begin
   writeln;
   writeln('Area is: ',  (force/sigma).ToString);
   writeln('Force is: ', (sigma*area).ToString);
-  writeln('Sigma is: ', (force/area).ToString);
-
+  writeln('Pressure is: ', (force/area).ToString);
 
   stiffness := 50*(N/m);
   stroke := (100/1000)*m;
@@ -134,4 +135,15 @@ begin
   writeln('The stiffness is: ', stiffness.ToString);
   writeln('The stroke is: ', mm.From(stroke).ToString);
   writeln('The force is: ', (stiffness*stroke).ToString);
+
+  density := 7850*(kg/m3);
+  volume := 0.5*m3;
+  weight := density*volume;
+  writeln;
+  writeln('The density is: ', (weight/volume).ToString);
+  writeln('The volume is: ', (weight/density).ToString);
+  writeln('The weigth is: ', (density*volume).ToString);
+  writeln;
+  writeln('Press ENTER to Quit.');
+  readln;
 end.
