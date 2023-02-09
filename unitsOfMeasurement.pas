@@ -16,6 +16,13 @@ var
   temperature: TDegreesCelsius;
   tempDiff: TKelvins;
   bigSurface: TSquareKilometers;
+  force: TNewtons;
+  area: TSquareMilliMeters;
+  sigma: TMegaPascals;
+  stiffness: TNewtonsPerMeter;
+  stroke: TMeters;
+  density: TKilogramsPerCubicMeter;
+  weight: TKilograms;
 
 begin
   // Assign helps to convert to target unit "km" as the value here is in "m"
@@ -113,4 +120,30 @@ begin
   bigSurface := (1*km).Squared;
   writeln('1 km * 1 km = ', bigSurface.ToString, ' = ',
     (1*km2).ToString, ' = ', bigSurface.ToBase.ToString);
+
+  force.Assign(1200*N);
+  area := (10*mm)*(10*mm);
+  sigma := force/area;
+  writeln;
+  writeln('Area is: ',  (force/sigma).ToString);
+  writeln('Force is: ', (sigma*area).ToString);
+  writeln('Pressure is: ', (force/area).ToString);
+
+  stiffness := 50*(N/m);
+  stroke := (100/1000)*m;
+  writeln;
+  writeln('The stiffness is: ', stiffness.ToString);
+  writeln('The stroke is: ', mm.From(stroke).ToString);
+  writeln('The force is: ', (stiffness*stroke).ToString);
+
+  density := 7850*(kg/m3);
+  volume := 0.5*m3;
+  weight := density*volume;
+  writeln;
+  writeln('The density is: ', (weight/volume).ToString);
+  writeln('The volume is: ', (weight/density).ToString);
+  writeln('The weigth is: ', (density*volume).ToString);
+  writeln;
+  writeln('Press ENTER to Quit.');
+  readln;
 end.
