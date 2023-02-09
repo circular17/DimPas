@@ -17,8 +17,8 @@ var
   tempDiff: TKelvins;
   bigSurface: TSquareKilometers;
   force: TNewtons;
-  area: TSquareMilliMeters;
-  sigma: TMegaPascals;
+  area: TSquareMillimeters;
+  sigma: TMegapascals;
   stiffness: TNewtonsPerMeter;
   stroke: TMeters;
   density: TKilogramsPerCubicMeter;
@@ -135,6 +135,8 @@ begin
   writeln('The stiffness is: ', stiffness.ToString);
   writeln('The stroke is: ', mm.From(stroke).ToString);
   writeln('The force is: ', (stiffness*stroke).ToString);
+  side := 10*m;
+  force := stiffness * side; // N = N/m * m
 
   density := 7850*(kg/m3);
   volume := 0.5*m3;
