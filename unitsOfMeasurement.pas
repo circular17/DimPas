@@ -52,6 +52,8 @@ begin
   writeln('The time to accelerate is: ', time2.ToString);
   writeln('The acceleration is: ', acceleration.ToString);
   writeln('Also: ', (km/h/s).From(acceleration).ToString);
+  speed := (km/h).From(acceleration*time);
+  time.Assign(speed/acceleration);
   writeln;
 
   // testing equivalence of derived units

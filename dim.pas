@@ -138,6 +138,11 @@ type
     class operator /(const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
     class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): TNumeratorQuantity;
     class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
+    class operator :=(const ARatio: TDimensionedRatio): TSelf;
+    class operator :=(const ASelf: TSelf): TDimensionedRatio;
+    {$IFDEF FACTORED_QTY_INTF}
+    class operator :=(const ASelf: TSelf): TBaseDimensionedRatio;
+    {$ENDIF}
   {$ENDIF}{$UNDEF RATIO_QTY_INTF}
   {$IFDEF QTY_PROD_INTF}
     //class operator /(const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
@@ -200,6 +205,7 @@ type
     type TSelf = specialize TRatioDimensionedQuantity<NumeratorU, DenomU>;
     type TNumeratorQuantity = specialize TDimensionedQuantity<NumeratorU>;
     type TDenomQuantity = specialize TDimensionedQuantity<DenomU>;
+    type TDimensionedRatio = specialize TDimensionedQuantity<U>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
@@ -244,12 +250,15 @@ type
 
   generic TFactoredRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU: TUnit;
                                             NumeratorU, DenomU: TFactoredUnit> = record
+    type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
     type TBaseDimensionedQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
     type U = specialize TFactoredRatioUnit<NumeratorU, DenomU>;
     type TSelf = specialize TFactoredRatioDimensionedQuantity
                  <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
     type TNumeratorQuantity = specialize TFactoredDimensionedQuantity<BaseNumeratorU, NumeratorU>;
     type TDenomQuantity = specialize TFactoredDimensionedQuantity<BaseDenomU, DenomU>;
+    type TDimensionedRatio = specialize TFactoredDimensionedQuantity<BaseU, U>;
+    type TBaseDimensionedRatio = specialize TDimensionedQuantity<BaseU>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
@@ -263,6 +272,8 @@ type
                  <BaseNumeratorU, BaseDenomU, NumeratorU>;
     type TNumeratorQuantity = specialize TFactoredDimensionedQuantity<BaseNumeratorU, NumeratorU>;
     type TDenomQuantity = specialize TDimensionedQuantity<DenomU>;
+    type TDimensionedRatio = specialize TFactoredDimensionedQuantity<BaseU, U>;
+    type TBaseDimensionedRatio = specialize TDimensionedQuantity<BaseU>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
@@ -276,6 +287,8 @@ type
                  <BaseNumeratorU, BaseDenomU, DenomU>;
     type TNumeratorQuantity = specialize TDimensionedQuantity<NumeratorU>;
     type TDenomQuantity = specialize TFactoredDimensionedQuantity<BaseDenomU, DenomU>;
+    type TDimensionedRatio = specialize TFactoredDimensionedQuantity<BaseU, U>;
+    type TBaseDimensionedRatio = specialize TDimensionedQuantity<BaseU>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
@@ -1707,6 +1720,22 @@ end;
   begin
     result.Value := ADenominator.Value * ASelf.Value;
   end;
+
+  class operator T_DIM_QUANTITY.:=(const ARatio: TDimensionedRatio): TSelf;
+  begin
+    result.Value := ARatio.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.:=(const ASelf: TSelf): TDimensionedRatio;
+  begin
+    result.Value := ASelf.Value;
+  end;
+  {$IFDEF FACTORED_QTY_IMPL}
+  class operator T_DIM_QUANTITY.:=(const ASelf: TSelf): TBaseDimensionedRatio;
+  begin
+    result.Value := ASelf.ToBase.Value;
+  end;
+  {$ENDIF}
 {$ENDIF}{$UNDEF RATIO_QTY_IMPL}
 {$IFDEF QTY_PROD_IMPL}
   {class operator T_DIM_QUANTITY./(
