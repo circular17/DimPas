@@ -685,6 +685,9 @@ operator:=(const AVolume: TLitres): TCubicDecimeters;
 operator:=(const ASurface: TSquareMeters): TSquareMetersFactor;
 operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
 operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
+operator:=(const ASurface: TSquareMetersFactor): TSquareMeters;
+operator:=(const AVolume: TCubicMetersFactor): TCubicMeters;
+operator:=(const AHyperVolume: TQuarticMetersFactor): TQuarticMeters;
 
 { Units of mass }
 
@@ -1907,6 +1910,21 @@ begin
 end;
 
 operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
+begin
+  result.Value := AHyperVolume.Value;
+end;
+
+operator:=(const ASurface: TSquareMetersFactor): TSquareMeters;
+begin
+  result.Value := ASurface.Value;
+end;
+
+operator:=(const AVolume: TCubicMetersFactor): TCubicMeters;
+begin
+  result.Value := AVolume.Value;
+end;
+
+operator:=(const AHyperVolume: TQuarticMetersFactor): TQuarticMeters;
 begin
   result.Value := AHyperVolume.Value;
 end;
