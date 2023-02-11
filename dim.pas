@@ -147,7 +147,8 @@ type
   {$IFDEF QTY_PROD_INTF}
     //class operator /(const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
     class operator /(const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
-    class operator :=(const ASelf: TSelfFactor): TSelf;
+    class operator :=(const AProduct: TDimensionedProduct): TSelf;
+    class operator :=(const ASelf: TSelf): TDimensionedProduct;
   {$ENDIF}{$UNDEF QTY_PROD_INTF}
   {$IFDEF RECIP_QTY_INTF}
     class operator /(const AValue: double; const ASelf: TSelf): TDenomQuantity;
@@ -212,9 +213,9 @@ type
   generic TDimensionedQuantityProduct<U1, U2: TUnit> = record
     type U = specialize TUnitProduct<U1, U2>;
     type TSelf = specialize TDimensionedQuantityProduct<U1, U2>;
-    type TSelfFactor = specialize TDimensionedQuantity<specialize TUnitProduct<U1, U2>>;
     type TQuantity1 = specialize TDimensionedQuantity<U1>;
     type TQuantity2 = specialize TDimensionedQuantity<U2>;
+    type TDimensionedProduct = specialize TDimensionedQuantity<U>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
@@ -294,36 +295,36 @@ type
 
   generic TFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
     type TSelf = specialize TFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1, U2>;
-    type TSelfFactor = specialize TFactoredDimensionedQuantity
-                       <specialize TUnitProduct<BaseU1, BaseU2>, specialize TFactoredUnitProduct<U1, U2>>;
     type U = specialize TFactoredUnitProduct<U1, U2>;
     type TQuantity1 = specialize TFactoredDimensionedQuantity<BaseU1, U1>;
     type TQuantity2 = specialize TFactoredDimensionedQuantity<BaseU2, U2>;
     type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
+    type TDimensionedProduct = specialize TFactoredDimensionedQuantity<BaseU, U>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
   generic TLeftFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U1: TFactoredUnit> = record
     type U2 = BaseU2;
     type TSelf = specialize TLeftFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1>;
-    type TSelfFactor = specialize TFactoredDimensionedQuantity
-                       <specialize TUnitProduct<BaseU1, BaseU2>, specialize TLeftFactoredUnitProduct<U1, U2>>;
     type U = specialize TLeftFactoredUnitProduct<U1, U2>;
     type TQuantity1 = specialize TFactoredDimensionedQuantity<BaseU1, U1>;
     type TQuantity2 = specialize TDimensionedQuantity<U2>;
     type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
+    type TDimensionedProduct = specialize TFactoredDimensionedQuantity<BaseU, U>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
   generic TRightFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U2: TFactoredUnit> = record
     type U1 = BaseU1;
     type TSelf = specialize TRightFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U2>;
-    type TSelfFactor = specialize TFactoredDimensionedQuantity
-                       <specialize TUnitProduct<BaseU1, BaseU2>, specialize TRightFactoredUnitProduct<U1, U2>>;
     type U = specialize TRightFactoredUnitProduct<U1, U2>;
     type TQuantity1 = specialize TDimensionedQuantity<U1>;
     type TQuantity2 = specialize TFactoredDimensionedQuantity<BaseU2, U2>;
     type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
+    type TDimensionedProduct = specialize TFactoredDimensionedQuantity<BaseU, U>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
@@ -1750,7 +1751,12 @@ end;
     result.Value := ASelf.Value / AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.:=(const ASelf: TSelfFactor): TSelf;
+  class operator T_DIM_QUANTITY.:=(const AProduct: TDimensionedProduct): TSelf;
+  begin
+    result.Value := AProduct.Value;
+  end;
+
+  class operator T_DIM_QUANTITY.:=(const ASelf: TSelf): TDimensionedProduct;
   begin
     result.Value := ASelf.Value;
   end;
