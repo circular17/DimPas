@@ -630,6 +630,7 @@ type
   TQuarticCentimeters = specialize TFactoredQuarticDimensionedQuantity<TMeter, TCentimeter>;
 
   TMillimeter = specialize TMilliUnit<TMeter>;
+  TMillimeterIdentifier = specialize TFactoredUnitIdentifier<TMeter, TMillimeter>;
   TMillimeters = specialize TFactoredDimensionedQuantity<TMeter, TMillimeter>;
 
   TSquareMillimeter = specialize TFactoredSquareUnit<TMillimeter>;
@@ -950,11 +951,20 @@ type
   TMegapascals = specialize TFactoredDenominatorDimensionedQuantity<TNewton, TSquareMeter, TSquareMillimeter>;
 
   TJoule = specialize TUnitProduct<TNewton, TMeter>;
-  TJouleIdentifer = specialize TUnitProductIdentifier<TNewton, TMeter>;
+  TJouleIdentifier = specialize TUnitProductIdentifier<TNewton, TMeter>;
   TJoules = specialize TDimensionedQuantityProduct<TNewton, TMeter>;
 
-  TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
+  TWatt = specialize TRatioUnit<TJoule, TSecond>;
+  TWattIdentifier = specialize TRatioUnitIdentifier<TJoule, TSecond>;
+  TWatts = specialize TRatioDimensionedQuantity<TJoule, TSecond>;
+
+  TCoulomb = specialize TUnitProduct<TAmpere, TSecond>;
+  TCoulombIdentifier = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
+
+  TVolt = specialize TRatioUnit<TJoule, TCoulomb>;
+  TVoltIdentifier = specialize TRatioUnitIdentifier<TJoule, TCoulomb>;
+  TVolts = specialize TRatioDimensionedQuantity<TJoule, TCoulomb>;
 
   TLumen = specialize TUnitProduct<TCandela, TSteradian>;
   TLumenIdentifer = specialize TUnitProductIdentifier<TCandela, TSteradian>;
@@ -982,12 +992,14 @@ var
   Pa: TPascalIdentifier;
   kPa: TKilopascalIdentifier;
   MPa: TMegapascalIdentifier;
-  J: TJouleIdentifer;
-  C: TCoulombIdentifer;
+  J: TJouleIdentifier;
+  C: TCoulombIdentifier;
   lm: TLumenIdentifer;
   lx: TLuxIdentifier;
   Sv: TSievertIdentifier;
   kat: TKatalIdentifier;
+  W: TWattIdentifier;
+  V: TVoltIdentifier;
 
 // combining units
 operator *(const {%H-}g: TGramIdentifier; const {%H-}m: TMeterIdentifier): TGramMeterIdentifier; inline;
@@ -1002,9 +1014,17 @@ operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m2: TSquareMeterIdentifie
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm2: TSquareMillimeterIdentifier): TMegapascalIdentifier; inline;
 operator /(const {%H-}kN: TKilonewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TKilopascalIdentifier; inline;
 
-operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJouleIdentifer; inline;
+operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJouleIdentifier; inline;
 
-operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifer; inline;
+operator /(const {%H-}J: TJouleIdentifier; const {%H-}s: TSecondIdentifier): TWattIdentifier; inline;
+
+operator /(const {%H-}J: TJouleIdentifier; const {%H-}C: TCoulombIdentifier): TVoltIdentifier; inline;
+operator /(const {%H-}W: TWattIdentifier; const {%H-}A: TAmpereIdentifier): TVoltIdentifier; inline;
+operator /(const {%H-}W: TWattIdentifier; const {%H-}V: TVoltIdentifier): TAmpereIdentifier; inline;
+operator *(const {%H-}A: TAmpereIdentifier; const {%H-}V: TVoltIdentifier): TWattIdentifier; inline;
+operator *(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TWattIdentifier; inline;
+
+operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifier; inline;
 
 operator *(const {%H-}cd: TCandelaIdentifier; const {%H-}sr: TSteradianIdentifier): TLumenIdentifer; inline;
 operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
@@ -1030,6 +1050,14 @@ operator /(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals
 operator /(const AForce: TKilonewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
 
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
+
+operator /(const AWork: TJoules; const ATime: TSeconds): TWatts; inline;
+
+operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts; inline;
+operator /(const APower: TWatts; const ACurrent: TAmperes): TVolts; inline;
+operator /(const APower: TWatts; const AVoltage: TVolts): TAmperes; inline;
+operator *(const ACurrent: TAmperes; const AVoltage: TVolts): TWatts; inline;
+operator *(const AVoltage: TVolts; const ACurrent: TAmperes): TWatts; inline;
 
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
 
@@ -1076,11 +1104,17 @@ type
   TNewtonPerMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TMeter>;
   TNewtonsPerMeter = specialize TRatioDimensionedQuantity<TNewton, TMeter>;
 
+  TNewtonPerMilliMeter = specialize TFactoredDenominatorUnit<TNewton, TMilliMeter>;
+  TNewtonPerMilliMeterIdentifier = specialize TFactoredDenominatorUnitIdentifier<TNewton, TMeter, TMilliMeter>;
+  TNewtonsPerMilliMeter = specialize TFactoredDenominatorDimensionedQuantity<TNewton, TMeter, TMilliMeter>;
+
 // combining units
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier; inline;
 
 // combining dimensioned quantities
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
+operator /(const AForce: TNewtons; const ALength: TMillimeters): TNewtonsPerMillimeter; inline;
 
 { Formatting }
 
@@ -1153,6 +1187,8 @@ begin
   'N/m2': result := 'Pa';
   'kN/m2': result := 'kPa';
   'N/mm2': result := 'MPa';
+  'J/s': result := 'W';
+  'J/C': result := 'V';
   end;
 end;
 
@@ -1172,6 +1208,8 @@ begin
   'newton per square meter': result := 'pascal';
   'kilonewton per square meter': result := 'kilopascal';
   'newton per square millimeter': result := 'megapascal';
+  'joule per second': result := 'watt';
+  'joule per coulomb': result := 'volt';
   end;
 end;
 
@@ -2355,10 +2393,31 @@ begin end;
 operator /(const N: TNewtonIdentifier; const m: TMeterIdentifier): TNewtonPerMeterIdentifier;
 begin end;
 
-operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentifer;
+operator /(const N: TNewtonIdentifier; const mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier;
 begin end;
 
-operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifer;
+operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentifier;
+begin end;
+
+operator /(const J: TJouleIdentifier; const s: TSecondIdentifier): TWattIdentifier;
+begin end;
+
+operator /(const J: TJouleIdentifier; const C: TCoulombIdentifier): TVoltIdentifier;
+begin end;
+
+operator /(const W: TWattIdentifier; const A: TAmpereIdentifier): TVoltIdentifier;
+begin end;
+
+operator /(const W: TWattIdentifier; const V: TVoltIdentifier): TAmpereIdentifier;
+begin end;
+
+operator *(const A: TAmpereIdentifier; const V: TVoltIdentifier): TWattIdentifier;
+begin end;
+
+operator *(const V: TVoltIdentifier; const A: TAmpereIdentifier): TWattIdentifier;
+begin end;
+
+operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifier;
 begin end;
 
 operator *(const cd: TCandelaIdentifier; const sr: TSteradianIdentifier): TLumenIdentifer;
@@ -2400,12 +2459,12 @@ begin
   result.Value := AAngle.Value / ASquareTime.Value;
 end;
 
-operator *(const AWeight: TGrams; const ALength: TMeters): TGramMeters; inline;
+operator *(const AWeight: TGrams; const ALength: TMeters): TGramMeters;
 begin
   result.Value := AWeight.Value * ALength.Value;
 end;
 
-operator *(const AWeight: TKilograms; const ALength: TMeters): TKilogramMeters; inline;
+operator *(const AWeight: TKilograms; const ALength: TMeters): TKilogramMeters;
 begin
   result.Value := AWeight.Value * ALength.Value;
 end;
@@ -2455,9 +2514,44 @@ begin
   result.Value := AForce.Value / ALength.Value;
 end;
 
+operator /(const AForce: TNewtons; const ALength: TMillimeters): TNewtonsPerMillimeter;
+begin
+  result.Value := AForce.Value / ALength.Value;
+end;
+
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules;
 begin
   result.Value := AForce.Value * ALength.Value;
+end;
+
+operator /(const AWork: TJoules; const ATime: TSeconds): TWatts;
+begin
+  result.Value := AWork.Value / ATime.Value;
+end;
+
+operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts;
+begin
+  result.Value := AWork.Value / ACharge.Value;
+end;
+
+operator /(const APower: TWatts; const ACurrent: TAmperes): TVolts;
+begin
+  result.Value := APower.Value / ACurrent.Value;
+end;
+
+operator /(const APower: TWatts; const AVoltage: TVolts): TAmperes;
+begin
+  result.Value := APower.Value / AVoltage.Value;
+end;
+
+operator *(const ACurrent: TAmperes; const AVoltage: TVolts): TWatts;
+begin
+  result.Value := ACurrent.Value * AVoltage.Value;
+end;
+
+operator *(const AVoltage: TVolts; const ACurrent: TAmperes): TWatts; inline;
+begin
+  result.Value := AVoltage.Value * ACurrent.Value;
 end;
 
 operator*(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs;
