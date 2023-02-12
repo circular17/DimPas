@@ -1055,6 +1055,8 @@ begin
   'm2/s2': result := 'Sv';
   'mol/s': result := 'kat';
   'N/m2': result := 'Pa';
+  'kN/m2': result := 'kPa';
+  'N/mm2': result := 'MPa';
   end;
 end;
 
@@ -1072,6 +1074,8 @@ begin
   'square meter per square second': result := 'sievert';
   'mole per second': result := 'katal';
   'newton per square meter': result := 'pascal';
+  'kilonewton per square meter': result := 'kilopascal';
+  'newton per square millimeter': result := 'megapascal';
   end;
 end;
 
