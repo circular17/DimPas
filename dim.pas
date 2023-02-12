@@ -869,10 +869,15 @@ type
   TRadian = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   TRadianIdentifier = specialize TUnitIdentifier<TRadian>;
   TRadians = specialize TDimensionedQuantity<TRadian>;
+  TSteradian = specialize TSquareUnit<TRadian>;
+  TSteradianIdentifier = specialize TSquareUnitIdentifier<TRadian>;
+  TSteradians = specialize TSquareDimensionedQuantity<TRadian>;
 
   TDegree = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   TDegreeIdentifier = specialize TFactoredUnitIdentifier<TRadian, TDegree>;
   TDegrees = specialize TFactoredDimensionedQuantity<TRadian, TDegree>;
+  TSquareDegreeIdentifier = specialize TFactoredSquareUnitIdentifier<TRadian, TDegree>;
+  TSquareDegrees = specialize TFactoredSquareDimensionedQuantity<TRadian, TDegree>;
 
   TGramMeterIdentifier = specialize TUnitProductIdentifier<TGram, TMeter>;
   TGramMeters = specialize TDimensionedQuantityProduct<TGram, TMeter>;
@@ -910,8 +915,12 @@ type
   TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
 
-  TLuxIdentifier = specialize TRatioUnitIdentifier<TCandela, TSquareMeter>;
-  TLuxQuantity = specialize TRatioDimensionedQuantity<TCandela, TSquareMeter>;
+  TLumen = specialize TUnitProduct<TCandela, TSteradian>;
+  TLumenIdentifer = specialize TUnitProductIdentifier<TCandela, TSteradian>;
+  TLumens = specialize TDimensionedQuantityProduct<TCandela, TSteradian>;
+
+  TLuxIdentifier = specialize TRatioUnitIdentifier<TLumen, TSquareMeter>;
+  TLuxQuantity = specialize TRatioDimensionedQuantity<TLumen, TSquareMeter>;
 
   TSievertIdentifier = specialize TRatioUnitIdentifier
                                   <TSquareMeter, specialize TSquareUnit<TSecond>>;
@@ -924,7 +933,9 @@ type
 var
   Hz: THertzIdentifier;
   rad: TRadianIdentifier;
+  sr: TSteradianIdentifier;
   deg: TDegreeIdentifier;
+  deg2: TSquareDegrees;
   N: TNewtonIdentifier;
   kN: TKilonewtonIdentifier;
   Pa: TPascalIdentifier;
@@ -932,6 +943,7 @@ var
   MPa: TMegapascalIdentifier;
   J: TJouleIdentifer;
   C: TCoulombIdentifer;
+  lm: TLumenIdentifer;
   lx: TLuxIdentifier;
   Sv: TSievertIdentifier;
   kat: TKatalIdentifier;
@@ -953,7 +965,8 @@ operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJo
 
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifer; inline;
 
-operator /(const {%H-}cd: TCandelaIdentifier; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
+operator *(const {%H-}cd: TCandelaIdentifier; const {%H-}sr: TSteradianIdentifier): TLumenIdentifer; inline;
+operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
 
 operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TSievertIdentifier; inline;
 
@@ -979,7 +992,8 @@ operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
 
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
 
-operator /(const ALuminousIntensity: TCandelas; const AArea: TSquareMeters): TLuxQuantity; inline;
+operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens; inline;
+operator /(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity; inline;
 
 operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSieverts; inline;
 
@@ -1092,7 +1106,7 @@ begin
     result := ANumSymbol + '/' + ADenomSymbol;
 
   case result of
-  'cd/m2': result := 'lx';
+  'lm/m2': result := 'lx';
   'm2/s2': result := 'Sv';
   'mol/s': result := 'kat';
   'N/m2': result := 'Pa';
@@ -1111,7 +1125,7 @@ begin
     result := ANumName + ' per ' + ADenomName;
 
   case result of
-  'candela per square meter': result := 'lux';
+  'lumen per square meter': result := 'lux';
   'square meter per square second': result := 'sievert';
   'mole per second': result := 'katal';
   'newton per square meter': result := 'pascal';
@@ -1128,6 +1142,7 @@ begin
   's.A', 'A.s': result := 'C';
   'kg.m/s2': result := 'N';
   'N.m': result := 'J';
+  'cd.sr': result := 'lm';
   end;
 end;
 
@@ -1139,6 +1154,7 @@ begin
   'ampere-second', 'second-ampere': result := 'coulomb';
   'kilogram-meter per second squared': result := 'newton';
   'newton-meter': result := 'joule';
+  'candela-steradian': result := 'lumen';
   end;
 end;
 
@@ -1150,6 +1166,7 @@ begin
 
   case result of
   's-1': result := 'Hz';
+  'rad2': result := 'sr';
   end;
 end;
 
@@ -1171,6 +1188,7 @@ begin
 
   case result of
   'reciprocal second': result := 'hertz';
+  'square radian': result := 'steradian';
   end;
 end;
 
@@ -2189,7 +2207,10 @@ begin end;
 operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifer;
 begin end;
 
-operator/(const cd: TCandelaIdentifier; const m2: TSquareMeterIdentifier): TLuxIdentifier;
+operator *(const cd: TCandelaIdentifier; const sr: TSteradianIdentifier): TLumenIdentifer;
+begin end;
+
+operator/(const lm: TLumenIdentifer; const m2: TSquareMeterIdentifier): TLuxIdentifier;
 begin end;
 
 operator/(const m2: TSquareMeterIdentifier; const s2: TSquareSecondIdentifier): TSievertIdentifier;
@@ -2290,9 +2311,14 @@ begin
   result.Value := ACurrent.Value * ADuration.Value;
 end;
 
-operator/(const ALuminousIntensity: TCandelas; const AArea: TSquareMeters): TLuxQuantity;
+operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens;
 begin
-  result.Value := ALuminousIntensity.Value / AArea.Value;
+  result.Value := ALuminousIntensity.Value * ASolidAngle.Value;
+end;
+
+operator/(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity;
+begin
+  result.Value := ALuminousFlux.Value / AArea.Value;
 end;
 
 operator/(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSieverts;
