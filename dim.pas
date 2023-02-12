@@ -946,6 +946,7 @@ operator /(const {%H-}kg: TKilogramMeterIdentifier; const {%H-}s2: TSquareSecond
 
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TPascalIdentifier; inline;
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm2: TSquareMillimeterIdentifier): TMegapascalIdentifier; inline;
+operator /(const {%H-}kN: TKilonewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TKilopascalIdentifier; inline;
 
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
 
@@ -974,6 +975,7 @@ operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TKilogra
 operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals; inline;
 operator /(const AForce: TNewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
 operator /(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals; inline;
+operator /(const AForce: TKilonewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
 
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 
@@ -2130,6 +2132,9 @@ begin end;
 operator /(const N: TNewtonIdentifier; const mm2: TSquareMillimeterIdentifier): TMegapascalIdentifier;
 begin end;
 
+operator/(const kN: TKilonewtonIdentifier; const m2: TSquareMeterIdentifier): TKilopascalIdentifier;
+begin end;
+
 operator /(const N: TNewtonIdentifier; const m: TMeterIdentifier): TNewtonPerMeterIdentifier;
 begin end;
 
@@ -2209,6 +2214,11 @@ end;
 operator/(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals;
 begin
   result.Value := AForce.Value / AArea.Value;
+end;
+
+operator/(const AForce: TKilonewtons; const AArea: TSquareMillimeters): TMegapascals;
+begin
+  result := AForce.ToBase / AArea;
 end;
 
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter;
