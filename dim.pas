@@ -892,13 +892,13 @@ type
   TCoulombIdentifer = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
 
-  TLuxIdentifier = specialize TRatioUnitIdentifier<TCandela, specialize TSquareUnit<TMeter>>;
-  TLuxQuantity = specialize TRatioDimensionedQuantity<TCandela, specialize TSquareUnit<TMeter>>;
+  TLuxIdentifier = specialize TRatioUnitIdentifier<TCandela, TSquareMeter>;
+  TLuxQuantity = specialize TRatioDimensionedQuantity<TCandela, TSquareMeter>;
 
   TSievertIdentifier = specialize TRatioUnitIdentifier
-                                  <specialize TSquareUnit<TMeter>, specialize TSquareUnit<TSecond>>;
+                                  <TSquareMeter, specialize TSquareUnit<TSecond>>;
   TSieverts = specialize TRatioDimensionedQuantity
-                         <specialize TSquareUnit<TMeter>, specialize TSquareUnit<TSecond>>;
+                         <TSquareMeter, specialize TSquareUnit<TSecond>>;
 
   TKatalIdentifier = specialize TRatioUnitIdentifier<TMole, TSecond>;
   TKatals = specialize TRatioDimensionedQuantity<TMole, TSecond>;
@@ -921,20 +921,20 @@ var
   deg: TDegreeIdentifier;
   N: TNewtonIdentifier;
   kN: TKilonewtonIdentifier;
-  C: TCoulombIdentifer;
-  lx: TLuxIdentifier;
-  Sv: TSievertIdentifier;
-  kat: TKatalIdentifier;
   Pa: TPascalIdentifier;
   kPa: TKilopascalIdentifier;
   MPa: TMegapascalIdentifier;
   J: TJouleIdentifer;
+  C: TCoulombIdentifer;
+  lx: TLuxIdentifier;
+  Sv: TSievertIdentifier;
+  kat: TKatalIdentifier;
   rho: TKilogramPerCubicMeterIdentifier;
 
 // combining units
 operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondIdentifier; inline;
 operator /(const {%H-}rad_s: TRadianPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}m: TRadianIdentifier; const {%H-}s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
+operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
 
 operator *(const {%H-}g: TGramIdentifier; const {%H-}m: TMeterIdentifier): TGramMeterIdentifier; inline;
 operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m: TMeterIdentifier): TKilogramMeterIdentifier; inline;
@@ -953,6 +953,12 @@ operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNe
 operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJouleIdentifer; inline;
 
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifer; inline;
+
+operator /(const {%H-}cd: TCandelaIdentifier; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
+
+operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TSievertIdentifier; inline;
+
+operator /(const {%H-}mol: TMoleIdentifier; const {%H-}s: TSecondIdentifier): TKatalIdentifier; inline;
 
 operator /(const {%H-}g: TGramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TGramPerCubicMeterIdentifier; inline;
 operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TKilogramPerCubicMeterIdentifier; inline;
@@ -982,6 +988,12 @@ operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; in
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
 
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
+
+operator /(const ALuminousIntensity: TCandelas; const AArea: TSquareMeters): TLuxQuantity; inline;
+
+operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSieverts; inline;
+
+operator /(const AAmountOfSustance: TMoles; const ATime: TSeconds): TKatals; inline;
 
 operator /(const AMass: TGrams; const AVolume: TCubicMeters): TGramsPerCubicMeter; inline;
 operator /(const AMass: TKilograms; const AVolume: TCubicMeters): TKilogramsPerCubicMeter; inline;
@@ -2109,7 +2121,7 @@ begin end;
 operator/(const rad_s: TRadianPerSecondIdentifier; const s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier;
 begin end;
 
-operator/(const m: TRadianIdentifier; const s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier;
+operator/(const rad: TRadianIdentifier; const s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier;
 begin end;
 
 operator*(const g: TGramIdentifier; const m: TMeterIdentifier): TGramMeterIdentifier;
@@ -2146,6 +2158,15 @@ operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentif
 begin end;
 
 operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifer;
+begin end;
+
+operator/(const cd: TCandelaIdentifier; const m2: TSquareMeterIdentifier): TLuxIdentifier;
+begin end;
+
+operator/(const m2: TSquareMeterIdentifier; const s2: TSquareSecondIdentifier): TSievertIdentifier;
+begin end;
+
+operator/(const mol: TMoleIdentifier; const s: TSecondIdentifier): TKatalIdentifier;
 begin end;
 
 operator /(const g: TGramIdentifier; const m3: TCubicMeterIdentifier): TGramPerCubicMeterIdentifier;
@@ -2238,6 +2259,21 @@ end;
 operator*(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs;
 begin
   result.Value := ACurrent.Value * ADuration.Value;
+end;
+
+operator/(const ALuminousIntensity: TCandelas; const AArea: TSquareMeters): TLuxQuantity;
+begin
+  result.Value := ALuminousIntensity.Value / AArea.Value;
+end;
+
+operator/(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSieverts;
+begin
+  result.Value := AArea.Value / ASquareTime.Value;
+end;
+
+operator/(const AAmountOfSustance: TMoles; const ATime: TSeconds): TKatals;
+begin
+  result.Value := AAmountOfSustance.Value / ATime.Value;
 end;
 
 operator /(const AMass: TGrams; const AVolume: TCubicMeters): TGramsPerCubicMeter;
