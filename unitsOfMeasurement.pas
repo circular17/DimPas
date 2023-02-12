@@ -97,6 +97,8 @@ begin
   writeln('1 / 0.01 s = ', (1 / (0.01*s)).ToString);
   writeln('100 Hz * 10 s = ', FormatValue(100*Hz*(10*s)));
   writeln('180 º = ', rad.From(180*deg).ToString);
+  writeln('sin 30 º = ', FormatValue((30*deg).Sin));
+  writeln('sin-1 0.75 = ', deg.ArcSin(0.75).ToString);
   writeln('1 A * 1 s = ', (1*A*(1*s)).ToString);
   writeln('1 C / 1 s = ', (1*C/(1*s)).ToString);
 
@@ -112,7 +114,7 @@ begin
   writeln('The absolute zero is: ', temperature.ToString);
   writeln;
 
-  writeln('Accelerating 100 g by 1/s2 is: ', (1*(m/s2)*(100*g)).ToVerboseString);
+  writeln('Accelerating 100 g by 1 m/s2 is: ', (1*(m/s2)*(100*g)).ToVerboseString);
   writeln;
   writeln('10 cm < 1 m ? ', 10*cm < 1*m);
   writeln('100 cm = 1 m ? ', 100*cm = 1*m);

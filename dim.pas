@@ -103,6 +103,7 @@ type
     Value: double;
     function ToString: string;
     function ToVerboseString: string;
+    function Abs: TSelf;
     constructor Assign(const AQuantity: TSelf); overload;
   {$ENDIF}{$UNDEF BASIC_DIM_QTY_INTF}
   {$IFDEF DIM_QTY_INTF}
@@ -873,11 +874,51 @@ type
   TSteradianIdentifier = specialize TSquareUnitIdentifier<TRadian>;
   TSteradians = specialize TSquareDimensionedQuantity<TRadian>;
 
+  { TRadianHelper }
+
+  TRadianHelper = record helper for TRadianIdentifier
+    function ArcCos(AValue: double): TRadians;
+    function ArcSin(AValue: double): TRadians;
+    function ArcTan(AValue: double): TRadians;
+    function ArcTan2(y, x: double): TRadians;
+  end;
+
+  { TRadiansHelper }
+
+  TRadiansHelper = record helper for TRadians
+    function Cos: double;
+    function Sin: double;
+    function Tan: double;
+    function Cotan: double;
+    function Secant: double;
+    function Cosecant: double;
+  end;
+
   TDegree = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   TDegreeIdentifier = specialize TFactoredUnitIdentifier<TRadian, TDegree>;
   TDegrees = specialize TFactoredDimensionedQuantity<TRadian, TDegree>;
   TSquareDegreeIdentifier = specialize TFactoredSquareUnitIdentifier<TRadian, TDegree>;
   TSquareDegrees = specialize TFactoredSquareDimensionedQuantity<TRadian, TDegree>;
+
+  { TDegreeHelper }
+
+  TDegreeHelper = record helper for TDegreeIdentifier
+    function ArcCos(AValue: double): TDegrees;
+    function ArcSin(AValue: double): TDegrees;
+    function ArcTan(AValue: double): TDegrees;
+    function ArcTan2(y, x: double): TDegrees;
+  end;
+
+  { TDegreesHelper }
+
+  TDegreesHelper = record helper for TDegrees
+    function Cos: double;
+    function Sin: double;
+    function Tan: double;
+    function Cotan: double;
+    function Secant: double;
+    function Cosecant: double;
+  end;
 
   TGramMeterIdentifier = specialize TUnitProductIdentifier<TGram, TMeter>;
   TGramMeters = specialize TDimensionedQuantityProduct<TGram, TMeter>;
@@ -1633,6 +1674,11 @@ end;
     result := FormatValue(Value) + ' ' + FormatUnitName(U.Name, Value);
   end;
 
+  function T_DIM_QUANTITY.Abs: TSelf;
+  begin
+    result.Value := System.Abs(Value);
+  end;
+
   constructor T_DIM_QUANTITY.Assign(const AQuantity: TSelf);
   begin
     self := AQuantity;
@@ -2157,9 +2203,117 @@ end;
 class function TRadian.Symbol: string; begin result := 'rad'; end;
 class function TRadian.Name: string;   begin result := 'radian'; end;
 
+{ TRadianHelper }
+
+function TRadianHelper.ArcCos(AValue: double): TRadians;
+begin
+  result.Value := Math.ArcCos(AValue);
+end;
+
+function TRadianHelper.ArcSin(AValue: double): TRadians;
+begin
+  result.Value := Math.ArcSin(AValue);
+end;
+
+function TRadianHelper.ArcTan(AValue: double): TRadians;
+begin
+  result.Value := System.ArcTan(AValue);
+end;
+
+function TRadianHelper.ArcTan2(y, x: double): TRadians;
+begin
+  result.Value := Math.ArcTan2(y, x);
+end;
+
+{ TRadiansHelper }
+
+function TRadiansHelper.Cos: double;
+begin
+  result := System.Cos(Value);
+end;
+
+function TRadiansHelper.Sin: double;
+begin
+  result := System.Sin(Value);
+end;
+
+function TRadiansHelper.Tan: double;
+begin
+  result := Math.Tan(Value);
+end;
+
+function TRadiansHelper.Cotan: double;
+begin
+  result := Math.Cotan(Value);
+end;
+
+function TRadiansHelper.Secant: double;
+begin
+  result := Math.Secant(Value);
+end;
+
+function TRadiansHelper.Cosecant: double;
+begin
+  result := Math.Cosecant(Value);
+end;
+
 class function TDegree.Factor: double; begin result := Pi/180; end;
 class function TDegree.Symbol: string; begin result := 'º'; end;
 class function TDegree.Name: string;   begin result := 'degree'; end;
+
+{ TDegreeHelper }
+
+function TDegreeHelper.ArcCos(AValue: double): TDegrees;
+begin
+  result.Assign(rad.ArcCos(AValue));
+end;
+
+function TDegreeHelper.ArcSin(AValue: double): TDegrees;
+begin
+  result.Assign(rad.ArcSin(AValue));
+end;
+
+function TDegreeHelper.ArcTan(AValue: double): TDegrees;
+begin
+  result.Assign(rad.ArcTan(AValue));
+end;
+
+function TDegreeHelper.ArcTan2(y, x: double): TDegrees;
+begin
+  result.Assign(rad.ArcTan2(y, x));
+end;
+
+{ TDegreesHelper }
+
+function TDegreesHelper.Cos: double;
+begin
+  result := ToBase.Cos;
+end;
+
+function TDegreesHelper.Sin: double;
+begin
+  result := ToBase.Sin;
+end;
+
+function TDegreesHelper.Tan: double;
+begin
+  result := ToBase.Tan;
+end;
+
+function TDegreesHelper.Cotan: double;
+begin
+  result := ToBase.Cotan;
+end;
+
+function TDegreesHelper.Secant: double;
+begin
+  result := ToBase.Secant;
+end;
+
+function TDegreesHelper.Cosecant: double;
+begin
+  result := ToBase.Cosecant;
+end;
 
 // combining units
 operator/(const rad: TRadianIdentifier; const s: TSecondIdentifier): TRadianPerSecondIdentifier;
