@@ -127,8 +127,8 @@ begin
   area := (10*mm)*(10*mm);
   sigma := force/area;
   writeln;
-  writeln('Area is: ',  (force/TPascals(sigma)).ToString);
-  writeln('Force is: ', (TPascals(sigma)*TSquareMeters(area)).ToString);
+  writeln('Area is: ',  (force/sigma).ToString);
+  writeln('Force is: ', (sigma*area).ToString);
   writeln('Pressure is: ', (force/area).ToString);
 
   stiffness := 50*(N/m);

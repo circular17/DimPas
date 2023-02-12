@@ -596,12 +596,12 @@ type
   TSquareMeter = specialize TSquareUnit<TMeter>;
   TSquareMeterIdentifier = specialize TSquareUnitIdentifier<TMeter>;
   TSquareMeters = specialize TSquareDimensionedQuantity<TMeter>;
-  TSquareMetersFactor = specialize TDimensionedQuantity<specialize TSquareUnit<TMeter>>;
+  TSquareMetersFactor = specialize TDimensionedQuantity<TSquareMeter>;
 
   TCubicMeter = specialize TCubicUnit<TMeter>;
   TCubicMeterIdentifier = specialize TCubicUnitIdentifier<TMeter>;
   TCubicMeters = specialize TCubicDimensionedQuantity<TMeter>;
-  TCubicMetersFactor = specialize TDimensionedQuantity<specialize TCubicUnit<TMeter>>;
+  TCubicMetersFactor = specialize TDimensionedQuantity<TCubicMeter>;
 
   TQuarticMeterIdentifier = specialize TQuarticUnitIdentifier<TMeter>;
   TQuarticMeters = specialize TQuarticDimensionedQuantity<TMeter>;
@@ -629,8 +629,11 @@ type
   TMillimeter = specialize TMilliUnit<TMeter>;
   TMillimeters = specialize TFactoredDimensionedQuantity<TMeter, TMillimeter>;
 
+  TSquareMillimeter = specialize TFactoredSquareUnit<TMillimeter>;
   TSquareMillimeterIdentifier = specialize TFactoredSquareUnitIdentifier<TMeter, TMillimeter>;
   TSquareMillimeters = specialize TFactoredSquareDimensionedQuantity<TMeter, TMillimeter>;
+  TSquareMillimetersFactor = specialize TFactoredDimensionedQuantity<TSquareMeter, TSquareMillimeter>;
+
   TCubicMillimeters = specialize TFactoredCubicDimensionedQuantity<TMeter, TMillimeter>;
   TQuarticMillimeters = specialize TFactoredQuarticDimensionedQuantity<TMeter, TMillimeter>;
 
@@ -683,9 +686,11 @@ operator:=(const AVolume: TLitres): TCubicMeters;
 operator:=(const AVolume: TLitres): TCubicDecimeters;
 
 operator:=(const ASurface: TSquareMeters): TSquareMetersFactor;
+operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor;
 operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
 operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
 operator:=(const ASurface: TSquareMetersFactor): TSquareMeters;
+operator:=(const ASurface: TSquareMillimetersFactor): TSquareMillimeters;
 operator:=(const AVolume: TCubicMetersFactor): TCubicMeters;
 operator:=(const AHyperVolume: TQuarticMetersFactor): TQuarticMeters;
 
@@ -860,6 +865,9 @@ type
   TMillinewton = specialize TMilliUnit<TNewton>;
   TMillinewtonIdentifier = specialize TFactoredUnitIdentifier<TNewton, TMillinewton>;
   TMillinewtons = specialize TFactoredDimensionedQuantity<TNewton, TMillinewton>;
+  TKilonewton = specialize TKiloUnit<TNewton>;
+  TKilonewtonIdentifier = specialize TFactoredUnitIdentifier<TNewton, TKilonewton>;
+  TKilonewtons = specialize TFactoredDimensionedQuantity<TNewton, TKilonewton>;
 
   TNewtonPerMeter = specialize TRatioUnit<TNewton, TMeter>;
   TNewtonPerMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TMeter>;
@@ -869,9 +877,13 @@ type
   TPascalIdentifier = specialize TRatioUnitIdentifier<TNewton, TSquareMeter>;
   TPascals = specialize TRatioDimensionedQuantity<TNewton, TSquareMeter>;
 
-  TMegapascal = specialize TMegaUnit<TPascal>;
-  TMegapascalIdentifier = specialize TFactoredUnitIdentifier<TPascal, TMegapascal>;
-  TMegapascals = specialize TFactoredDimensionedQuantity<TPascal, TMegapascal>;
+  TKilopascal = specialize TFactoredNumeratorUnit<TKilonewton, TSquareMeter>;
+  TKilopascalIdentifier = specialize TFactoredNumeratorUnitIdentifier<TNewton, TSquareMeter, TKilonewton>;
+  TKilopascals = specialize TFactoredNumeratorDimensionedQuantity<TNewton, TSquareMeter, TKilonewton>;
+
+  TMegapascal = specialize TFactoredDenominatorUnit<TNewton, TSquareMillimeter>;
+  TMegapascalIdentifier = specialize TFactoredDenominatorUnitIdentifier<TNewton, TSquareMeter, TSquareMillimeter>;
+  TMegapascals = specialize TFactoredDenominatorDimensionedQuantity<TNewton, TSquareMeter, TSquareMillimeter>;
 
   TJoule = specialize TUnitProduct<TNewton, TMeter>;
   TJouleIdentifer = specialize TUnitProductIdentifier<TNewton, TMeter>;
@@ -908,11 +920,13 @@ var
   rad: TRadianIdentifier;
   deg: TDegreeIdentifier;
   N: TNewtonIdentifier;
+  kN: TKilonewtonIdentifier;
   C: TCoulombIdentifer;
   lx: TLuxIdentifier;
   Sv: TSievertIdentifier;
   kat: TKatalIdentifier;
   Pa: TPascalIdentifier;
+  kPa: TKilopascalIdentifier;
   MPa: TMegapascalIdentifier;
   J: TJouleIdentifer;
   rho: TKilogramPerCubicMeterIdentifier;
@@ -959,6 +973,7 @@ operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TKilogra
 
 operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals; inline;
 operator /(const AForce: TNewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
+operator /(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals; inline;
 
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 
@@ -1904,6 +1919,11 @@ begin
   result.Value := ASurface.Value;
 end;
 
+operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor;
+begin
+  result.Value := ASurface.Value;
+end;
+
 operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
 begin
   result.Value := AVolume.Value;
@@ -1915,6 +1935,11 @@ begin
 end;
 
 operator:=(const ASurface: TSquareMetersFactor): TSquareMeters;
+begin
+  result.Value := ASurface.Value;
+end;
+
+operator:=(const ASurface: TSquareMillimetersFactor): TSquareMillimeters;
 begin
   result.Value := ASurface.Value;
 end;
@@ -2181,6 +2206,11 @@ begin
   result.Value := AForce.Value / AArea.Value;
 end;
 
+operator/(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals;
+begin
+  result.Value := AForce.Value / AArea.Value;
+end;
+
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter;
 begin
   result.Value := AForce.Value / ALength.Value;
@@ -2208,4 +2238,5 @@ end;
 
 end.
 {$ENDIF}
+
 
