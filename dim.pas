@@ -553,6 +553,8 @@ type
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
   end;
 
+////////////////////////////////// BASE UNITS //////////////////////////////////
+
 { Units of time }
 
 type
@@ -789,6 +791,8 @@ type
 var
   cd: TCandelaIdentifier;
 
+/////////////////////// UNITS DERIVED FROM BASE UNITS ////////////////////////
+
 { Units of speed }
 
 type
@@ -832,6 +836,31 @@ operator /(const ASpeed: TMetersPerSecond; const ATime: TSeconds): TMetersPerSec
 operator /(const ALength: TMeters; const ASquareTime: TSquareSeconds): TMetersPerSecondSquared; inline;
 operator /(const ASpeed: TKilometersPerHour; const ATime: TSeconds): TKilometersPerHourPerSecond; inline;
 
+{ Mechanical derived units }
+
+type
+  TGramPerCubicMeter = specialize TRatioUnit<TGram, TCubicMeter>;
+  TGramPerCubicMeterIdentifier = specialize TRatioUnitIdentifier
+                                            <TGram, TCubicMeter>;
+  TGramsPerCubicMeter = specialize TRatioDimensionedQuantity
+                                   <TGram, TCubicMeter>;
+
+  TKilogramPerCubicMeter = specialize TFactoredNumeratorUnit<TKilogram, TCubicMeter>;
+  TKilogramPerCubicMeterIdentifier = specialize TFactoredNumeratorUnitIdentifier
+                                                <TGram, TCubicMeter, TKilogram>;
+  TKilogramsPerCubicMeter = specialize TFactoredNumeratorDimensionedQuantity
+                                       <TGram, TCubicMeter, TKilogram>;
+
+// combining units
+operator /(const {%H-}g: TGramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TGramPerCubicMeterIdentifier; inline;
+operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TKilogramPerCubicMeterIdentifier; inline;
+
+// combining dimensioned quantities
+operator /(const AMass: TGrams; const AVolume: TCubicMeters): TGramsPerCubicMeter; inline;
+operator /(const AMass: TKilograms; const AVolume: TCubicMeters): TKilogramsPerCubicMeter; inline;
+
+//////////////////////////////// SPECIAL UNITS /////////////////////////////////
+
 { Special units }
 type
   THertzIdentifier = specialize TReciprocalUnitIdentifier<TSecond>;
@@ -840,13 +869,6 @@ type
   TRadian = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   TRadianIdentifier = specialize TUnitIdentifier<TRadian>;
   TRadians = specialize TDimensionedQuantity<TRadian>;
-
-  TRadianPerSecond = specialize TRatioUnit<TRadian, TSecond>;
-  TRadianPerSecondIdentifier = specialize TRatioUnitIdentifier<TRadian, TSecond>;
-  TRadiansPerSecond = specialize TRatioDimensionedQuantity<TRadian, TSecond>;
-
-  TRadianPerSecondSquaredIdentifier = specialize TRatioUnitIdentifier<TRadianPerSecond, TSecond>;
-  TRadiansPerSecondSquared = specialize TRatioDimensionedQuantity<TRadianPerSecond, TSecond>;
 
   TDegree = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   TDegreeIdentifier = specialize TFactoredUnitIdentifier<TRadian, TDegree>;
@@ -868,10 +890,6 @@ type
   TKilonewton = specialize TKiloUnit<TNewton>;
   TKilonewtonIdentifier = specialize TFactoredUnitIdentifier<TNewton, TKilonewton>;
   TKilonewtons = specialize TFactoredDimensionedQuantity<TNewton, TKilonewton>;
-
-  TNewtonPerMeter = specialize TRatioUnit<TNewton, TMeter>;
-  TNewtonPerMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TMeter>;
-  TNewtonsPerMeter = specialize TRatioDimensionedQuantity<TNewton, TMeter>;
 
   TPascal = specialize TRatioUnit<TNewton, TSquareMeter>;
   TPascalIdentifier = specialize TRatioUnitIdentifier<TNewton, TSquareMeter>;
@@ -903,18 +921,6 @@ type
   TKatalIdentifier = specialize TRatioUnitIdentifier<TMole, TSecond>;
   TKatals = specialize TRatioDimensionedQuantity<TMole, TSecond>;
 
-  TGramPerCubicMeter = specialize TRatioUnit<TGram, TCubicMeter>;
-  TGramPerCubicMeterIdentifier = specialize TRatioUnitIdentifier
-                                            <TGram, TCubicMeter>;
-  TGramsPerCubicMeter = specialize TRatioDimensionedQuantity
-                                   <TGram, TCubicMeter>;
-
-  TKilogramPerCubicMeter = specialize TFactoredNumeratorUnit<TKilogram, TCubicMeter>;
-  TKilogramPerCubicMeterIdentifier = specialize TFactoredNumeratorUnitIdentifier
-                                                <TGram, TCubicMeter, TKilogram>;
-  TKilogramsPerCubicMeter = specialize TFactoredNumeratorDimensionedQuantity
-                                       <TGram, TCubicMeter, TKilogram>;
-
 var
   Hz: THertzIdentifier;
   rad: TRadianIdentifier;
@@ -929,13 +935,8 @@ var
   lx: TLuxIdentifier;
   Sv: TSievertIdentifier;
   kat: TKatalIdentifier;
-  rho: TKilogramPerCubicMeterIdentifier;
 
 // combining units
-operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondIdentifier; inline;
-operator /(const {%H-}rad_s: TRadianPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
-
 operator *(const {%H-}g: TGramIdentifier; const {%H-}m: TMeterIdentifier): TGramMeterIdentifier; inline;
 operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m: TMeterIdentifier): TKilogramMeterIdentifier; inline;
 
@@ -948,8 +949,6 @@ operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m2: TSquareMeterIdentifie
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm2: TSquareMillimeterIdentifier): TMegapascalIdentifier; inline;
 operator /(const {%H-}kN: TKilonewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TKilopascalIdentifier; inline;
 
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
-
 operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJouleIdentifer; inline;
 
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifer; inline;
@@ -960,15 +959,8 @@ operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondId
 
 operator /(const {%H-}mol: TMoleIdentifier; const {%H-}s: TSecondIdentifier): TKatalIdentifier; inline;
 
-operator /(const {%H-}g: TGramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TGramPerCubicMeterIdentifier; inline;
-operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TKilogramPerCubicMeterIdentifier; inline;
-
 // combining dimensioned quantities
 operator /(const AValue: double; const ADuration: TSeconds): TFrequency; inline;
-
-operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
-operator /(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared; inline;
-operator /(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared; inline;
 
 operator *(const AWeight: TGrams; const ALength: TMeters): TGramMeters; inline;
 operator *(const AWeight: TKilograms; const ALength: TMeters): TKilogramMeters; inline;
@@ -983,8 +975,6 @@ operator /(const AForce: TNewtons; const AArea: TSquareMillimeters): TMegapascal
 operator /(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals; inline;
 operator /(const AForce: TKilonewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
 
-operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
-
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
 
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
@@ -995,8 +985,47 @@ operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSiev
 
 operator /(const AAmountOfSustance: TMoles; const ATime: TSeconds): TKatals; inline;
 
-operator /(const AMass: TGrams; const AVolume: TCubicMeters): TGramsPerCubicMeter; inline;
-operator /(const AMass: TKilograms; const AVolume: TCubicMeters): TKilogramsPerCubicMeter; inline;
+////////////////////// UNITS DERIVED FROM SPECIAL UNITS ////////////////////////
+
+{ Units of speed }
+
+type
+  TRadianPerSecond = specialize TRatioUnit<TRadian, TSecond>;
+  TRadianPerSecondIdentifier = specialize TRatioUnitIdentifier<TRadian, TSecond>;
+  TRadiansPerSecond = specialize TRatioDimensionedQuantity<TRadian, TSecond>;
+
+// combining units
+operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondIdentifier; inline;
+
+// combining dimensioned quantities
+operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
+
+{ Units of acceleration }
+
+type
+  TRadianPerSecondSquaredIdentifier = specialize TRatioUnitIdentifier<TRadianPerSecond, TSecond>;
+  TRadiansPerSecondSquared = specialize TRatioDimensionedQuantity<TRadianPerSecond, TSecond>;
+
+// combining units
+operator /(const {%H-}rad_s: TRadianPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
+operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
+
+// combining dimensioned quantities
+operator /(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared; inline;
+operator /(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared; inline;
+
+{ Mechanical derived units }
+
+type
+  TNewtonPerMeter = specialize TRatioUnit<TNewton, TMeter>;
+  TNewtonPerMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TMeter>;
+  TNewtonsPerMeter = specialize TRatioDimensionedQuantity<TNewton, TMeter>;
+
+// combining units
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
+
+// combining dimensioned quantities
+operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 
 { Formatting }
 
