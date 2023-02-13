@@ -992,9 +992,17 @@ type
   TCoulombIdentifier = specialize TUnitProductIdentifier<TAmpere, TSecond>;
   TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
 
+  TSquareCoulomb = specialize TSquareUnit<TCoulomb>;
+  TSquareCoulombIdentifier = specialize TSquareUnitIdentifier<TCoulomb>;
+  TSquareCoulombs = specialize TSquareDimensionedQuantity<TCoulomb>;
+
   TVolt = specialize TRatioUnit<TJoule, TCoulomb>;
   TVoltIdentifier = specialize TRatioUnitIdentifier<TJoule, TCoulomb>;
   TVolts = specialize TRatioDimensionedQuantity<TJoule, TCoulomb>;
+
+  TFarad = specialize TRatioUnit<TCoulomb, TVolt>;
+  TFaradIdentifier = specialize TRatioUnitIdentifier<TCoulomb, TVolt>;
+  TFarads = specialize TRatioDimensionedQuantity<TCoulomb, TVolt>;
 
   TLumen = specialize TUnitProduct<TCandela, TSteradian>;
   TLumenIdentifer = specialize TUnitProductIdentifier<TCandela, TSteradian>;
@@ -1024,12 +1032,14 @@ var
   MPa: TMegapascalIdentifier;
   J: TJouleIdentifier;
   C: TCoulombIdentifier;
+  C2: TSquareCoulombIdentifier;
   lm: TLumenIdentifer;
   lx: TLuxIdentifier;
   Sv: TSievertIdentifier;
   kat: TKatalIdentifier;
   W: TWattIdentifier;
   V: TVoltIdentifier;
+  F: TFaradIdentifier;
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m: TMeterIdentifier): THertzIdentifier; inline;
@@ -1056,6 +1066,12 @@ operator /(const {%H-}W: TWattIdentifier; const {%H-}A: TAmpereIdentifier): TVol
 operator /(const {%H-}W: TWattIdentifier; const {%H-}V: TVoltIdentifier): TAmpereIdentifier; inline;
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}V: TVoltIdentifier): TWattIdentifier; inline;
 operator *(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TWattIdentifier; inline;
+
+operator /(const {%H-}C: TCoulombIdentifier; const {%H-}V: TVoltIdentifier): TFaradIdentifier; inline;
+operator /(const {%H-}C2: TSquareCoulombIdentifier; const {%H-}J: TJouleIdentifier): TFaradIdentifier; inline;
+operator /(const {%H-}C2: TSquareCoulombIdentifier; const {%H-}F: TFaradIdentifier): TJouleIdentifier; inline;
+operator *(const {%H-}J: TJouleIdentifier; const {%H-}F: TFaradIdentifier): TSquareCoulombIdentifier; inline;
+operator *(const {%H-}F: TFaradIdentifier; const {%H-}J: TJouleIdentifier): TSquareCoulombIdentifier; inline;
 
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifier; inline;
 
@@ -1094,6 +1110,12 @@ operator /(const APower: TWatts; const ACurrent: TAmperes): TVolts; inline;
 operator /(const APower: TWatts; const AVoltage: TVolts): TAmperes; inline;
 operator *(const ACurrent: TAmperes; const AVoltage: TVolts): TWatts; inline;
 operator *(const AVoltage: TVolts; const ACurrent: TAmperes): TWatts; inline;
+
+operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads; inline;
+operator /(const ASquareCharge: TSquareCoulombs; const AWork: TJoules): TFarads; inline;
+operator /(const ASquareCharge: TSquareCoulombs; const ACapacitance: TFarads): TJoules; inline;
+operator *(const AWork: TJoules; const ACapacitance: TFarads): TSquareCoulombs; inline;
+operator *(const ACapacitance: TFarads; const AWork: TJoules): TSquareCoulombs; inline;
 
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
 
@@ -1235,6 +1257,9 @@ begin
   'N/mm2': result := 'MPa';
   'J/s': result := 'W';
   'J/C': result := 'V';
+  'W/A': result := 'V';
+  'C2/J': result := 'F';
+  'C/V': result := 'F';
   end;
 end;
 
@@ -1256,6 +1281,9 @@ begin
   'newton per square millimeter': result := 'megapascal';
   'joule per second': result := 'watt';
   'joule per coulomb': result := 'volt';
+  'watt per ampere': result := 'volt';
+  'square coulomb per joule': result:= 'farad';
+  'coulomb per volt': result:= 'farad';
   end;
 end;
 
@@ -2499,6 +2527,21 @@ begin end;
 operator *(const V: TVoltIdentifier; const A: TAmpereIdentifier): TWattIdentifier;
 begin end;
 
+operator /(const C: TCoulombIdentifier; const V: TVoltIdentifier): TFaradIdentifier;
+begin end;
+
+operator /(const C2: TSquareCoulombIdentifier; const J: TJouleIdentifier): TFaradIdentifier;
+begin end;
+
+operator /(const C2: TSquareCoulombIdentifier; const F: TFaradIdentifier): TJouleIdentifier;
+begin end;
+
+operator *(const J: TJouleIdentifier; const F: TFaradIdentifier): TSquareCoulombIdentifier;
+begin end;
+
+operator *(const F: TFaradIdentifier; const J: TJouleIdentifier): TSquareCoulombIdentifier;
+begin end;
+
 operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifier;
 begin end;
 
@@ -2670,6 +2713,31 @@ end;
 operator *(const AVoltage: TVolts; const ACurrent: TAmperes): TWatts; inline;
 begin
   result.Value := AVoltage.Value * ACurrent.Value;
+end;
+
+operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads;
+begin
+  result.Value := ACharge.Value / AVoltage.Value;
+end;
+
+operator /(const ASquareCharge: TSquareCoulombs; const AWork: TJoules): TFarads;
+begin
+  result.Value := ASquareCharge.Value / AWork.Value;
+end;
+
+operator /(const ASquareCharge: TSquareCoulombs; const ACapacitance: TFarads): TJoules;
+begin
+  result.Value := ASquareCharge.Value / ACapacitance.Value;
+end;
+
+operator *(const AWork: TJoules; const ACapacitance: TFarads): TSquareCoulombs;
+begin
+  result.Value := AWork.Value * ACapacitance.Value;
+end;
+
+operator *(const ACapacitance: TFarads; const AWork: TJoules): TSquareCoulombs;
+begin
+  result.Value := ACapacitance.Value * AWork.Value;
 end;
 
 operator*(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs;
