@@ -672,9 +672,9 @@ var
   cm2:specialize TFactoredSquareUnitIdentifier<TMeter, TCentimeter>;
   cm3:specialize TFactoredCubicUnitIdentifier<TMeter, TCentimeter>;
   cm4:specialize TFactoredQuarticUnitIdentifier<TMeter, TCentimeter>;
-  mm: specialize TFactoredUnitIdentifier<TMeter, TMillimeter>;
-  mm2:specialize TFactoredSquareUnitIdentifier<TMeter, TMillimeter>;
-  mm3:specialize TFactoredCubicUnitIdentifier<TMeter, TMillimeter>;
+  mm: TMillimeterIdentifier;
+  mm2:TSquareMillimeterIdentifier;
+  mm3:TCubicMillimeterIdentifier;
   mm4:specialize TFactoredQuarticUnitIdentifier<TMeter, TMillimeter>;
 
   L: TLitreIdentifier;
