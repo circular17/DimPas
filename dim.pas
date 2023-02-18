@@ -1072,12 +1072,14 @@ operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJo
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}s: TSecondIdentifier): TWattIdentifier; inline;
 
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}C: TCoulombIdentifier): TVoltIdentifier; inline;
+// alternative definition of V = W / A
 operator /(const {%H-}W: TWattIdentifier; const {%H-}A: TAmpereIdentifier): TVoltIdentifier; inline;
 operator /(const {%H-}W: TWattIdentifier; const {%H-}V: TVoltIdentifier): TAmpereIdentifier; inline;
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}V: TVoltIdentifier): TWattIdentifier; inline;
 operator *(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TWattIdentifier; inline;
 
 operator /(const {%H-}C: TCoulombIdentifier; const {%H-}V: TVoltIdentifier): TFaradIdentifier; inline;
+// alternative definition of F = C2 / J
 operator /(const {%H-}C2: TSquareCoulombIdentifier; const {%H-}J: TJouleIdentifier): TFaradIdentifier; inline;
 operator /(const {%H-}C2: TSquareCoulombIdentifier; const {%H-}F: TFaradIdentifier): TJouleIdentifier; inline;
 operator *(const {%H-}J: TJouleIdentifier; const {%H-}F: TFaradIdentifier): TSquareCoulombIdentifier; inline;
@@ -1086,6 +1088,7 @@ operator *(const {%H-}F: TFaradIdentifier; const {%H-}J: TJouleIdentifier): TSqu
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifier; inline;
 
 operator /(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TOhmIdentifier; inline;
+// alternative definition of Ω = s / F
 operator /(const {%H-}s: TSecondIdentifier; const {%H-}F: TFaradIdentifier): TOhmIdentifier; inline;
 operator /(const {%H-}s: TSecondIdentifier; const {%H-}Ohm: TOhmIdentifier): TFaradIdentifier; inline;
 operator *(const {%H-}F: TFaradIdentifier; const {%H-}Ohm: TOhmIdentifier): TSecondIdentifier; inline;
@@ -1122,12 +1125,14 @@ operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts; inline;
 
 operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts; inline;
+// alternative definition of V = W / A
 operator /(const APower: TWatts; const ACurrent: TAmperes): TVolts; inline;
 operator /(const APower: TWatts; const AVoltage: TVolts): TAmperes; inline;
 operator *(const ACurrent: TAmperes; const AVoltage: TVolts): TWatts; inline;
 operator *(const AVoltage: TVolts; const ACurrent: TAmperes): TWatts; inline;
 
 operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads; inline;
+// alternative definition of F = C2 / J
 operator /(const ASquareCharge: TSquareCoulombs; const AWork: TJoules): TFarads; inline;
 operator /(const ASquareCharge: TSquareCoulombs; const ACapacitance: TFarads): TJoules; inline;
 operator *(const AWork: TJoules; const ACapacitance: TFarads): TSquareCoulombs; inline;
@@ -1136,6 +1141,7 @@ operator *(const ACapacitance: TFarads; const AWork: TJoules): TSquareCoulombs; 
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
 
 operator /(const AVoltage: TVolts; const ACurrent: TAmperes): TOhms; inline;
+// alternative definition of Ω = s / F
 operator /(const ATime: TSeconds; const ACapacitance: TFarads): TOhms; inline;
 operator /(const ATime: TSeconds; const AImpedance: TOhms): TFarads; inline;
 operator *(const ACapacitance: TFarads; const AImpedance: TOhms): TSeconds; inline;
