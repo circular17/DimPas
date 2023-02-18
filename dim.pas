@@ -1007,6 +1007,21 @@ type
   TOhmIdentifier = specialize TRatioUnitIdentifier<TVolt, TAmpere>;
   TOhms = specialize TRatioDimensionedQuantity<TVolt, TAmpere>;
 
+  TSiemensIdentifier = specialize TRatioUnitIdentifier<TAmpere, TVolt>;
+  TSiemens = specialize TRatioDimensionedQuantity<TAmpere, TVolt>;
+
+  TWeber = specialize TUnitProduct<TVolt, TSecond>;
+  TWeberIdentifier = specialize TUnitProductIdentifier<TVolt, TSecond>;
+  TWebers = specialize TDimensionedQuantityProduct<TVolt, TSecond>;
+
+  TTesla = specialize TRatioUnit<TWeber, TSquareMeter>;
+  TTeslaIdentifier = specialize TRatioUnitIdentifier<TWeber, TSquareMeter>;
+  TTeslas = specialize TRatioDimensionedQuantity<TWeber, TSquareMeter>;
+
+  THenry = specialize TRatioUnit<TWeber, TAmpere>;
+  THenryIdentifier = specialize TRatioUnitIdentifier<TWeber, TAmpere>;
+  THenrys = specialize TRatioDimensionedQuantity<TWeber, TAmpere>;
+
   TLumen = specialize TUnitProduct<TCandela, TSteradian>;
   TLumenIdentifer = specialize TUnitProductIdentifier<TCandela, TSteradian>;
   TLumens = specialize TDimensionedQuantityProduct<TCandela, TSteradian>;
@@ -1014,10 +1029,16 @@ type
   TLuxIdentifier = specialize TRatioUnitIdentifier<TLumen, TSquareMeter>;
   TLuxQuantity = specialize TRatioDimensionedQuantity<TLumen, TSquareMeter>;
 
+  TBecquerelIdentifier = THertzIdentifier;
+  TBecquerels = TFrequency;
+
   TSievertIdentifier = specialize TRatioUnitIdentifier
                                   <TSquareMeter, specialize TSquareUnit<TSecond>>;
   TSieverts = specialize TRatioDimensionedQuantity
                          <TSquareMeter, specialize TSquareUnit<TSecond>>;
+
+  TGrayIdentifier = TSievertIdentifier;
+  TGrays = TSieverts;
 
   TKatalIdentifier = specialize TRatioUnitIdentifier<TMole, TSecond>;
   TKatals = specialize TRatioDimensionedQuantity<TMole, TSecond>;
@@ -1038,12 +1059,18 @@ var
   C2: TSquareCoulombIdentifier;
   lm: TLumenIdentifer;
   lx: TLuxIdentifier;
+  Gy: TGrayIdentifier;
   Sv: TSievertIdentifier;
   kat: TKatalIdentifier;
   W: TWattIdentifier;
   V: TVoltIdentifier;
   F: TFaradIdentifier;
   Ohm: TOhmIdentifier;
+  Siemens: TSiemensIdentifier;
+  Wb: TWeberIdentifier;
+  T: TTeslaIdentifier;
+  Henry: THenryIdentifier;
+  Bq: TBecquerelIdentifier;
 
 // dimension equivalence
 operator:=(const AWeight: TKilograms): TBaseKilograms;
@@ -1093,6 +1120,19 @@ operator /(const {%H-}s: TSecondIdentifier; const {%H-}F: TFaradIdentifier): TOh
 operator /(const {%H-}s: TSecondIdentifier; const {%H-}Ohm: TOhmIdentifier): TFaradIdentifier; inline;
 operator *(const {%H-}F: TFaradIdentifier; const {%H-}Ohm: TOhmIdentifier): TSecondIdentifier; inline;
 operator *(const {%H-}Ohm: TOhmIdentifier; const {%H-}F: TFaradIdentifier): TSecondIdentifier; inline;
+
+operator /(const {%H-}A: TAmpereIdentifier; const {%H-}V: TVoltIdentifier): TSiemensIdentifier; inline;
+// alternative definition of S = 1 / Ω
+operator /(const {%H-}AValue: double; const {%H-}Ohm: TOhmIdentifier): TSiemensIdentifier; inline;
+operator /(const {%H-}AValue: double; const {%H-}S: TSiemensIdentifier): TOhmIdentifier; inline;
+
+operator *(const {%H-}V: TVoltIdentifier; const {%H-}s: TSecondIdentifier): TWeberIdentifier; inline;
+operator *(const {%H-}s: TSecondIdentifier; const {%H-}V: TVoltIdentifier): TWeberIdentifier; inline;
+operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}V: TVoltIdentifier): TSecondIdentifier; inline;
+
+operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}m2: TSquareMeterIdentifier): TTeslaIdentifier; inline;
+
+operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}A: TAmpereIdentifier): THenryIdentifier; inline;
 
 operator *(const {%H-}cd: TCandelaIdentifier; const {%H-}sr: TSteradianIdentifier): TLumenIdentifer; inline;
 operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
@@ -1146,6 +1186,19 @@ operator /(const ATime: TSeconds; const ACapacitance: TFarads): TOhms; inline;
 operator /(const ATime: TSeconds; const AImpedance: TOhms): TFarads; inline;
 operator *(const ACapacitance: TFarads; const AImpedance: TOhms): TSeconds; inline;
 operator *(const AImpedance: TOhms; const ACapacitance: TFarads): TSeconds; inline;
+
+operator /(const ACurrent: TAmperes; const AVoltage: TVolts): TSiemens; inline;
+// alternative definition of S = 1 / Ω
+operator /(const AValue: double; const AResistance: TOhms): TSiemens; inline;
+operator /(const AValue: double; const AElectricalConductance: TSiemens): TOhms; inline;
+
+operator *(const AVoltage: TVolts; const ATime: TSeconds): TWebers; inline;
+operator *(const ATime: TSeconds; const AVoltage: TVolts): TWebers; inline;
+operator /(const AMagneticFlux: TWebers; const AVoltage: TVolts): TSeconds; inline;
+
+operator /(const AMagneticFlux: TWebers; const AArea: TSquareMeters): TTeslas; inline;
+
+operator /(const AMagneticFlux: TWebers; const ACurrent: TAmperes): THenrys; inline;
 
 operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens; inline;
 operator /(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity; inline;
@@ -1290,6 +1343,9 @@ begin
   'C/V': result := 'F';
   'V/A': result := 'Ω';
   's/F': result := 'Ω';
+  'Wb/m2': result := 'T';
+  'Wb/A': result := 'H';
+  'A/V': result := 'S';
   end;
 end;
 
@@ -1316,6 +1372,9 @@ begin
   'coulomb per volt': result:= 'farad';
   'volt per ampere': result:= 'ohm';
   'second per farad': result:= 'ohm';
+  'weber per square meter': result:= 'tesla';
+  'weber per ampere': result:= 'henry';
+  'ampere per volt': result:= 'siemens';
   end;
 end;
 
@@ -1328,6 +1387,7 @@ begin
   'kg.m/s2': result := 'N';
   'N.m': result := 'J';
   'cd.sr': result := 'lm';
+  'V.s': result := 'Wb';
   end;
 end;
 
@@ -1340,6 +1400,7 @@ begin
   'kilogram-meter per second squared': result := 'newton';
   'newton-meter': result := 'joule';
   'candela-steradian': result := 'lumen';
+  'volt-second': result := 'weber';
   end;
 end;
 
@@ -2603,6 +2664,30 @@ begin end;
 operator *(const Ohm: TOhmIdentifier; const F: TFaradIdentifier): TSecondIdentifier;
 begin end;
 
+operator /(const A: TAmpereIdentifier; const V: TVoltIdentifier): TSiemensIdentifier;
+begin end;
+
+operator /(const AValue: double; const Ohm: TOhmIdentifier): TSiemensIdentifier;
+begin end;
+
+operator /(const AValue: double; const S: TSiemensIdentifier): TOhmIdentifier;
+begin end;
+
+operator *(const V: TVoltIdentifier; const s: TSecondIdentifier): TWeberIdentifier;
+begin end;
+
+operator *(const s: TSecondIdentifier; const V: TVoltIdentifier): TWeberIdentifier;
+begin end;
+
+operator /(const Wb: TWeberIdentifier; const V: TVoltIdentifier): TSecondIdentifier;
+begin end;
+
+operator /(const Wb: TWeberIdentifier; const m2: TSquareMeterIdentifier): TTeslaIdentifier;
+begin end;
+
+operator /(const Wb: TWeberIdentifier; const A: TAmpereIdentifier): THenryIdentifier;
+begin end;
+
 operator *(const cd: TCandelaIdentifier; const sr: TSteradianIdentifier): TLumenIdentifer;
 begin end;
 
@@ -2826,6 +2911,46 @@ end;
 operator *(const AImpedance: TOhms; const ACapacitance: TFarads): TSeconds;
 begin
   result.Value := AImpedance.Value * ACapacitance.Value;
+end;
+
+operator /(const ACurrent: TAmperes; const AVoltage: TVolts): TSiemens;
+begin
+  result.Value := ACurrent.Value / AVoltage.Value;
+end;
+
+operator /(const AValue: double; const AResistance: TOhms): TSiemens;
+begin
+  result.Value := AValue / AResistance.Value;
+end;
+
+operator /(const AValue: double; const AElectricalConductance: TSiemens): TOhms;
+begin
+  result.Value := AValue / AElectricalConductance.Value;
+end;
+
+operator *(const AVoltage: TVolts; const ATime: TSeconds): TWebers;
+begin
+  result.Value := AVoltage.Value * ATime.Value;
+end;
+
+operator *(const ATime: TSeconds; const AVoltage: TVolts): TWebers;
+begin
+  result.Value := ATime.Value * AVoltage.Value;
+end;
+
+operator /(const AMagneticFlux: TWebers; const AVoltage: TVolts): TSeconds;
+begin
+  result.Value := AMagneticFlux.Value / AVoltage.Value;
+end;
+
+operator /(const AMagneticFlux: TWebers; const AArea: TSquareMeters): TTeslas;
+begin
+  result.Value := AMagneticFlux.Value / AArea.Value;
+end;
+
+operator /(const AMagneticFlux: TWebers; const ACurrent: TAmperes): THenrys;
+begin
+  result.Value := AMagneticFlux.Value / ACurrent.Value;
 end;
 
 operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens;
