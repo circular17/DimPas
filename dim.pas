@@ -718,10 +718,6 @@ type
   TKilogramIdentifier = specialize TFactoredUnitIdentifier<TGram, TKilogram>;
   TKilograms = specialize TFactoredDimensionedQuantity<TGram, TKilogram>;
 
-  // the kg is also a base unit for special units in SI
-  TBaseKilogram = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TBaseKilograms = specialize TDimensionedQuantity<TBaseKilogram>;
-
   TTon = specialize TMegaUnit<TGram>;
   TTons = specialize TFactoredDimensionedQuantity<TGram, TTon>;
 
@@ -730,10 +726,6 @@ var
   g: TGramIdentifier;
   kg: TKilogramIdentifier;
   ton: specialize TFactoredUnitIdentifier<TGram, TTon>;
-
-// dimension equivalence
-operator:=(const AWeight: TKilograms): TBaseKilograms;
-operator:=(const AWeight: TBaseKilograms): TKilograms;
 
 { Units of amount of substance }
 
@@ -863,19 +855,21 @@ type
 
   TGramPerCubicMillimeter = specialize TFactoredDenominatorUnit<TGram, TCubicMillimeter>;
   TGramPerCubicMillimeterIdentifier = specialize TFactoredDenominatorUnitIdentifier
-                                            <TGram, TCubicMeter, TCubicMillimeter>;
+                                                 <TGram, TCubicMeter, TCubicMillimeter>;
   TGramsPerCubicMillimeter = specialize TFactoredDenominatorDimensionedQuantity
-                                   <TGram, TCubicMeter, TCubicMillimeter>;
+                                        <TGram, TCubicMeter, TCubicMillimeter>;
 
-  TKilogramPerCubicMeter = specialize TRatioUnit<TBaseKilogram, TCubicMeter>;
-  TKilogramPerCubicMeterIdentifier = specialize TRatioUnitIdentifier<TBaseKilogram, TCubicMeter>;
-  TKilogramsPerCubicMeter = specialize TRatioDimensionedQuantity<TBaseKilogram, TCubicMeter>;
+  TKilogramPerCubicMeter = specialize TFactoredNumeratorUnit<TKilogram, TCubicMeter>;
+  TKilogramPerCubicMeterIdentifier = specialize TFactoredNumeratorUnitIdentifier
+                                                <TGram, TCubicMeter, TKilogram>;
+  TKilogramsPerCubicMeter = specialize TFactoredNumeratorDimensionedQuantity
+                                       <TGram, TCubicMeter, TKilogram>;
 
-  TKilogramPerCubicMillimeter = specialize TFactoredDenominatorUnit<TBaseKilogram, TCubicMillimeter>;
-  TKilogramPerCubicMillimeterIdentifier = specialize TFactoredDenominatorUnitIdentifier
-                                            <TBaseKilogram, TCubicMeter, TCubicMillimeter>;
-  TKilogramsPerCubicMillimeter = specialize TFactoredDenominatorDimensionedQuantity
-                                   <TBaseKilogram, TCubicMeter, TCubicMillimeter>;
+  TKilogramPerCubicMillimeter = specialize TFactoredRatioUnit<TKilogram, TCubicMillimeter>;
+  TKilogramPerCubicMillimeterIdentifier = specialize TFactoredRatioUnitIdentifier
+                                          <TGram, TCubicMeter, TKilogram, TCubicMillimeter>;
+  TKilogramsPerCubicMillimeter = specialize TFactoredRatioDimensionedQuantity
+                                 <TGram, TCubicMeter, TKilogram, TCubicMillimeter>;
 
 // combining units
 operator /(const {%H-}g: TGramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TGramPerCubicMeterIdentifier; inline;
@@ -958,6 +952,11 @@ type
   TKilogramMeters = specialize TLeftFactoredDimensionedQuantityProduct
                            <TGram, TMeter, TKilogram>;
 
+  // the kg is also a base unit for special units in SI
+  TBaseKilogram = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  TBaseKilograms = specialize TDimensionedQuantity<TBaseKilogram>;
+
+type
   TNewton = specialize TUnitProduct<TBaseKilogram, TMeterPerSecondSquared>;
   TNewtonIdentifier = specialize TUnitProductIdentifier<TBaseKilogram, TMeterPerSecondSquared>;
   TNewtons = specialize TDimensionedQuantityProduct<TBaseKilogram, TMeterPerSecondSquared>;
@@ -1045,6 +1044,12 @@ var
   V: TVoltIdentifier;
   F: TFaradIdentifier;
   Ohm: TOhmIdentifier;
+
+// dimension equivalence
+operator:=(const AWeight: TKilograms): TBaseKilograms;
+operator:=(const AWeight: TGrams): TBaseKilograms;
+operator:=(const AWeight: TBaseKilograms): TKilograms;
+operator:=(const AWeight: TBaseKilograms): TGrams;
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m: TMeterIdentifier): THertzIdentifier; inline;
@@ -2224,16 +2229,6 @@ class function TGram.Name: string;   begin result := 'gram'; end;
 class function TBaseKilogram.Symbol: string; begin result := 'kg'; end;
 class function TBaseKilogram.Name: string;   begin result := 'kilogram'; end;
 
-operator:=(const AWeight: TKilograms): TBaseKilograms;
-begin
-  result.Value := AWeight.Value;
-end;
-
-operator:=(const AWeight: TBaseKilograms): TKilograms;
-begin
-  result.Value := AWeight.Value;
-end;
-
 class function TMole.Symbol: string; begin result := 'mol'; end;
 class function TMole.Name: string;   begin result := 'mole'; end;
 
@@ -2464,6 +2459,27 @@ end;
 function TDegreesHelper.Cosecant: double;
 begin
   result := ToBase.Cosecant;
+end;
+
+// dimension equivalence
+operator:=(const AWeight: TKilograms): TBaseKilograms;
+begin
+  result.Value := AWeight.Value;
+end;
+
+operator:=(const AWeight: TGrams): TBaseKilograms;
+begin
+  result.Value := AWeight.Value * 0.001;
+end;
+
+operator:=(const AWeight: TBaseKilograms): TKilograms;
+begin
+  result.Value := AWeight.Value;
+end;
+
+operator:=(const AWeight: TBaseKilograms): TGrams;
+begin
+  result.Value := AWeight.Value * 1000;
 end;
 
 // combining units
