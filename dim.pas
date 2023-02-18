@@ -1029,16 +1029,16 @@ type
   TLuxIdentifier = specialize TRatioUnitIdentifier<TLumen, TSquareMeter>;
   TLuxQuantity = specialize TRatioDimensionedQuantity<TLumen, TSquareMeter>;
 
-  TBecquerelIdentifier = THertzIdentifier;
-  TBecquerels = TFrequency;
+  TBecquerelIdentifier = specialize TReciprocalUnitIdentifier<TSecond>;
+  TBecquerels = specialize TReciprocalDimensionedQuantity<TSecond>;
+
+  TGrayIdentifier = specialize TRatioUnitIdentifier<TJoule, TBaseKilogram>;
+  TGrays = specialize TRatioDimensionedQuantity<TJoule, TBaseKilogram>;
 
   TSievertIdentifier = specialize TRatioUnitIdentifier
                                   <TSquareMeter, specialize TSquareUnit<TSecond>>;
   TSieverts = specialize TRatioDimensionedQuantity
                          <TSquareMeter, specialize TSquareUnit<TSecond>>;
-
-  TGrayIdentifier = TSievertIdentifier;
-  TGrays = TSieverts;
 
   TKatalIdentifier = specialize TRatioUnitIdentifier<TMole, TSecond>;
   TKatals = specialize TRatioDimensionedQuantity<TMole, TSecond>;
@@ -1077,6 +1077,8 @@ operator:=(const AWeight: TKilograms): TBaseKilograms;
 operator:=(const AWeight: TGrams): TBaseKilograms;
 operator:=(const AWeight: TBaseKilograms): TKilograms;
 operator:=(const AWeight: TBaseKilograms): TGrams;
+operator:=(const AEquivalentDose: TSieverts): TGrays;
+operator:=(const AAbsorbedDose: TGrays): TSieverts;
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m: TMeterIdentifier): THertzIdentifier; inline;
@@ -1136,6 +1138,8 @@ operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}A: TAmpereIdentifier): TH
 
 operator *(const {%H-}cd: TCandelaIdentifier; const {%H-}sr: TSteradianIdentifier): TLumenIdentifer; inline;
 operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
+
+operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): TGrayIdentifier; inline;
 
 operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TSievertIdentifier; inline;
 
@@ -1202,6 +1206,8 @@ operator /(const AMagneticFlux: TWebers; const ACurrent: TAmperes): THenrys; inl
 
 operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens; inline;
 operator /(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity; inline;
+
+operator /(const AEnergy: TJoules; const AMass: TKilograms): TGrays; inline;
 
 operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSieverts; inline;
 
@@ -2549,6 +2555,16 @@ begin
   result.Value := AWeight.Value * 1000;
 end;
 
+operator:=(const AEquivalentDose: TSieverts): TGrays;
+begin
+  result.Value := AEquivalentDose.Value;
+end;
+
+operator:=(const AAbsorbedDose: TGrays): TSieverts;
+begin
+  result.Value := AAbsorbedDose.Value;
+end;
+
 // combining units
 operator/(const rad: TRadianIdentifier; const s: TSecondIdentifier): TRadianPerSecondIdentifier;
 begin end;
@@ -2692,6 +2708,9 @@ operator *(const cd: TCandelaIdentifier; const sr: TSteradianIdentifier): TLumen
 begin end;
 
 operator/(const lm: TLumenIdentifer; const m2: TSquareMeterIdentifier): TLuxIdentifier;
+begin end;
+
+operator /(const J: TJouleIdentifier; const kg: TKilogramIdentifier): TGrayIdentifier;
 begin end;
 
 operator/(const m2: TSquareMeterIdentifier; const s2: TSquareSecondIdentifier): TSievertIdentifier;
@@ -2961,6 +2980,11 @@ end;
 operator/(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity;
 begin
   result.Value := ALuminousFlux.Value / AArea.Value;
+end;
+
+operator /(const AEnergy: TJoules; const AMass: TKilograms): TGrays;
+begin
+  result.Value := AEnergy.Value / AMass.Value;
 end;
 
 operator/(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSieverts;
