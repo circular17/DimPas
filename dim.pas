@@ -1029,8 +1029,28 @@ type
   TLuxIdentifier = specialize TRatioUnitIdentifier<TLumen, TSquareMeter>;
   TLuxQuantity = specialize TRatioDimensionedQuantity<TLumen, TSquareMeter>;
 
-  TBecquerelIdentifier = specialize TReciprocalUnitIdentifier<TSecond>;
-  TBecquerels = specialize TReciprocalDimensionedQuantity<TSecond>;
+  TBecquerel = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  TBecquerelIdentifier = specialize TUnitIdentifier<TBecquerel>;
+  TBecquerels = specialize TDimensionedQuantity<TBecquerel>;
+
+  { TBecquerelHelper }
+
+  TBecquerelHelper = record helper for TBecquerelIdentifier
+    function From(const AFrequency: TFrequency): TBecquerels;
+    function Inverse: TSecond;
+  end;
+
+  TKilobecquerel = specialize TKiloUnit<TBecquerel>;
+  TKilobecquerelIdentifier = specialize TFactoredUnitIdentifier<TBecquerel, TKilobecquerel>;
+  TKilobecquerels = specialize TFactoredDimensionedQuantity<TBecquerel, TKilobecquerel>;
+
+  TMegabecquerel = specialize TMegaUnit<TBecquerel>;
+  TMegabecquerelIdentifier = specialize TFactoredUnitIdentifier<TBecquerel, TMegabecquerel>;
+  TMegabecquerels = specialize TFactoredDimensionedQuantity<TBecquerel, TMegabecquerel>;
+
+  TCurie = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  TCurieIdentifier = specialize TFactoredUnitIdentifier<TBecquerel, TCurie>;
+  TCuries = specialize TFactoredDimensionedQuantity<TBecquerel, TCurie>;
 
   TGrayIdentifier = specialize TRatioUnitIdentifier<TJoule, TBaseKilogram>;
   TGrays = specialize TRatioDimensionedQuantity<TJoule, TBaseKilogram>;
@@ -1065,12 +1085,15 @@ var
   W: TWattIdentifier;
   V: TVoltIdentifier;
   F: TFaradIdentifier;
-  Ohm: TOhmIdentifier;
-  Siemens: TSiemensIdentifier;
+  ohm: TOhmIdentifier;
+  siemens, mho: TSiemensIdentifier;
   Wb: TWeberIdentifier;
   T: TTeslaIdentifier;
-  Henry: THenryIdentifier;
+  henry: THenryIdentifier;
   Bq: TBecquerelIdentifier;
+  kBq: TKilobecquerel;
+  MBq: TMegabecquerel;
+  Ci: TCurieIdentifier;
 
 // dimension equivalence
 operator:=(const AWeight: TKilograms): TBaseKilograms;
@@ -1079,6 +1102,7 @@ operator:=(const AWeight: TBaseKilograms): TKilograms;
 operator:=(const AWeight: TBaseKilograms): TGrams;
 operator:=(const AEquivalentDose: TSieverts): TGrays;
 operator:=(const AAbsorbedDose: TGrays): TSieverts;
+operator:=(const ARadioactivity: TBecquerels): TFrequency;
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m: TMeterIdentifier): THertzIdentifier; inline;
@@ -1147,6 +1171,10 @@ operator /(const {%H-}mol: TMoleIdentifier; const {%H-}s: TSecondIdentifier): TK
 
 // combining dimensioned quantities
 operator /(const AValue: double; const ADuration: TSeconds): TFrequency; inline;
+
+operator /(const AValue: double; const ARadioactivity: TBecquerels): TSeconds;
+operator *(const ARadioactivity: TBecquerels; const ADenominator: TSeconds): double;
+operator *(const ADenominator: TSeconds; const ARadioactivity: TBecquerels): double;
 
 operator /(const ASpeed: TMetersPerSecond; const ALength: TMeters): TFrequency; inline;
 operator /(const ASpeed: TMillimetersPerSecond; const ALength: TMillimeters): TFrequency; inline;
@@ -1352,6 +1380,7 @@ begin
   'Wb/m2': result := 'T';
   'Wb/A': result := 'H';
   'A/V': result := 'S';
+  'J/kg': result := 'Gy';
   end;
 end;
 
@@ -1381,6 +1410,7 @@ begin
   'weber per square meter': result:= 'tesla';
   'weber per ampere': result:= 'henry';
   'ampere per volt': result:= 'siemens';
+  'joule per kilogram': result := 'gray';
   end;
 end;
 
@@ -1409,6 +1439,16 @@ begin
   'volt-second': result := 'weber';
   end;
 end;
+
+{ TBecquerelHelper }
+
+function TBecquerelHelper.From(const AFrequency: TFrequency): TBecquerels;
+begin
+  result.Value := AFrequency.Value;
+end;
+
+function TBecquerelHelper.Inverse: TSecond;
+begin end;
 
 { TCustomUnit }
 
@@ -2534,6 +2574,13 @@ begin
   result := ToBase.Cosecant;
 end;
 
+class function TBecquerel.Symbol: string; begin result := 'Bq'; end;
+class function TBecquerel.Name: string;   begin result := 'becquerel'; end;
+
+class function TCurie.Symbol: string; begin result := 'Ci'; end;
+class function TCurie.Name: string;   begin result := 'curie'; end;
+class function TCurie.Factor: double; begin result := 37e9; end;
+
 // dimension equivalence
 operator:=(const AWeight: TKilograms): TBaseKilograms;
 begin
@@ -2563,6 +2610,11 @@ end;
 operator:=(const AAbsorbedDose: TGrays): TSieverts;
 begin
   result.Value := AAbsorbedDose.Value;
+end;
+
+operator:=(const ARadioactivity: TBecquerels): TFrequency;
+begin
+  result.Value := ARadioactivity.Value;
 end;
 
 // combining units
@@ -2735,6 +2787,21 @@ begin end;
 operator/(const AValue: double; const ADuration: TSeconds): TFrequency;
 begin
   result.Value := AValue / ADuration.Value;
+end;
+
+operator/(const AValue: double; const ARadioactivity: TBecquerels): TSeconds;
+begin
+  result := AValue / ARadioactivity;
+end;
+
+operator*(const ARadioactivity: TBecquerels; const ADenominator: TSeconds): double;
+begin
+  result := ARadioactivity * ADenominator;
+end;
+
+operator*(const ADenominator: TSeconds; const ARadioactivity: TBecquerels): double;
+begin
+  result := ADenominator * ARadioactivity;
 end;
 
 operator /(const ASpeed: TMetersPerSecond; const ALength: TMeters): TFrequency;
