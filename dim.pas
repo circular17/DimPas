@@ -93,6 +93,8 @@ type
   generic TCentiUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TMilliUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TMicroUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TNanoUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TPicoUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
 
   { Dimensionned quantities }
 
@@ -563,7 +565,12 @@ type
   TSecondIdentifier = specialize TUnitIdentifier<TSecond>;
   TSeconds = specialize TDimensionedQuantity<TSecond>;
 
-  TMilliseconds = specialize TFactoredDimensionedQuantity<TSecond, specialize TMilliUnit<TSecond>>;
+  TMilliseconds = specialize TFactoredDimensionedQuantity
+                             <TSecond, specialize TMilliUnit<TSecond>>;
+  TMicroseconds = specialize TFactoredDimensionedQuantity
+                             <TSecond, specialize TMicroUnit<TSecond>>;
+  TNanoseconds = specialize TFactoredDimensionedQuantity
+                            <TSecond, specialize TNanoUnit<TSecond>>;
 
   TMinute = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   TMinutes = specialize TFactoredDimensionedQuantity<TSecond, TMinute>;
@@ -582,6 +589,8 @@ type
   TSquareSeconds = specialize TSquareDimensionedQuantity<TSecond>;
 
 var
+  ns: specialize TFactoredUnitIdentifier<TSecond, specialize TNanoUnit<TSecond>>;
+  us: specialize TFactoredUnitIdentifier<TSecond, specialize TMicroUnit<TSecond>>;
   ms: specialize TFactoredUnitIdentifier<TSecond, specialize TMilliUnit<TSecond>>;
   s: TSecondIdentifier;
   s2: TSquareSecondIdentifier;
@@ -645,6 +654,14 @@ type
 
   TQuarticMillimeters = specialize TFactoredQuarticDimensionedQuantity<TMeter, TMillimeter>;
 
+  TMicrometer = specialize TMicroUnit<TMeter>;
+  TMicrometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TMicrometer>;
+  TMicrometers = specialize TFactoredDimensionedQuantity<TMeter, TMicrometer>;
+
+  TNanometer = specialize TNanoUnit<TMeter>;
+  TNanometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TNanometer>;
+  TNanometers = specialize TFactoredDimensionedQuantity<TMeter, TNanometer>;
+
   TLitre = class(TUnit)
     class function Symbol: string; override;
     class function Name: string; override;
@@ -676,6 +693,8 @@ var
   mm2:TSquareMillimeterIdentifier;
   mm3:TCubicMillimeterIdentifier;
   mm4:specialize TFactoredQuarticUnitIdentifier<TMeter, TMillimeter>;
+  um: TMicrometerIdentifier;
+  nm: TNanometerIdentifier;
 
   L: TLitreIdentifier;
 
@@ -1003,6 +1022,15 @@ type
   TFaradIdentifier = specialize TRatioUnitIdentifier<TCoulomb, TVolt>;
   TFarads = specialize TRatioDimensionedQuantity<TCoulomb, TVolt>;
 
+  TMillifarads = specialize TFactoredDimensionedQuantity
+                            <TFarad, specialize TMilliUnit<TFarad>>;
+  TMicrofarads = specialize TFactoredDimensionedQuantity
+                            <TFarad, specialize TMicroUnit<TFarad>>;
+  TNanofarads = specialize TFactoredDimensionedQuantity
+                           <TFarad, specialize TNanoUnit<TFarad>>;
+  TPicofarads = specialize TFactoredDimensionedQuantity
+                           <TFarad, specialize TPicoUnit<TFarad>>;
+
   TOhm = specialize TRatioUnit<TVolt, TAmpere>;
   TOhmIdentifier = specialize TRatioUnitIdentifier<TVolt, TAmpere>;
   TOhms = specialize TRatioDimensionedQuantity<TVolt, TAmpere>;
@@ -1085,6 +1113,10 @@ var
   W: TWattIdentifier;
   V: TVoltIdentifier;
   F: TFaradIdentifier;
+  mF: specialize TFactoredUnitIdentifier<TFarad, specialize TMilliUnit<TFarad>>;
+  uF: specialize TFactoredUnitIdentifier<TFarad, specialize TMicroUnit<TFarad>>;
+  nF: specialize TFactoredUnitIdentifier<TFarad, specialize TNanoUnit<TFarad>>;
+  pF: specialize TFactoredUnitIdentifier<TFarad, specialize TPicoUnit<TFarad>>;
   ohm: TOhmIdentifier;
   siemens, mho: TSiemensIdentifier;
   Wb: TWeberIdentifier;
@@ -1748,6 +1780,12 @@ end;
 
 {$DEFINE FACTORED_UNIT_IMPL}{$DEFINE T_FACTORED_UNIT:=TMicroUnit}
 {$DEFINE V_FACTOR:=1E-6}{$DEFINE V_SYMBOL:='µ'}{$DEFINE V_NAME:='micro'}{$i dim.pas}
+
+{$DEFINE FACTORED_UNIT_IMPL}{$DEFINE T_FACTORED_UNIT:=TNanoUnit}
+{$DEFINE V_FACTOR:=1E-9}{$DEFINE V_SYMBOL:='n'}{$DEFINE V_NAME:='nano'}{$i dim.pas}
+
+{$DEFINE FACTORED_UNIT_IMPL}{$DEFINE T_FACTORED_UNIT:=TPicoUnit}
+{$DEFINE V_FACTOR:=1E-12}{$DEFINE V_SYMBOL:='p'}{$DEFINE V_NAME:='pico'}{$i dim.pas}
 
 { Unit identifiers }
 
