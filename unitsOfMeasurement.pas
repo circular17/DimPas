@@ -150,6 +150,8 @@ begin
   writeln('The volume is: ', (weight/density).ToString);
   writeln('The weigth is: ', (density*volume).ToString);
   writeln;
+  writeln((20*GHz).ToString,' is a period every ',(1/(20*Ghz)).ToString);
+
   writeln('Press ENTER to Quit.');
   readln;
 end.

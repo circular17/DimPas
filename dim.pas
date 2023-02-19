@@ -85,6 +85,8 @@ type
   generic TLeftFactoredUnitProduct<U1: TFactoredUnit; U2: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TRightFactoredUnitProduct<U1: TUnit; U2: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
 
+  generic TTeraUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TGigaUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TMegaUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TKiloUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic THectoUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
@@ -250,6 +252,15 @@ type
     type TCubicQuantity = specialize TFactoredCubicDimensionedQuantity<BaseU, U>;
     type TQuarticQuantity = specialize TFactoredQuarticDimensionedQuantity<BaseU, U>;
     {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredReciprocalDimensionedQuantity<BaseDenomU: TUnit; DenomU: TFactoredUnit> = record
+    type U = specialize TFactoredReciprocalUnit<DenomU>;
+    type BaseU = specialize TReciprocalUnit<BaseDenomU>;
+    type TBaseDimensionedQuantity = specialize TReciprocalDimensionedQuantity<BaseDenomU>;
+    type TSelf = specialize TFactoredReciprocalDimensionedQuantity<BaseDenomU, DenomU>;
+    type TDenomQuantity = specialize TFactoredDimensionedQuantity<BaseDenomU, DenomU>;
+    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RECIP_QTY_INTF}{$i dim.pas}
   end;
 
   generic TFactoredRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU: TUnit;
@@ -454,6 +465,17 @@ type
     type TQuantity = specialize TReciprocalDimensionedQuantity<DenomU>;
     type TDenomIdentifier = specialize TUnitIdentifier<DenomU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE RECIP_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TFactoredReciprocalUnitIdentifier<BaseDenomU: TUnit; DenomU: TFactoredUnit> = record
+    type U = specialize TFactoredReciprocalUnit<DenomU>;
+    type BaseU = specialize TReciprocalUnit<BaseDenomU>;
+    type TBaseQuantity = specialize TReciprocalDimensionedQuantity<BaseDenomU>;
+    type TBaseUnitIdentifier = specialize TReciprocalUnitIdentifier<BaseDenomU>;
+    type TSelf = specialize TFactoredReciprocalUnitIdentifier<BaseDenomU, DenomU>;
+    type TQuantity = specialize TFactoredReciprocalDimensionedQuantity<BaseDenomU, DenomU>;
+    type TDenomIdentifier = specialize TFactoredUnitIdentifier<BaseDenomU, DenomU>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE RECIP_UNIT_ID_INTF}{$i dim.pas}
   end;
 
   generic TRatioUnitIdentifier<NumeratorU, DenomU: TUnit> = record
@@ -662,6 +684,10 @@ type
   TNanometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TNanometer>;
   TNanometers = specialize TFactoredDimensionedQuantity<TMeter, TNanometer>;
 
+  TPicometer = specialize TPicoUnit<TMeter>;
+  TPicometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TPicometer>;
+  TPicometers = specialize TFactoredDimensionedQuantity<TMeter, TPicometer>;
+
   TLitre = class(TUnit)
     class function Symbol: string; override;
     class function Name: string; override;
@@ -695,6 +721,7 @@ var
   mm4:specialize TFactoredQuarticUnitIdentifier<TMeter, TMillimeter>;
   um: TMicrometerIdentifier;
   nm: TNanometerIdentifier;
+  pm: TPicometerIdentifier;
 
   L: TLitreIdentifier;
 
@@ -909,7 +936,16 @@ operator /(const AMass: TKilograms; const AVolume: TCubicMillimeters): TKilogram
 { Special units }
 type
   THertzIdentifier = specialize TReciprocalUnitIdentifier<TSecond>;
-  TFrequency = specialize TReciprocalDimensionedQuantity<TSecond>;
+  THertz = specialize TReciprocalDimensionedQuantity<TSecond>;
+
+  TKilohertz = specialize TFactoredReciprocalDimensionedQuantity
+                          <TSecond, specialize TMilliUnit<TSecond>>;
+  TMegahertz = specialize TFactoredReciprocalDimensionedQuantity
+                          <TSecond, specialize TMicroUnit<TSecond>>;
+  TGigahertz = specialize TFactoredReciprocalDimensionedQuantity
+                          <TSecond, specialize TNanoUnit<TSecond>>;
+  TTerahertz = specialize TFactoredReciprocalDimensionedQuantity
+                          <TSecond, specialize TPicoUnit<TSecond>>;
 
   TRadian = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   TRadianIdentifier = specialize TUnitIdentifier<TRadian>;
@@ -1064,7 +1100,7 @@ type
   { TBecquerelHelper }
 
   TBecquerelHelper = record helper for TBecquerelIdentifier
-    function From(const AFrequency: TFrequency): TBecquerels;
+    function From(const AFrequency: THertz): TBecquerels;
     function Inverse: TSecond;
   end;
 
@@ -1093,6 +1129,10 @@ type
 
 var
   Hz: THertzIdentifier;
+  kHz: specialize TFactoredReciprocalUnitIdentifier<TSecond, specialize TMilliUnit<TSecond>>;
+  MHz: specialize TFactoredReciprocalUnitIdentifier<TSecond, specialize TMicroUnit<TSecond>>;
+  GHz: specialize TFactoredReciprocalUnitIdentifier<TSecond, specialize TNanoUnit<TSecond>>;
+  THz: specialize TFactoredReciprocalUnitIdentifier<TSecond, specialize TPicoUnit<TSecond>>;
   rad: TRadianIdentifier;
   sr: TSteradianIdentifier;
   deg: TDegreeIdentifier;
@@ -1134,7 +1174,7 @@ operator:=(const AWeight: TBaseKilograms): TKilograms;
 operator:=(const AWeight: TBaseKilograms): TGrams;
 operator:=(const AEquivalentDose: TSieverts): TGrays;
 operator:=(const AAbsorbedDose: TGrays): TSieverts;
-operator:=(const ARadioactivity: TBecquerels): TFrequency;
+operator:=(const ARadioactivity: TBecquerels): THertz;
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m: TMeterIdentifier): THertzIdentifier; inline;
@@ -1202,14 +1242,14 @@ operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondId
 operator /(const {%H-}mol: TMoleIdentifier; const {%H-}s: TSecondIdentifier): TKatalIdentifier; inline;
 
 // combining dimensioned quantities
-operator /(const AValue: double; const ADuration: TSeconds): TFrequency; inline;
+operator /(const AValue: double; const ADuration: TSeconds): THertz; inline;
 
 operator /(const AValue: double; const ARadioactivity: TBecquerels): TSeconds;
 operator *(const ARadioactivity: TBecquerels; const ADenominator: TSeconds): double;
 operator *(const ADenominator: TSeconds; const ARadioactivity: TBecquerels): double;
 
-operator /(const ASpeed: TMetersPerSecond; const ALength: TMeters): TFrequency; inline;
-operator /(const ASpeed: TMillimetersPerSecond; const ALength: TMillimeters): TFrequency; inline;
+operator /(const ASpeed: TMetersPerSecond; const ALength: TMeters): THertz; inline;
+operator /(const ASpeed: TMillimetersPerSecond; const ALength: TMillimeters): THertz; inline;
 
 operator *(const AWeight: TGrams; const ALength: TMeters): TGramMeters; inline;
 operator *(const AWeight: TKilograms; const ALength: TMeters): TKilogramMeters; inline;
@@ -1474,7 +1514,7 @@ end;
 
 { TBecquerelHelper }
 
-function TBecquerelHelper.From(const AFrequency: TFrequency): TBecquerels;
+function TBecquerelHelper.From(const AFrequency: THertz): TBecquerels;
 begin
   result.Value := AFrequency.Value;
 end;
@@ -1490,6 +1530,10 @@ begin
 
   case result of
   's-1': result := 'Hz';
+  'ms-1': result := 'kHz';
+  'us-1': result := 'MHz';
+  'ns-1': result := 'GHz';
+  'ps-1': result := 'THz';
   'rad2': result := 'sr';
   end;
 end;
@@ -1757,6 +1801,12 @@ end;
 {$ENDIF}{$UNDEF FACTORED_UNIT_IMPL}
 {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
 
+{$DEFINE FACTORED_UNIT_IMPL}{$DEFINE T_FACTORED_UNIT:=TTeraUnit}
+{$DEFINE V_FACTOR:=1E12}{$DEFINE V_SYMBOL:='T'}{$DEFINE V_NAME:='tera'}{$i dim.pas}
+
+{$DEFINE FACTORED_UNIT_IMPL}{$DEFINE T_FACTORED_UNIT:=TGigaUnit}
+{$DEFINE V_FACTOR:=1E9}{$DEFINE V_SYMBOL:='G'}{$DEFINE V_NAME:='giga'}{$i dim.pas}
+
 {$DEFINE FACTORED_UNIT_IMPL}{$DEFINE T_FACTORED_UNIT:=TMegaUnit}
 {$DEFINE V_FACTOR:=1E6}{$DEFINE V_SYMBOL:='M'}{$DEFINE V_NAME:='mega'}{$i dim.pas}
 
@@ -1912,6 +1962,9 @@ end;
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE RECIP_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TReciprocalUnitIdentifier}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RECIP_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TFactoredReciprocalUnitIdentifier}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TRatioUnitIdentifier}{$i dim.pas}
@@ -2238,6 +2291,9 @@ end;
 
 {$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TFactoredDimensionedQuantity}{$i dim.pas}
+
+{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RECIP_QTY_IMPL}
+{$DEFINE T_DIM_QUANTITY:=TFactoredReciprocalDimensionedQuantity}{$i dim.pas}
 
 {$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
 {$DEFINE T_DIM_QUANTITY:=TFactoredRatioDimensionedQuantity}{$i dim.pas}
@@ -2650,7 +2706,7 @@ begin
   result.Value := AAbsorbedDose.Value;
 end;
 
-operator:=(const ARadioactivity: TBecquerels): TFrequency;
+operator:=(const ARadioactivity: TBecquerels): THertz;
 begin
   result.Value := ARadioactivity.Value;
 end;
@@ -2822,7 +2878,7 @@ operator /(const kg: TKilogramIdentifier; const mm3: TCubicMillimeterIdentifier)
 begin end;
 
 // combining dimensioned quantities
-operator/(const AValue: double; const ADuration: TSeconds): TFrequency;
+operator/(const AValue: double; const ADuration: TSeconds): THertz;
 begin
   result.Value := AValue / ADuration.Value;
 end;
@@ -2842,12 +2898,12 @@ begin
   result := ADenominator * ARadioactivity;
 end;
 
-operator /(const ASpeed: TMetersPerSecond; const ALength: TMeters): TFrequency;
+operator /(const ASpeed: TMetersPerSecond; const ALength: TMeters): THertz;
 begin
   result.Value := ASpeed.Value / ALength.Value;
 end;
 
-operator /(const ASpeed: TMillimetersPerSecond; const ALength: TMillimeters): TFrequency; inline;
+operator /(const ASpeed: TMillimetersPerSecond; const ALength: TMillimeters): THertz; inline;
 begin
   result.Value := ASpeed.Value / ALength.Value;
 end;
