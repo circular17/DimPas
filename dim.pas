@@ -1184,15 +1184,20 @@ operator *(const {%H-}g: TGramIdentifier; const {%H-}m: TMeterIdentifier): TGram
 operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m: TMeterIdentifier): TKilogramMeterIdentifier; inline;
 
 operator *(const {%H-}g: TGramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}g: TGramIdentifier): TMillinewtonIdentifier; inline;
+operator /(const {%H-}mN: TMillinewtonIdentifier; const {%H-}g: TGramMeterIdentifier): TMeterPerSecondSquaredIdentifier; inline;
+
 operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier; inline;
-operator /(const {%H-}g: TGramMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMillinewtonIdentifier; inline;
-operator /(const {%H-}kg: TKilogramMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TNewtonIdentifier; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}kg: TKilogramIdentifier): TNewtonIdentifier; inline;
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}kg: TKilogramIdentifier): TMeterPerSecondSquaredIdentifier; inline;
 
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TPascalIdentifier; inline;
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm2: TSquareMillimeterIdentifier): TMegapascalIdentifier; inline;
 operator /(const {%H-}kN: TKilonewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TKilopascalIdentifier; inline;
 
 operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJouleIdentifier; inline;
+operator *(const {%H-}m: TMeterIdentifier; const {%H-}N: TNewtonIdentifier): TJouleIdentifier; inline;
+operator /(const {%H-}J: TJouleIdentifier; const {%H-}N: TNewtonIdentifier): TMeterIdentifier; inline;
 
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}s: TSecondIdentifier): TWattIdentifier; inline;
 
@@ -1256,8 +1261,11 @@ operator *(const AWeight: TKilograms; const ALength: TMeters): TKilogramMeters; 
 
 operator *(const AWeight: TGrams; const AAcceleration: TMetersPerSecondSquared): TMillinewtons; inline;
 operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TMillinewtons; inline;
+operator /(const AForce: TMillinewtons; const AWeight: TGrams): TMetersPerSecondSquared; inline;
+
 operator *(const AWeight: TKilograms; const AAcceleration: TMetersPerSecondSquared): TNewtons; inline;
 operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TKilograms): TNewtons; inline;
+operator /(const AForce: TNewtons; const AWeight: TKilograms): TMetersPerSecondSquared; inline;
 
 operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals; inline;
 operator /(const AForce: TNewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
@@ -1265,6 +1273,8 @@ operator /(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals
 operator /(const AForce: TKilonewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
 
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
+operator *(const ALength: TMeters; const AForce: TNewtons): TJoules; inline;
+operator /(const AWork: TJoules; const AForce: TNewtons): TMeters; inline;
 
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts; inline;
 
@@ -2736,13 +2746,19 @@ begin end;
 operator*(const g: TGramIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier;
 begin end;
 
+operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const g: TGramIdentifier): TMillinewtonIdentifier;
+begin end;
+
+operator /(const mN: TMillinewtonIdentifier; const g: TGramMeterIdentifier): TMeterPerSecondSquaredIdentifier;
+begin end;
+
 operator*(const kg: TKilogramIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier;
 begin end;
 
-operator/(const g: TGramMeterIdentifier; const s2: TSquareSecondIdentifier): TMillinewtonIdentifier;
+operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const kg: TKilogramIdentifier): TNewtonIdentifier;
 begin end;
 
-operator/(const kg: TKilogramMeterIdentifier; const s2: TSquareSecondIdentifier): TNewtonIdentifier;
+operator /(const N: TNewtonIdentifier; const kg: TKilogramIdentifier): TMeterPerSecondSquaredIdentifier;
 begin end;
 
 operator /(const N: TNewtonIdentifier; const m2: TSquareMeterIdentifier): TPascalIdentifier;
@@ -2773,6 +2789,12 @@ operator *(const mm: TMillimeterIdentifier; const MPa: TMegapascalIdentifier): T
 begin end;
 
 operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentifier;
+begin end;
+
+operator *(const m: TMeterIdentifier; const N: TNewtonIdentifier): TJouleIdentifier;
+begin end;
+
+operator /(const J: TJouleIdentifier; const N: TNewtonIdentifier): TMeterIdentifier;
 begin end;
 
 operator /(const J: TJouleIdentifier; const s: TSecondIdentifier): TWattIdentifier;
@@ -2940,7 +2962,12 @@ end;
 
 operator*(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TMillinewtons;
 begin
-  result.Value := AWeight.Value * AAcceleration.Value;
+  result.Value := AAcceleration.Value * AWeight.Value;
+end;
+
+operator /(const AForce: TMillinewtons; const AWeight: TGrams): TMetersPerSecondSquared;
+begin
+  result.Value := AForce.Value / AWeight.Value;
 end;
 
 operator*(const AWeight: TKilograms; const AAcceleration: TMetersPerSecondSquared): TNewtons;
@@ -2951,6 +2978,11 @@ end;
 operator*(const AAcceleration: TMetersPerSecondSquared; const AWeight: TKilograms): TNewtons;
 begin
   result.Value := AWeight.Value * AAcceleration.Value;
+end;
+
+operator /(const AForce: TNewtons; const AWeight: TKilograms): TMetersPerSecondSquared; inline;
+begin
+  result.Value := AForce.Value / AWeight.Value;
 end;
 
 operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals;
@@ -3006,6 +3038,16 @@ end;
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules;
 begin
   result.Value := AForce.Value * ALength.Value;
+end;
+
+operator *(const ALength: TMeters; const AForce: TNewtons): TJoules; inline;
+begin
+  result.Value := ALength.Value * AForce.Value;
+end;
+
+operator /(const AWork: TJoules; const AForce: TNewtons): TMeters; inline;
+begin
+  result.Value := AWork.Value / AForce.Value;
 end;
 
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts;
