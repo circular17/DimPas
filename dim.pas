@@ -1216,6 +1216,8 @@ operator *(const {%H-}J: TJouleIdentifier; const {%H-}F: TFaradIdentifier): TSqu
 operator *(const {%H-}F: TFaradIdentifier; const {%H-}J: TJouleIdentifier): TSquareCoulombIdentifier; inline;
 
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifier; inline;
+operator *(const {%H-}s: TSecondIdentifier; const {%H-}A: TAmpereIdentifier): TCoulombIdentifier; inline;
+operator /(const {%H-}C: TCoulombIdentifier; const {%H-}A: TAmpereIdentifier): TSecondIdentifier; inline;
 
 operator /(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TOhmIdentifier; inline;
 // alternative definition of Ω = s / F
@@ -1293,6 +1295,8 @@ operator *(const AWork: TJoules; const ACapacitance: TFarads): TSquareCoulombs; 
 operator *(const ACapacitance: TFarads; const AWork: TJoules): TSquareCoulombs; inline;
 
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
+operator *(const ADuration: TSeconds; const ACurrent: TAmperes): TCoulombs; inline;
+operator /(const ACharge: TCoulombs; const ACurrent: TAmperes): TSeconds; inline;
 
 operator /(const AVoltage: TVolts; const ACurrent: TAmperes): TOhms; inline;
 // alternative definition of Ω = s / F
@@ -2833,6 +2837,12 @@ begin end;
 operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifier;
 begin end;
 
+operator *(const s: TSecondIdentifier; const A: TAmpereIdentifier): TCoulombIdentifier;
+begin end;
+
+operator /(const C: TCoulombIdentifier; const A: TAmpereIdentifier): TSecondIdentifier;
+begin end;
+
 operator /(const V: TVoltIdentifier; const A: TAmpereIdentifier): TOhmIdentifier;
 begin end;
 
@@ -3108,6 +3118,16 @@ end;
 operator*(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs;
 begin
   result.Value := ACurrent.Value * ADuration.Value;
+end;
+
+operator *(const ADuration: TSeconds; const ACurrent: TAmperes): TCoulombs; inline;
+begin
+  result.Value := ADuration.Value * ACurrent.Value;
+end;
+
+operator /(const ACharge: TCoulombs; const ACurrent: TAmperes): TSeconds; inline;
+begin
+  result.Value := ACharge.Value / ACurrent.Value;
 end;
 
 operator /(const AVoltage: TVolts; const ACurrent: TAmperes): TOhms;
