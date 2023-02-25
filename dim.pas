@@ -1240,6 +1240,10 @@ operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}m2: TSquareMeterIdentifie
 operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}A: TAmpereIdentifier): THenryIdentifier; inline;
 
 operator *(const {%H-}cd: TCandelaIdentifier; const {%H-}sr: TSteradianIdentifier): TLumenIdentifer; inline;
+operator *(const {%H-}sr: TSteradianIdentifier; const {%H-}cd: TCandelaIdentifier): TLumenIdentifer; inline;
+operator /(const {%H-}lm: TLumenIdentifer; const {%H-}cd: TCandelaIdentifier): TSteradianIdentifier; inline;
+operator /(const {%H-}lm: TLumenIdentifer; const {%H-}sr: TSteradianIdentifier): TCandelaIdentifier; inline;
+
 operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
 
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): TGrayIdentifier; inline;
@@ -1319,6 +1323,10 @@ operator /(const AMagneticFlux: TWebers; const AArea: TSquareMeters): TTeslas; i
 operator /(const AMagneticFlux: TWebers; const ACurrent: TAmperes): THenrys; inline;
 
 operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens; inline;
+operator *(const ASolidAngle: TSteradians; const ALuminousIntensity: TCandelas): TLumens; inline;
+operator /(const ALuminousFlux: TLumens; const ALuminousIntensity: TCandelas): TSteradians; inline;
+operator /(const ALuminousFlux: TLumens; const ASolidAngle: TSteradians): TCandelas; inline;
+
 operator /(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity; inline;
 
 operator /(const AEnergy: TJoules; const AMass: TKilograms): TGrays; inline;
@@ -2885,6 +2893,15 @@ begin end;
 operator *(const cd: TCandelaIdentifier; const sr: TSteradianIdentifier): TLumenIdentifer;
 begin end;
 
+operator *(const sr: TSteradianIdentifier; const cd: TCandelaIdentifier): TLumenIdentifer;
+begin end;
+
+operator /(const lm: TLumenIdentifer; const cd: TCandelaIdentifier): TSteradianIdentifier;
+begin end;
+
+operator /(const lm: TLumenIdentifer; const sr: TSteradianIdentifier): TCandelaIdentifier;
+begin end;
+
 operator/(const lm: TLumenIdentifer; const m2: TSquareMeterIdentifier): TLuxIdentifier;
 begin end;
 
@@ -3198,6 +3215,21 @@ end;
 operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens;
 begin
   result.Value := ALuminousIntensity.Value * ASolidAngle.Value;
+end;
+
+operator *(const ASolidAngle: TSteradians; const ALuminousIntensity: TCandelas): TLumens;
+begin
+  result.Value := ASolidAngle.Value * ALuminousIntensity.Value;
+end;
+
+operator /(const ALuminousFlux: TLumens; const ALuminousIntensity: TCandelas): TSteradians;
+begin
+  result.Value := ALuminousFlux.Value / ALuminousIntensity.Value;
+end;
+
+operator /(const ALuminousFlux: TLumens; const ASolidAngle: TSteradians): TCandelas;
+begin
+  result.Value := ALuminousFlux.Value / ASolidAngle.Value;
 end;
 
 operator/(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity;
