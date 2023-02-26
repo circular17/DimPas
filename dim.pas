@@ -607,8 +607,11 @@ type
   // this unit is not really to be used directly because
   // time is divided one exponent at a time: m/s2 -> (m/s)/s
   // thus acceleration are "per second squared" instead of "per square second"
+  TSquareSecond = specialize TSquareUnit<TSecond>;
   TSquareSecondIdentifier = specialize TSquareUnitIdentifier<TSecond>;
+  TSquareSecondFactorIdentifier = specialize TUnitIdentifier<TSquareSecond>;
   TSquareSeconds = specialize TSquareDimensionedQuantity<TSecond>;
+  TSquareSecondsFactor = specialize TDimensionedQuantity<TSquareSecond>;
 
 var
   ns: specialize TFactoredUnitIdentifier<TSecond, specialize TNanoUnit<TSecond>>;
@@ -620,6 +623,10 @@ var
   h: THourIdentifier;
   day: specialize TFactoredUnitIdentifier<TSecond, TDay>;
 
+operator:=(const {%H-}s2: TSquareSecondIdentifier): TSquareSecondFactorIdentifier;
+operator:=(const ASquareTime: TSquareSeconds): TSquareSecondsFactor;
+operator:=(const ASquareTime: TSquareSecondsFactor): TSquareSeconds;
+
 { Units of length }
 
 type
@@ -629,17 +636,21 @@ type
 
   TSquareMeter = specialize TSquareUnit<TMeter>;
   TSquareMeterIdentifier = specialize TSquareUnitIdentifier<TMeter>;
+  TSquareMeterFactorIdentifier = specialize TUnitIdentifier<TSquareMeter>;
   TSquareMeters = specialize TSquareDimensionedQuantity<TMeter>;
   TSquareMetersFactor = specialize TDimensionedQuantity<TSquareMeter>;
 
   TCubicMeter = specialize TCubicUnit<TMeter>;
   TCubicMeterIdentifier = specialize TCubicUnitIdentifier<TMeter>;
+  TCubicMeterFactorIdentifier = specialize TUnitIdentifier<TCubicMeter>;
   TCubicMeters = specialize TCubicDimensionedQuantity<TMeter>;
   TCubicMetersFactor = specialize TDimensionedQuantity<TCubicMeter>;
 
+  TQuarticMeter = specialize TQuarticUnit<TMeter>;
   TQuarticMeterIdentifier = specialize TQuarticUnitIdentifier<TMeter>;
+  TQuarticMeterFactorIdentifier = specialize TUnitIdentifier<TQuarticMeter>;
   TQuarticMeters = specialize TQuarticDimensionedQuantity<TMeter>;
-  TQuarticMetersFactor = specialize TDimensionedQuantity<specialize TQuarticUnit<TMeter>>;
+  TQuarticMetersFactor = specialize TDimensionedQuantity<TQuarticMeter>;
 
   TKilometer = specialize TKiloUnit<TMeter>;
   TKilometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TKilometer>;
@@ -666,11 +677,15 @@ type
 
   TSquareMillimeter = specialize TFactoredSquareUnit<TMillimeter>;
   TSquareMillimeterIdentifier = specialize TFactoredSquareUnitIdentifier<TMeter, TMillimeter>;
+  TSquareMillimeterFactorIdentifier = specialize TFactoredUnitIdentifier
+                                      <TSquareMeter, TSquareMillimeter>;
   TSquareMillimeters = specialize TFactoredSquareDimensionedQuantity<TMeter, TMillimeter>;
   TSquareMillimetersFactor = specialize TFactoredDimensionedQuantity<TSquareMeter, TSquareMillimeter>;
 
   TCubicMillimeter = specialize TFactoredCubicUnit<TMillimeter>;
   TCubicMillimeterIdentifier = specialize TFactoredCubicUnitIdentifier<TMeter, TMillimeter>;
+  TCubicMillimeterFactorIdentifier = specialize TFactoredUnitIdentifier
+                                     <TCubicMeter, TCubicMillimeter>;
   TCubicMillimeters = specialize TFactoredCubicDimensionedQuantity<TMeter, TMillimeter>;
   TCubicMillimetersFactor = specialize TFactoredDimensionedQuantity<TCubicMeter, TCubicMillimeter>;
 
@@ -739,15 +754,22 @@ operator /(const AMomentOfArea: TQuarticMeters; const AArea: TSquareMeters): TSq
 operator:=(const AVolume: TLitres): TCubicMeters;
 operator:=(const AVolume: TLitres): TCubicDecimeters;
 
+operator:=(const {%H-}m2: TSquareMeterIdentifier): TSquareMeterFactorIdentifier;
 operator:=(const ASurface: TSquareMeters): TSquareMetersFactor;
-operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor;
-operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
-operator:=(const AVolume: TCubicMillimeters): TCubicMillimetersFactor;
-operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
 operator:=(const ASurface: TSquareMetersFactor): TSquareMeters;
+operator:=(const {%H-}mm2: TSquareMillimeterIdentifier): TSquareMillimeterFactorIdentifier;
+operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor;
 operator:=(const ASurface: TSquareMillimetersFactor): TSquareMillimeters;
+
+operator:=(const {%H-}m3: TCubicMeterIdentifier): TCubicMeterFactorIdentifier;
+operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
 operator:=(const AVolume: TCubicMetersFactor): TCubicMeters;
+operator:=(const {%H-}mm3: TCubicMillimeterIdentifier): TCubicMillimeterFactorIdentifier;
+operator:=(const AVolume: TCubicMillimeters): TCubicMillimetersFactor;
 operator:=(const AVolume: TCubicMillimetersFactor): TCubicMillimeters;
+
+operator:=(const {%H-}m4: TQuarticMeterIdentifier): TQuarticMeterFactorIdentifier;
+operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
 operator:=(const AHyperVolume: TQuarticMetersFactor): TQuarticMeters;
 
 { Units of mass }
@@ -952,7 +974,9 @@ type
   TRadians = specialize TDimensionedQuantity<TRadian>;
   TSteradian = specialize TSquareUnit<TRadian>;
   TSteradianIdentifier = specialize TSquareUnitIdentifier<TRadian>;
+  TSteradianFactorIdentifier = specialize TUnitIdentifier<TSteradian>;
   TSteradians = specialize TSquareDimensionedQuantity<TRadian>;
+  TSteradiansFactor = specialize TDimensionedQuantity<TSteradian>;
 
   { TRadianHelper }
 
@@ -1048,7 +1072,9 @@ type
 
   TSquareCoulomb = specialize TSquareUnit<TCoulomb>;
   TSquareCoulombIdentifier = specialize TSquareUnitIdentifier<TCoulomb>;
+  TSquareCoulombFactorIdentifier = specialize TUnitIdentifier<TSquareCoulomb>;
   TSquareCoulombs = specialize TSquareDimensionedQuantity<TCoulomb>;
+  TSquareCoulombsFactor = specialize TDimensionedQuantity<TSquareCoulomb>;
 
   TVolt = specialize TRatioUnit<TJoule, TCoulomb>;
   TVoltIdentifier = specialize TRatioUnitIdentifier<TJoule, TCoulomb>;
@@ -1176,6 +1202,14 @@ operator:=(const AEquivalentDose: TSieverts): TGrays;
 operator:=(const AAbsorbedDose: TGrays): TSieverts;
 operator:=(const ARadioactivity: TBecquerels): THertz;
 
+operator:=(const {%H-}sr: TSteradianIdentifier): TSteradianFactorIdentifier;
+operator:=(const ASolidAngle: TSteradians): TSteradiansFactor;
+operator:=(const ASolidAngle: TSteradiansFactor): TSteradians;
+
+operator:=(const {%H-}C2: TSquareCoulombIdentifier): TSquareCoulombFactorIdentifier;
+operator:=(const ASquareCharge: TSquareCoulombs): TSquareCoulombsFactor;
+operator:=(const ASquareCharge: TSquareCoulombsFactor): TSquareCoulombs;
+
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m: TMeterIdentifier): THertzIdentifier; inline;
 operator /(const {%H-}mm_s: TMillimeterPerSecondIdentifier; const {%H-}mm: TMillimeterIdentifier): THertzIdentifier; inline;
@@ -1188,7 +1222,9 @@ operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}g: TGra
 operator /(const {%H-}mN: TMillinewtonIdentifier; const {%H-}g: TGramMeterIdentifier): TMeterPerSecondSquaredIdentifier; inline;
 
 operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier; inline;
+operator *(const {%H-}g: TGramMeterIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier;
 operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}kg: TKilogramIdentifier): TNewtonIdentifier; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}g: TGramMeterIdentifier): TMillinewtonIdentifier; inline;
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}kg: TKilogramIdentifier): TMeterPerSecondSquaredIdentifier; inline;
 
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TPascalIdentifier; inline;
@@ -1242,7 +1278,6 @@ operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}A: TAmpereIdentifier): TH
 operator *(const {%H-}cd: TCandelaIdentifier; const {%H-}sr: TSteradianIdentifier): TLumenIdentifer; inline;
 operator *(const {%H-}sr: TSteradianIdentifier; const {%H-}cd: TCandelaIdentifier): TLumenIdentifer; inline;
 operator /(const {%H-}lm: TLumenIdentifer; const {%H-}cd: TCandelaIdentifier): TSteradianIdentifier; inline;
-operator /(const {%H-}lm: TLumenIdentifer; const {%H-}sr: TSteradianIdentifier): TCandelaIdentifier; inline;
 
 operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
 
@@ -1325,7 +1360,6 @@ operator /(const AMagneticFlux: TWebers; const ACurrent: TAmperes): THenrys; inl
 operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens; inline;
 operator *(const ASolidAngle: TSteradians; const ALuminousIntensity: TCandelas): TLumens; inline;
 operator /(const ALuminousFlux: TLumens; const ALuminousIntensity: TCandelas): TSteradians; inline;
-operator /(const ALuminousFlux: TLumens; const ASolidAngle: TSteradians): TCandelas; inline;
 
 operator /(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity; inline;
 
@@ -2358,6 +2392,19 @@ class function TMeter.Name: string;   begin result := 'meter'; end;
 class function TLitre.Symbol: string; begin result := 'L'; end;
 class function TLitre.Name: string;   begin result := 'litre'; end;
 
+operator:=(const s2: TSquareSecondIdentifier): TSquareSecondFactorIdentifier;
+begin end;
+
+operator:=(const ASquareTime: TSquareSeconds): TSquareSecondsFactor;
+begin
+  result.Value := ASquareTime.Value;
+end;
+
+operator:=(const ASquareTime: TSquareSecondsFactor): TSquareSeconds;
+begin
+  result.Value := ASquareTime.Value;
+end;
+
 operator /(const {%H-}m3: TCubicMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TMeterIdentifier;
 begin end;
 
@@ -2392,25 +2439,40 @@ begin
   result.Value := AVolume.Value;
 end;
 
+operator:=(const m2: TSquareMeterIdentifier): TSquareMeterFactorIdentifier;
+begin end;
+
 operator:=(const ASurface: TSquareMeters): TSquareMetersFactor;
 begin
   result.Value := ASurface.Value;
 end;
+
+operator:=(const mm2: TSquareMillimeterIdentifier): TSquareMillimeterFactorIdentifier;
+begin end;
 
 operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor;
 begin
   result.Value := ASurface.Value;
 end;
 
+operator:=(const m3: TCubicMeterIdentifier): TCubicMeterFactorIdentifier;
+begin end;
+
 operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
 begin
   result.Value := AVolume.Value;
 end;
 
+operator:=(const mm3: TCubicMillimeterIdentifier): TCubicMillimeterFactorIdentifier;
+begin end;
+
 operator:=(const AVolume: TCubicMillimeters): TCubicMillimetersFactor;
 begin
   result.Value := AVolume.Value;
 end;
+
+operator:=(const m4: TQuarticMeterIdentifier): TQuarticMeterFactorIdentifier;
+begin end;
 
 operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
 begin
@@ -2743,6 +2805,32 @@ begin end;
 operator/(const rad: TRadianIdentifier; const s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier;
 begin end;
 
+operator:=(const sr: TSteradianIdentifier): TSteradianFactorIdentifier;
+begin end;
+
+operator:=(const ASolidAngle: TSteradians): TSteradiansFactor;
+begin
+  result.Value := ASolidAngle.Value;
+end;
+
+operator:=(const ASolidAngle: TSteradiansFactor): TSteradians;
+begin
+  result.Value := ASolidAngle.Value;
+end;
+
+operator:=(const C2: TSquareCoulombIdentifier): TSquareCoulombFactorIdentifier;
+begin end;
+
+operator:=(const ASquareCharge: TSquareCoulombs): TSquareCoulombsFactor;
+begin
+  result.Value := ASquareCharge.Value;
+end;
+
+operator:=(const ASquareCharge: TSquareCoulombsFactor): TSquareCoulombs;
+begin
+  result.Value := ASquareCharge.Value;
+end;
+
 operator /(const m_s: TMeterPerSecondIdentifier; const m: TMeterIdentifier): THertzIdentifier;
 begin end;
 
@@ -2767,7 +2855,13 @@ begin end;
 operator*(const kg: TKilogramIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier;
 begin end;
 
+operator*(const g: TGramMeterIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier;
+begin end;
+
 operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const kg: TKilogramIdentifier): TNewtonIdentifier;
+begin end;
+
+operator*(const m_s2: TMeterPerSecondSquaredIdentifier; const g: TGramMeterIdentifier): TMillinewtonIdentifier;
 begin end;
 
 operator /(const N: TNewtonIdentifier; const kg: TKilogramIdentifier): TMeterPerSecondSquaredIdentifier;
@@ -2897,9 +2991,6 @@ operator *(const sr: TSteradianIdentifier; const cd: TCandelaIdentifier): TLumen
 begin end;
 
 operator /(const lm: TLumenIdentifer; const cd: TCandelaIdentifier): TSteradianIdentifier;
-begin end;
-
-operator /(const lm: TLumenIdentifer; const sr: TSteradianIdentifier): TCandelaIdentifier;
 begin end;
 
 operator/(const lm: TLumenIdentifer; const m2: TSquareMeterIdentifier): TLuxIdentifier;

@@ -152,6 +152,8 @@ begin
   writeln;
   writeln((20*GHz).ToString,' is a period every ',(1/(20*Ghz)).ToString);
 
+  writeln('lm/sr = ', (lm/sr).Symbol);
+
   writeln('Press ENTER to Quit.');
   readln;
 end.
