@@ -1184,15 +1184,20 @@ operator *(const {%H-}g: TGramIdentifier; const {%H-}m: TMeterIdentifier): TGram
 operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m: TMeterIdentifier): TKilogramMeterIdentifier; inline;
 
 operator *(const {%H-}g: TGramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}g: TGramIdentifier): TMillinewtonIdentifier; inline;
+operator /(const {%H-}mN: TMillinewtonIdentifier; const {%H-}g: TGramMeterIdentifier): TMeterPerSecondSquaredIdentifier; inline;
+
 operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier; inline;
-operator /(const {%H-}g: TGramMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMillinewtonIdentifier; inline;
-operator /(const {%H-}kg: TKilogramMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TNewtonIdentifier; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}kg: TKilogramIdentifier): TNewtonIdentifier; inline;
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}kg: TKilogramIdentifier): TMeterPerSecondSquaredIdentifier; inline;
 
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TPascalIdentifier; inline;
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm2: TSquareMillimeterIdentifier): TMegapascalIdentifier; inline;
 operator /(const {%H-}kN: TKilonewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TKilopascalIdentifier; inline;
 
 operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJouleIdentifier; inline;
+operator *(const {%H-}m: TMeterIdentifier; const {%H-}N: TNewtonIdentifier): TJouleIdentifier; inline;
+operator /(const {%H-}J: TJouleIdentifier; const {%H-}N: TNewtonIdentifier): TMeterIdentifier; inline;
 
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}s: TSecondIdentifier): TWattIdentifier; inline;
 
@@ -1211,6 +1216,8 @@ operator *(const {%H-}J: TJouleIdentifier; const {%H-}F: TFaradIdentifier): TSqu
 operator *(const {%H-}F: TFaradIdentifier; const {%H-}J: TJouleIdentifier): TSquareCoulombIdentifier; inline;
 
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifier; inline;
+operator *(const {%H-}s: TSecondIdentifier; const {%H-}A: TAmpereIdentifier): TCoulombIdentifier; inline;
+operator /(const {%H-}C: TCoulombIdentifier; const {%H-}A: TAmpereIdentifier): TSecondIdentifier; inline;
 
 operator /(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TOhmIdentifier; inline;
 // alternative definition of Ω = s / F
@@ -1233,6 +1240,10 @@ operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}m2: TSquareMeterIdentifie
 operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}A: TAmpereIdentifier): THenryIdentifier; inline;
 
 operator *(const {%H-}cd: TCandelaIdentifier; const {%H-}sr: TSteradianIdentifier): TLumenIdentifer; inline;
+operator *(const {%H-}sr: TSteradianIdentifier; const {%H-}cd: TCandelaIdentifier): TLumenIdentifer; inline;
+operator /(const {%H-}lm: TLumenIdentifer; const {%H-}cd: TCandelaIdentifier): TSteradianIdentifier; inline;
+operator /(const {%H-}lm: TLumenIdentifer; const {%H-}sr: TSteradianIdentifier): TCandelaIdentifier; inline;
+
 operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
 
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): TGrayIdentifier; inline;
@@ -1256,8 +1267,11 @@ operator *(const AWeight: TKilograms; const ALength: TMeters): TKilogramMeters; 
 
 operator *(const AWeight: TGrams; const AAcceleration: TMetersPerSecondSquared): TMillinewtons; inline;
 operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TMillinewtons; inline;
+operator /(const AForce: TMillinewtons; const AWeight: TGrams): TMetersPerSecondSquared; inline;
+
 operator *(const AWeight: TKilograms; const AAcceleration: TMetersPerSecondSquared): TNewtons; inline;
 operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TKilograms): TNewtons; inline;
+operator /(const AForce: TNewtons; const AWeight: TKilograms): TMetersPerSecondSquared; inline;
 
 operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals; inline;
 operator /(const AForce: TNewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
@@ -1265,6 +1279,8 @@ operator /(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals
 operator /(const AForce: TKilonewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
 
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
+operator *(const ALength: TMeters; const AForce: TNewtons): TJoules; inline;
+operator /(const AWork: TJoules; const AForce: TNewtons): TMeters; inline;
 
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts; inline;
 
@@ -1283,6 +1299,8 @@ operator *(const AWork: TJoules; const ACapacitance: TFarads): TSquareCoulombs; 
 operator *(const ACapacitance: TFarads; const AWork: TJoules): TSquareCoulombs; inline;
 
 operator *(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
+operator *(const ADuration: TSeconds; const ACurrent: TAmperes): TCoulombs; inline;
+operator /(const ACharge: TCoulombs; const ACurrent: TAmperes): TSeconds; inline;
 
 operator /(const AVoltage: TVolts; const ACurrent: TAmperes): TOhms; inline;
 // alternative definition of Ω = s / F
@@ -1305,6 +1323,10 @@ operator /(const AMagneticFlux: TWebers; const AArea: TSquareMeters): TTeslas; i
 operator /(const AMagneticFlux: TWebers; const ACurrent: TAmperes): THenrys; inline;
 
 operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens; inline;
+operator *(const ASolidAngle: TSteradians; const ALuminousIntensity: TCandelas): TLumens; inline;
+operator /(const ALuminousFlux: TLumens; const ALuminousIntensity: TCandelas): TSteradians; inline;
+operator /(const ALuminousFlux: TLumens; const ASolidAngle: TSteradians): TCandelas; inline;
+
 operator /(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity; inline;
 
 operator /(const AEnergy: TJoules; const AMass: TKilograms): TGrays; inline;
@@ -2736,13 +2758,19 @@ begin end;
 operator*(const g: TGramIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier;
 begin end;
 
+operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const g: TGramIdentifier): TMillinewtonIdentifier;
+begin end;
+
+operator /(const mN: TMillinewtonIdentifier; const g: TGramMeterIdentifier): TMeterPerSecondSquaredIdentifier;
+begin end;
+
 operator*(const kg: TKilogramIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier;
 begin end;
 
-operator/(const g: TGramMeterIdentifier; const s2: TSquareSecondIdentifier): TMillinewtonIdentifier;
+operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const kg: TKilogramIdentifier): TNewtonIdentifier;
 begin end;
 
-operator/(const kg: TKilogramMeterIdentifier; const s2: TSquareSecondIdentifier): TNewtonIdentifier;
+operator /(const N: TNewtonIdentifier; const kg: TKilogramIdentifier): TMeterPerSecondSquaredIdentifier;
 begin end;
 
 operator /(const N: TNewtonIdentifier; const m2: TSquareMeterIdentifier): TPascalIdentifier;
@@ -2773,6 +2801,12 @@ operator *(const mm: TMillimeterIdentifier; const MPa: TMegapascalIdentifier): T
 begin end;
 
 operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentifier;
+begin end;
+
+operator *(const m: TMeterIdentifier; const N: TNewtonIdentifier): TJouleIdentifier;
+begin end;
+
+operator /(const J: TJouleIdentifier; const N: TNewtonIdentifier): TMeterIdentifier;
 begin end;
 
 operator /(const J: TJouleIdentifier; const s: TSecondIdentifier): TWattIdentifier;
@@ -2809,6 +2843,12 @@ operator *(const F: TFaradIdentifier; const J: TJouleIdentifier): TSquareCoulomb
 begin end;
 
 operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifier;
+begin end;
+
+operator *(const s: TSecondIdentifier; const A: TAmpereIdentifier): TCoulombIdentifier;
+begin end;
+
+operator /(const C: TCoulombIdentifier; const A: TAmpereIdentifier): TSecondIdentifier;
 begin end;
 
 operator /(const V: TVoltIdentifier; const A: TAmpereIdentifier): TOhmIdentifier;
@@ -2851,6 +2891,15 @@ operator /(const Wb: TWeberIdentifier; const A: TAmpereIdentifier): THenryIdenti
 begin end;
 
 operator *(const cd: TCandelaIdentifier; const sr: TSteradianIdentifier): TLumenIdentifer;
+begin end;
+
+operator *(const sr: TSteradianIdentifier; const cd: TCandelaIdentifier): TLumenIdentifer;
+begin end;
+
+operator /(const lm: TLumenIdentifer; const cd: TCandelaIdentifier): TSteradianIdentifier;
+begin end;
+
+operator /(const lm: TLumenIdentifer; const sr: TSteradianIdentifier): TCandelaIdentifier;
 begin end;
 
 operator/(const lm: TLumenIdentifer; const m2: TSquareMeterIdentifier): TLuxIdentifier;
@@ -2940,7 +2989,12 @@ end;
 
 operator*(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TMillinewtons;
 begin
-  result.Value := AWeight.Value * AAcceleration.Value;
+  result.Value := AAcceleration.Value * AWeight.Value;
+end;
+
+operator /(const AForce: TMillinewtons; const AWeight: TGrams): TMetersPerSecondSquared;
+begin
+  result.Value := AForce.Value / AWeight.Value;
 end;
 
 operator*(const AWeight: TKilograms; const AAcceleration: TMetersPerSecondSquared): TNewtons;
@@ -2951,6 +3005,11 @@ end;
 operator*(const AAcceleration: TMetersPerSecondSquared; const AWeight: TKilograms): TNewtons;
 begin
   result.Value := AWeight.Value * AAcceleration.Value;
+end;
+
+operator /(const AForce: TNewtons; const AWeight: TKilograms): TMetersPerSecondSquared; inline;
+begin
+  result.Value := AForce.Value / AWeight.Value;
 end;
 
 operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals;
@@ -3006,6 +3065,16 @@ end;
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules;
 begin
   result.Value := AForce.Value * ALength.Value;
+end;
+
+operator *(const ALength: TMeters; const AForce: TNewtons): TJoules; inline;
+begin
+  result.Value := ALength.Value * AForce.Value;
+end;
+
+operator /(const AWork: TJoules; const AForce: TNewtons): TMeters; inline;
+begin
+  result.Value := AWork.Value / AForce.Value;
 end;
 
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts;
@@ -3066,6 +3135,16 @@ end;
 operator*(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs;
 begin
   result.Value := ACurrent.Value * ADuration.Value;
+end;
+
+operator *(const ADuration: TSeconds; const ACurrent: TAmperes): TCoulombs; inline;
+begin
+  result.Value := ADuration.Value * ACurrent.Value;
+end;
+
+operator /(const ACharge: TCoulombs; const ACurrent: TAmperes): TSeconds; inline;
+begin
+  result.Value := ACharge.Value / ACurrent.Value;
 end;
 
 operator /(const AVoltage: TVolts; const ACurrent: TAmperes): TOhms;
@@ -3136,6 +3215,21 @@ end;
 operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens;
 begin
   result.Value := ALuminousIntensity.Value * ASolidAngle.Value;
+end;
+
+operator *(const ASolidAngle: TSteradians; const ALuminousIntensity: TCandelas): TLumens;
+begin
+  result.Value := ASolidAngle.Value * ALuminousIntensity.Value;
+end;
+
+operator /(const ALuminousFlux: TLumens; const ALuminousIntensity: TCandelas): TSteradians;
+begin
+  result.Value := ALuminousFlux.Value / ALuminousIntensity.Value;
+end;
+
+operator /(const ALuminousFlux: TLumens; const ASolidAngle: TSteradians): TCandelas;
+begin
+  result.Value := ALuminousFlux.Value / ASolidAngle.Value;
 end;
 
 operator/(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity;
