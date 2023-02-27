@@ -369,6 +369,8 @@ type
     function Squared: TSquareIdentifier;
     function Cubed: TCubicIdentifier;
     function Quarted: TQuarticIdentifier;
+    function SquareRoot(const ASquareQuantity: TSquareQuantity): TQuantity;
+    function CubicRoot(const ACubicQuantity: TCubicQuantity): TQuantity;
   {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_INTF}
   {$IFDEF FACTORED_UNIT_ID_INTF}
     class function From(const AQuantity: TBaseQuantity): TQuantity; inline; static;
@@ -419,7 +421,9 @@ type
     type TSelf = specialize TUnitIdentifier<U>;
     type TQuantity = specialize TDimensionedQuantity<U>;
     type TSquareIdentifier = specialize TSquareUnitIdentifier<U>;
+    type TSquareQuantity = specialize TSquareDimensionedQuantity<U>;
     type TCubicIdentifier = specialize TCubicUnitIdentifier<U>;
+    type TCubicQuantity = specialize TCubicDimensionedQuantity<U>;
     type TQuarticIdentifier = specialize TQuarticUnitIdentifier<U>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
@@ -454,7 +458,9 @@ type
     type TBaseQuantity = specialize TDimensionedQuantity<BaseU>;
     type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
     type TSquareIdentifier = specialize TFactoredSquareUnitIdentifier<BaseU, U>;
+    type TSquareQuantity = specialize TFactoredSquareDimensionedQuantity<BaseU, U>;
     type TCubicIdentifier = specialize TFactoredCubicUnitIdentifier<BaseU, U>;
+    type TCubicQuantity = specialize TFactoredCubicDimensionedQuantity<BaseU, U>;
     type TQuarticIdentifier = specialize TFactoredQuarticUnitIdentifier<BaseU, U>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
@@ -1968,6 +1974,15 @@ end;
   function T_UNIT_ID.Cubed: TCubicIdentifier; begin end;
   function T_UNIT_ID.Quarted: TQuarticIdentifier; begin end;
 
+  function T_UNIT_ID.SquareRoot(const ASquareQuantity: TSquareQuantity): TQuantity;
+  begin
+    result.Value := System.Sqrt(ASquareQuantity.Value);
+  end;
+
+  function T_UNIT_ID.CubicRoot(const ACubicQuantity: TCubicQuantity): TQuantity;
+  begin
+    result.Value := System.Exp(System.Ln(ACubicQuantity.Value) / 3);
+  end;
 {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_IMPL}
 {$IFDEF FACTORED_UNIT_ID_IMPL}
   class function T_UNIT_ID.From(const AQuantity: TBaseQuantity): TQuantity;

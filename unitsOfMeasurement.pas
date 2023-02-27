@@ -70,6 +70,7 @@ begin
   surface := side * side;
   writeln('The surface of a ', side.ToString,' by ', side.ToString,
     ' square is: ', surface.ToString);
+  writeln('The side of a 2 m2 surface is ', m.SquareRoot(2*m2).ToString);
   side2 := 5*(m/s*s);
   writeln('It is the same surface as a rectangle of ', side2.ToString,
     ' by ', (surface/side2).ToString);
@@ -91,6 +92,8 @@ begin
   writeln('has an horizontal face of ', (volume/side).ToString);
   // explicit conversion from m3 to litre
   writeln('It is equivalent to ', L.From(volume).ToString);
+  writeln('A cube of volume ', volume.ToString,
+    ' has a side of ', m.CubicRoot(volume).ToString);
 
   writeln('3 t = ', kg.From(3*ton).ToString);
   writeln('1 lux = ', (1*lx).ToVerboseString);
