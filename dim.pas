@@ -828,9 +828,23 @@ type
   TAmpereIdentifier = specialize TUnitIdentifier<TAmpere>;
   TAmperes = specialize TDimensionedQuantity<TAmpere>;
 
+  TSquareAmpere = specialize TSquareUnit<TAmpere>;
+  TSquareAmpereIdentifier = specialize TSquareUnitIdentifier<TAmpere>;
+  TSquareAmperes = specialize TSquareDimensionedQuantity<TAmpere>;
+
+  TMilliampere = specialize TMilliUnit<TAmpere>;
+  TMilliampereIdentifier = specialize TFactoredUnitIdentifier<TAmpere, TMilliampere>;
+  TMilliamperes = specialize TFactoredDimensionedQuantity<TAmpere, TMilliampere>;
+
+  TSquareMilliampere = specialize TFactoredSquareUnit<TMilliampere>;
+  TSquareMilliampereIdentifier = specialize TFactoredSquareUnitIdentifier<TAmpere, TMilliampere>;
+  TSquareMilliamperes = specialize TFactoredSquareDimensionedQuantity<TAmpere, TMilliampere>;
+
 var
   A: TAmpereIdentifier;
-  A2: specialize TSquareUnitIdentifier<TAmpere>;
+  mA: TMilliampereIdentifier;
+  A2: TSquareAmpereIdentifier;
+  mA2: TSquareMilliampereIdentifier;
 
 { Units of temperature }
 
@@ -1096,6 +1110,10 @@ type
   TVoltIdentifier = specialize TRatioUnitIdentifier<TJoule, TCoulomb>;
   TVolts = specialize TRatioDimensionedQuantity<TJoule, TCoulomb>;
 
+  TSquareVolt = specialize TSquareUnit<TVolt>;
+  TSquareVoltIdentifier = specialize TSquareUnitIdentifier<TVolt>;
+  TSquareVolts = specialize TSquareDimensionedQuantity<TVolt>;
+
   TFarad = specialize TRatioUnit<TCoulomb, TVolt>;
   TFaradIdentifier = specialize TRatioUnitIdentifier<TCoulomb, TVolt>;
   TFarads = specialize TRatioDimensionedQuantity<TCoulomb, TVolt>;
@@ -1194,6 +1212,7 @@ var
   kat: TKatalIdentifier;
   W: TWattIdentifier;
   V: TVoltIdentifier;
+  V2: TSquareVoltIdentifier;
   F: TFaradIdentifier;
   mF: specialize TFactoredUnitIdentifier<TFarad, specialize TMilliUnit<TFarad>>;
   uF: specialize TFactoredUnitIdentifier<TFarad, specialize TMicroUnit<TFarad>>;
@@ -1253,12 +1272,24 @@ operator /(const {%H-}J: TJouleIdentifier; const {%H-}N: TNewtonIdentifier): TMe
 
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}s: TSecondIdentifier): TWattIdentifier; inline;
 
+// definition A2 = W / Ω
+operator /(const {%H-}W: TWattIdentifier; const {%H-}Ohm: TOhmIdentifier): TSquareAmpereIdentifier; inline;
+operator /(const {%H-}W: TWattIdentifier; const {%H-}A2: TSquareAmpereIdentifier): TOhmIdentifier; inline;
+operator *(const {%H-}A2: TSquareAmpereIdentifier; const {%H-}Ohm: TOhmIdentifier): TWattIdentifier; inline;
+operator *(const {%H-}Ohm: TOhmIdentifier; const {%H-}A2: TSquareAmpereIdentifier): TWattIdentifier; inline;
+
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}C: TCoulombIdentifier): TVoltIdentifier; inline;
 // alternative definition of V = W / A
 operator /(const {%H-}W: TWattIdentifier; const {%H-}A: TAmpereIdentifier): TVoltIdentifier; inline;
 operator /(const {%H-}W: TWattIdentifier; const {%H-}V: TVoltIdentifier): TAmpereIdentifier; inline;
 operator *(const {%H-}A: TAmpereIdentifier; const {%H-}V: TVoltIdentifier): TWattIdentifier; inline;
 operator *(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TWattIdentifier; inline;
+
+// definition of V2 = W * Ω
+operator *(const {%H-}W: TWattIdentifier; const {%H-}Ohm: TOhmIdentifier): TSquareVoltIdentifier; inline;
+operator *(const {%H-}Ohm: TOhmIdentifier; const {%H-}W: TWattIdentifier): TSquareVoltIdentifier; inline;
+operator /(const {%H-}V2: TSquareVoltIdentifier; const {%H-}W: TWattIdentifier): TOhmIdentifier; inline;
+operator /(const {%H-}V2: TSquareVoltIdentifier; const {%H-}Ohm: TOhmIdentifier): TWattIdentifier; inline;
 
 operator /(const {%H-}C: TCoulombIdentifier; const {%H-}V: TVoltIdentifier): TFaradIdentifier; inline;
 // alternative definition of F = C2 / J
@@ -1335,12 +1366,24 @@ operator /(const AWork: TJoules; const AForce: TNewtons): TMeters; inline;
 
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts; inline;
 
+// definition A2 = W / Ω
+operator /(const APower: TWatts; const AResistance: TOhms): TSquareAmperes; inline;
+operator /(const APower: TWatts; const ASquareCurrent: TSquareAmperes): TOhms; inline;
+operator *(const ASquareCurrent: TSquareAmperes; const AResistance: TOhms): TWatts; inline;
+operator *(const AResistance: TOhms; const ASquareCurrent: TSquareAmperes): TWatts; inline;
+
 operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts; inline;
 // alternative definition of V = W / A
 operator /(const APower: TWatts; const ACurrent: TAmperes): TVolts; inline;
 operator /(const APower: TWatts; const AVoltage: TVolts): TAmperes; inline;
 operator *(const ACurrent: TAmperes; const AVoltage: TVolts): TWatts; inline;
 operator *(const AVoltage: TVolts; const ACurrent: TAmperes): TWatts; inline;
+
+// definition of V2 = W * Ω
+operator *(const APower: TWatts; const AResistance: TOhms): TSquareVolts; inline;
+operator *(const AResistance: TOhms; const APower: TWatts): TSquareVolts; inline;
+operator /(const ASquareVoltage: TSquareVolts; const APower: TWatts): TOhms; inline;
+operator /(const ASquareVoltage: TSquareVolts; const AResistance: TOhms): TWatts; inline;
 
 operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads; inline;
 // alternative definition of F = C2 / J
@@ -2931,6 +2974,18 @@ begin end;
 operator /(const J: TJouleIdentifier; const s: TSecondIdentifier): TWattIdentifier;
 begin end;
 
+operator /(const W: TWattIdentifier; const Ohm: TOhmIdentifier): TSquareAmpereIdentifier;
+begin end;
+
+operator /(const W: TWattIdentifier; const A2: TSquareAmpereIdentifier): TOhmIdentifier;
+begin end;
+
+operator *(const A2: TSquareAmpereIdentifier; const Ohm: TOhmIdentifier): TWattIdentifier;
+begin end;
+
+operator *(const Ohm: TOhmIdentifier; const A2: TSquareAmpereIdentifier): TWattIdentifier;
+begin end;
+
 operator /(const J: TJouleIdentifier; const C: TCoulombIdentifier): TVoltIdentifier;
 begin end;
 
@@ -2944,6 +2999,18 @@ operator *(const A: TAmpereIdentifier; const V: TVoltIdentifier): TWattIdentifie
 begin end;
 
 operator *(const V: TVoltIdentifier; const A: TAmpereIdentifier): TWattIdentifier;
+begin end;
+
+operator *(const W: TWattIdentifier; const Ohm: TOhmIdentifier): TSquareVoltIdentifier;
+begin end;
+
+operator *(const Ohm: TOhmIdentifier; const W: TWattIdentifier): TSquareVoltIdentifier;
+begin end;
+
+operator /(const V2: TSquareVoltIdentifier; const W: TWattIdentifier): TOhmIdentifier;
+begin end;
+
+operator /(const V2: TSquareVoltIdentifier; const Ohm: TOhmIdentifier): TWattIdentifier;
 begin end;
 
 operator /(const C: TCoulombIdentifier; const V: TVoltIdentifier): TFaradIdentifier;
@@ -3198,6 +3265,26 @@ begin
   result.Value := AWork.Value / ATime.Value;
 end;
 
+operator /(const APower: TWatts; const AResistance: TOhms): TSquareAmperes;
+begin
+  result.Value := APower.Value / AResistance.Value;
+end;
+
+operator /(const APower: TWatts; const ASquareCurrent: TSquareAmperes): TOhms;
+begin
+  result.Value := APower.Value / ASquareCurrent.Value;
+end;
+
+operator *(const ASquareCurrent: TSquareAmperes; const AResistance: TOhms): TWatts; inline;
+begin
+  result.Value := ASquareCurrent.Value * AResistance.Value;
+end;
+
+operator *(const AResistance: TOhms; const ASquareCurrent: TSquareAmperes): TWatts;
+begin
+  result.Value := AResistance.Value * ASquareCurrent.Value;
+end;
+
 operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts;
 begin
   result.Value := AWork.Value / ACharge.Value;
@@ -3221,6 +3308,26 @@ end;
 operator *(const AVoltage: TVolts; const ACurrent: TAmperes): TWatts; inline;
 begin
   result.Value := AVoltage.Value * ACurrent.Value;
+end;
+
+operator *(const APower: TWatts; const AResistance: TOhms): TSquareVolts;
+begin
+  result.Value := APower.Value * AResistance.Value;
+end;
+
+operator *(const AResistance: TOhms; const APower: TWatts): TSquareVolts;
+begin
+  result.Value := AResistance.Value * APower.Value;
+end;
+
+operator /(const ASquareVoltage: TSquareVolts; const APower: TWatts): TOhms;
+begin
+  result.Value := ASquareVoltage.Value / APower.Value;
+end;
+
+operator /(const ASquareVoltage: TSquareVolts; const AResistance: TOhms): TWatts;
+begin
+  result.Value := ASquareVoltage.Value / AResistance.Value;
 end;
 
 operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads;
