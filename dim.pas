@@ -490,7 +490,12 @@ type
     type TQuantity = specialize TRatioDimensionedQuantity<NumeratorU, DenomU>;
     type TNumeratorIdentifier = specialize TUnitIdentifier<NumeratorU>;
     type TDenomIdentifier = specialize TUnitIdentifier<DenomU>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
+    type TSquareIdentifier = specialize TSquareUnitIdentifier<U>;
+    type TSquareQuantity = specialize TSquareDimensionedQuantity<U>;
+    type TCubicIdentifier = specialize TCubicUnitIdentifier<U>;
+    type TCubicQuantity = specialize TCubicDimensionedQuantity<U>;
+    type TQuarticIdentifier = specialize TQuarticUnitIdentifier<U>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
   generic TUnitProductIdentifier<U1, U2: TUnit> = record
@@ -499,7 +504,12 @@ type
     type TQuantity = specialize TDimensionedQuantityProduct<U1, U2>;
     type TIdentifier1 = specialize TUnitIdentifier<U1>;
     type TIdentifier2 = specialize TUnitIdentifier<U2>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
+    type TSquareIdentifier = specialize TSquareUnitIdentifier<U>;
+    type TSquareQuantity = specialize TSquareDimensionedQuantity<U>;
+    type TCubicIdentifier = specialize TCubicUnitIdentifier<U>;
+    type TCubicQuantity = specialize TCubicDimensionedQuantity<U>;
+    type TQuarticIdentifier = specialize TQuarticUnitIdentifier<U>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
   generic TFactoredUnitProductIdentifier<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
@@ -2037,10 +2047,10 @@ end;
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RECIP_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredReciprocalUnitIdentifier}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
+{$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TRatioUnitIdentifier}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
+{$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TUnitProductIdentifier}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
