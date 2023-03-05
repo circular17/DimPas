@@ -1496,6 +1496,14 @@ type
   TNewtonPerCubicMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TCubicMeter>;
   TNewtonsPerCubicMeter = specialize TRatioDimensionedQuantity<TNewton, TCubicMeter>;
 
+  TPascalSecond = specialize TUnitProduct<TPascal, TSecond>;
+  TPascalSecondIdentifier = specialize TUnitProductIdentifier<TPascal, TSecond>;
+  TPascalsSecond = specialize TDimensionedQuantityProduct<TPascal, TSecond>;
+
+  TKilogramPerSecond = specialize TRatioUnit<TBaseKilogram, TSecond>;
+  TKilogramPerSecondIdentifier = specialize TRatioUnitIdentifier<TBaseKilogram, TSecond>;
+  TKilogramsPerSecond = specialize TRatioDimensionedQuantity<TBaseKilogram, TSecond>;
+
 // combining units
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier; inline;
@@ -1513,6 +1521,24 @@ operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}kg_m3: 
 operator /(const {%H-}N_m3: TNewtonPerCubicMeterIdentifier; const {%H-}kg_m3: TKilogramPerCubicMeterIdentifier): TMeterPerSecondSquaredIdentifier; inline;
 operator /(const {%H-}N_m3: TNewtonPerCubicMeterIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TKilogramPerCubicMeterIdentifier; inline;
 
+operator *(const {%H-}Pa: TPascalIdentifier; const {%H-}s: TSecondIdentifier): TPascalSecondIdentifier; inline;
+operator *(const {%H-}s: TSecondIdentifier; const {%H-}Pa: TPascalIdentifier): TPascalSecondIdentifier; inline;
+operator /(const {%H-}Pas: TPascalSecondIdentifier; const {%H-}Pa: TPascalIdentifier): TSecondIdentifier; inline;
+
+operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}s: TSecondIdentifier): TKilogramPerSecondIdentifier; inline;
+
+// alternative definition kg/s = Pa*s * m
+operator *(const {%H-}Pas: TPascalSecondIdentifier; const {%H-}m: TMeterIdentifier): TKilogramPerSecondIdentifier; inline;
+operator *(const {%H-}m: TMeterIdentifier; const {%H-}Pas: TPascalSecondIdentifier): TKilogramPerSecondIdentifier; inline;
+operator /(const {%H-}kg_s: TKilogramPerSecondIdentifier; const {%H-}Pas: TPascalSecondIdentifier): TMeterIdentifier; inline;
+operator /(const {%H-}kg_s: TKilogramPerSecondIdentifier; const {%H-}m: TMeterIdentifier): TPascalSecondIdentifier; inline;
+
+// alternative definition kg/s = N / m/s
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m_s: TMeterPerSecondIdentifier): TKilogramPerSecondIdentifier; inline;
+operator *(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}kg_s: TKilogramPerSecondIdentifier): TNewtonIdentifier; inline;
+operator *(const {%H-}kg_s: TKilogramPerSecondIdentifier; const {%H-}m_s: TMeterPerSecondIdentifier): TNewtonIdentifier; inline;
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}kg_s: TKilogramPerSecondIdentifier): TMeterPerSecondIdentifier; inline;
+
 // combining dimensioned quantities
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 operator /(const AForce: TNewtons; const ALength: TMillimeters): TNewtonsPerMillimeter; inline;
@@ -1529,6 +1555,24 @@ operator *(const ADensity: TKilogramsPerCubicMeter; const AAcceleration: TMeters
 operator *(const AAcceleration: TMetersPerSecondSquared; const ADensity: TKilogramsPerCubicMeter): TNewtonsPerCubicMeter; inline;
 operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const ADensity: TKilogramsPerCubicMeter): TMetersPerSecondSquared; inline;
 operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const AAcceleration: TMetersPerSecondSquared): TKilogramsPerCubicMeter; inline;
+
+operator *(const APressure: TPascals; const ATime: TSeconds): TPascalsSecond; inline;
+operator *(const ATime: TSeconds; const APressure: TPascals): TPascalsSecond; inline;
+operator /(const ADynViscosity: TPascalsSecond; const APressure: TPascals): TSeconds; inline;
+
+operator /(const AMass: TKilograms; const ATime: TSeconds): TKilogramsPerSecond; inline;
+
+// alternative definition kg/s = Pa*s * m
+operator *(const ADynViscosity: TPascalsSecond; const ALength: TMeters): TKilogramsPerSecond; inline;
+operator *(const ALength: TMeters; const ADynViscosity: TPascalsSecond): TKilogramsPerSecond; inline;
+operator /(const AMassFlux: TKilogramsPerSecond; const ADynViscosity: TPascalsSecond): TMeters; inline;
+operator /(const AMassFlux: TKilogramsPerSecond; const ALength: TMeters): TPascalsSecond; inline;
+
+// alternative definition kg/s = N / m/s
+operator /(const AForce: TNewtons; const ASpeed: TMetersPerSecond): TKilogramsPerSecond; inline;
+operator *(const ASpeed: TMetersPerSecond; const AMassFlux: TKilogramsPerSecond): TNewtons; inline;
+operator *(const AMassFlux: TKilogramsPerSecond; const ASpeed: TMetersPerSecond): TNewtons; inline;
+operator /(const AForce: TNewtons; const AMassFlux: TKilogramsPerSecond): TMetersPerSecond; inline;
 
 { Formatting }
 
@@ -3045,6 +3089,42 @@ begin end;
 operator /(const N_m3: TNewtonPerCubicMeterIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TKilogramPerCubicMeterIdentifier;
 begin end;
 
+operator *(const Pa: TPascalIdentifier; const s: TSecondIdentifier): TPascalSecondIdentifier;
+begin end;
+
+operator *(const s: TSecondIdentifier; const Pa: TPascalIdentifier): TPascalSecondIdentifier;
+begin end;
+
+operator /(const Pas: TPascalSecondIdentifier; const Pa: TPascalIdentifier): TSecondIdentifier;
+begin end;
+
+operator /(const kg: TKilogramIdentifier; const s: TSecondIdentifier): TKilogramPerSecondIdentifier;
+begin end;
+
+operator *(const Pas: TPascalSecondIdentifier; const m: TMeterIdentifier): TKilogramPerSecondIdentifier;
+begin end;
+
+operator *(const m: TMeterIdentifier; const Pas: TPascalSecondIdentifier): TKilogramPerSecondIdentifier;
+begin end;
+
+operator /(const kg_s: TKilogramPerSecondIdentifier; const Pas: TPascalSecondIdentifier): TMeterIdentifier;
+begin end;
+
+operator /(const kg_s: TKilogramPerSecondIdentifier; const m: TMeterIdentifier): TPascalSecondIdentifier;
+begin end;
+
+operator /(const N: TNewtonIdentifier; const m_s: TMeterPerSecondIdentifier): TKilogramPerSecondIdentifier;
+begin end;
+
+operator *(const m_s: TMeterPerSecondIdentifier; const kg_s: TKilogramPerSecondIdentifier): TNewtonIdentifier;
+begin end;
+
+operator *(const kg_s: TKilogramPerSecondIdentifier; const m_s: TMeterPerSecondIdentifier): TNewtonIdentifier;
+begin end;
+
+operator /(const N: TNewtonIdentifier; const kg_s: TKilogramPerSecondIdentifier): TMeterPerSecondIdentifier;
+begin end;
+
 operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentifier;
 begin end;
 
@@ -3363,6 +3443,66 @@ end;
 operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const AAcceleration: TMetersPerSecondSquared): TKilogramsPerCubicMeter;
 begin
   result.Value := ASpecificWeight.Value / AAcceleration.Value;
+end;
+
+operator *(const APressure: TPascals; const ATime: TSeconds): TPascalsSecond;
+begin
+  result.Value := APressure.Value * ATime.Value;
+end;
+
+operator *(const ATime: TSeconds; const APressure: TPascals): TPascalsSecond;
+begin
+  result.Value := ATime.Value * APressure.Value;
+end;
+
+operator /(const ADynViscosity: TPascalsSecond; const APressure: TPascals): TSeconds;
+begin
+  result.Value := ADynViscosity.Value / APressure.Value;
+end;
+
+operator /(const AMass: TKilograms; const ATime: TSeconds): TKilogramsPerSecond;
+begin
+  result.Value := AMass.Value / ATime.Value;
+end;
+
+operator *(const ADynViscosity: TPascalsSecond; const ALength: TMeters): TKilogramsPerSecond;
+begin
+  result.Value := ADynViscosity.Value * ALength.Value;
+end;
+
+operator *(const ALength: TMeters; const ADynViscosity: TPascalsSecond): TKilogramsPerSecond;
+begin
+  result.Value := ALength.Value * ADynViscosity.Value;
+end;
+
+operator /(const AMassFlux: TKilogramsPerSecond; const ADynViscosity: TPascalsSecond): TMeters;
+begin
+  result.Value := AMassFlux.Value / ADynViscosity.Value;
+end;
+
+operator /(const AMassFlux: TKilogramsPerSecond; const ALength: TMeters): TPascalsSecond;
+begin
+  result.Value := AMassFlux.Value / ALength.Value;
+end;
+
+operator /(const AForce: TNewtons; const ASpeed: TMetersPerSecond): TKilogramsPerSecond;
+begin
+  result.Value := AForce.Value / ASpeed.Value;
+end;
+
+operator *(const ASpeed: TMetersPerSecond; const AMassFlux: TKilogramsPerSecond): TNewtons;
+begin
+  result.Value := ASpeed.Value * AMassFlux.Value;
+end;
+
+operator *(const AMassFlux: TKilogramsPerSecond; const ASpeed: TMetersPerSecond): TNewtons;
+begin
+  result.Value := AMassFlux.Value * ASpeed.Value;
+end;
+
+operator /(const AForce: TNewtons; const AMassFlux: TKilogramsPerSecond): TMetersPerSecond;
+begin
+  result.Value := AForce.Value / AMassFlux.Value;
 end;
 
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules;
