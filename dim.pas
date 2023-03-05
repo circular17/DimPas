@@ -1492,6 +1492,10 @@ type
   TNewtonPerMilliMeterIdentifier = specialize TFactoredDenominatorUnitIdentifier<TNewton, TMeter, TMilliMeter>;
   TNewtonsPerMilliMeter = specialize TFactoredDenominatorDimensionedQuantity<TNewton, TMeter, TMilliMeter>;
 
+  TNewtonPerCubicMeter = specialize TRatioUnit<TNewton, TCubicMeter>;
+  TNewtonPerCubicMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TCubicMeter>;
+  TNewtonsPerCubicMeter = specialize TRatioDimensionedQuantity<TNewton, TCubicMeter>;
+
 // combining units
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
 operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier; inline;
@@ -1501,6 +1505,14 @@ operator *(const {%H-}m: TMeterIdentifier; const {%H-}Pa: TPascalIdentifier): TN
 operator *(const {%H-}MPa: TMegapascalIdentifier; const {%H-}mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier; inline;
 operator *(const {%H-}mm: TMillimeterIdentifier; const {%H-}MPa: TMegapascalIdentifier): TNewtonPerMillimeterIdentifier; inline;
 
+operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m3: TCubicMeterIdentifier): TNewtonPerCubicMeterIdentifier; inline;
+
+// alternative definition N/m3 = kg/m3 * m/s2
+operator *(const {%H-}kg_m3: TKilogramPerCubicMeterIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonPerCubicMeterIdentifier; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}kg_m3: TKilogramPerCubicMeterIdentifier): TNewtonPerCubicMeterIdentifier; inline;
+operator /(const {%H-}N_m3: TNewtonPerCubicMeterIdentifier; const {%H-}kg_m3: TKilogramPerCubicMeterIdentifier): TMeterPerSecondSquaredIdentifier; inline;
+operator /(const {%H-}N_m3: TNewtonPerCubicMeterIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TKilogramPerCubicMeterIdentifier; inline;
+
 // combining dimensioned quantities
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 operator /(const AForce: TNewtons; const ALength: TMillimeters): TNewtonsPerMillimeter; inline;
@@ -1509,6 +1521,14 @@ operator *(const APressure: TPascals; const ALength: TMeters): TNewtonsPerMeter;
 operator *(const ALength: TMeters; const APressure: TPascals): TNewtonsPerMeter; inline;
 operator *(const APressure: TMegapascals; const ALength: TMillimeters): TNewtonsPerMillimeter; inline;
 operator *(const ALength: TMillimeters; const APressure: TMegapascals): TNewtonsPerMillimeter; inline;
+
+operator /(const AForce: TNewtons; const AVolume: TCubicMeters): TNewtonsPerCubicMeter; inline;
+
+// alternative definition N/m3 = kg/m3 * m/s2
+operator *(const ADensity: TKilogramsPerCubicMeter; const AAcceleration: TMetersPerSecondSquared): TNewtonsPerCubicMeter; inline;
+operator *(const AAcceleration: TMetersPerSecondSquared; const ADensity: TKilogramsPerCubicMeter): TNewtonsPerCubicMeter; inline;
+operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const ADensity: TKilogramsPerCubicMeter): TMetersPerSecondSquared; inline;
+operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const AAcceleration: TMetersPerSecondSquared): TKilogramsPerCubicMeter; inline;
 
 { Formatting }
 
@@ -3010,6 +3030,21 @@ begin end;
 operator *(const mm: TMillimeterIdentifier; const MPa: TMegapascalIdentifier): TNewtonPerMillimeterIdentifier;
 begin end;
 
+operator /(const N: TNewtonIdentifier; const m3: TCubicMeterIdentifier): TNewtonPerCubicMeterIdentifier;
+begin end;
+
+operator *(const kg_m3: TKilogramPerCubicMeterIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TNewtonPerCubicMeterIdentifier;
+begin end;
+
+operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const kg_m3: TKilogramPerCubicMeterIdentifier): TNewtonPerCubicMeterIdentifier;
+begin end;
+
+operator /(const N_m3: TNewtonPerCubicMeterIdentifier; const kg_m3: TKilogramPerCubicMeterIdentifier): TMeterPerSecondSquaredIdentifier;
+begin end;
+
+operator /(const N_m3: TNewtonPerCubicMeterIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TKilogramPerCubicMeterIdentifier;
+begin end;
+
 operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentifier;
 begin end;
 
@@ -3303,6 +3338,31 @@ end;
 operator *(const ALength: TMillimeters; const APressure: TMegapascals): TNewtonsPerMillimeter;
 begin
   result.Value := ALength.Value * APressure.Value;
+end;
+
+operator /(const AForce: TNewtons; const AVolume: TCubicMeters): TNewtonsPerCubicMeter;
+begin
+  result.Value := AForce.Value / AVolume.Value;
+end;
+
+operator *(const ADensity: TKilogramsPerCubicMeter; const AAcceleration: TMetersPerSecondSquared): TNewtonsPerCubicMeter;
+begin
+  result.Value := ADensity.Value * AAcceleration.Value;
+end;
+
+operator *(const AAcceleration: TMetersPerSecondSquared; const ADensity: TKilogramsPerCubicMeter): TNewtonsPerCubicMeter;
+begin
+  result.Value := AAcceleration.Value * ADensity.Value;
+end;
+
+operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const ADensity: TKilogramsPerCubicMeter): TMetersPerSecondSquared;
+begin
+  result.Value := ASpecificWeight.Value / ADensity.Value;
+end;
+
+operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const AAcceleration: TMetersPerSecondSquared): TKilogramsPerCubicMeter;
+begin
+  result.Value := ASpecificWeight.Value / AAcceleration.Value;
 end;
 
 operator *(const AForce: TNewtons; const ALength: TMeters): TJoules;
