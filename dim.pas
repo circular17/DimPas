@@ -1176,17 +1176,28 @@ type
   TCurieIdentifier = specialize TFactoredUnitIdentifier<TBecquerel, TCurie>;
   TCuries = specialize TFactoredDimensionedQuantity<TBecquerel, TCurie>;
 
-  TSquareMeterPerSquareSecond = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TSquareMeterPerSquareSecondIdentifier = specialize TUnitIdentifier<TSquareMeterPerSquareSecond>;
-  TSquareMetersPerSquareSecond = specialize TDimensionedQuantity<TSquareMeterPerSquareSecond>;
+  TSquareMeterPerSquareSecond = specialize TRatioUnit<TSquareMeter, TSquareSecond>;
+  TSquareMeterPerSquareSecondIdentifier = specialize TRatioUnitIdentifier<TSquareMeter, TSquareSecond>;
+  TSquareMetersPerSquareSecond = specialize TRatioDimensionedQuantity<TSquareMeter, TSquareSecond>;
 
   TGrayIdentifier = specialize TRatioUnitIdentifier<TJoule, TBaseKilogram>;
   TGrays = specialize TRatioDimensionedQuantity<TJoule, TBaseKilogram>;
 
-  TSievertIdentifier = specialize TRatioUnitIdentifier
-                                  <TSquareMeter, specialize TSquareUnit<TSecond>>;
-  TSieverts = specialize TRatioDimensionedQuantity
-                         <TSquareMeter, specialize TSquareUnit<TSecond>>;
+  { TGrayHelper }
+
+  TGrayHelper = record helper for TGrayIdentifier
+    function From(const ASquareSpeed: TSquareMetersPerSquareSecond): TGrays;
+  end;
+
+  TSievert = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  TSievertIdentifier = specialize TUnitIdentifier<TSievert>;
+  TSieverts = specialize TDimensionedQuantity<TSievert>;
+
+  { TSievertHelper }
+
+  TSievertHelper = record helper for TSievertIdentifier
+    function From(const ASquareSpeed: TSquareMetersPerSquareSecond): TSieverts;
+  end;
 
   TKatalIdentifier = specialize TRatioUnitIdentifier<TMole, TSecond>;
   TKatals = specialize TRatioDimensionedQuantity<TMole, TSecond>;
@@ -1237,8 +1248,10 @@ operator:=(const AWeight: TKilograms): TBaseKilograms;
 operator:=(const AWeight: TGrams): TBaseKilograms;
 operator:=(const AWeight: TBaseKilograms): TKilograms;
 operator:=(const AWeight: TBaseKilograms): TGrams;
-operator:=(const AEquivalentDose: TSieverts): TGrays;
-operator:=(const AAbsorbedDose: TGrays): TSieverts;
+
+operator:=(const AEquivalentDose: TSieverts): TSquareMetersPerSquareSecond;
+operator:=(const AAbsorbedDose: TGrays): TSquareMetersPerSquareSecond;
+
 operator:=(const ARadioactivity: TBecquerels): THertz;
 
 operator:=(const {%H-}sr: TSteradianIdentifier): TSteradianFactorIdentifier;
@@ -1248,9 +1261,6 @@ operator:=(const ASolidAngle: TSteradiansFactor): TSteradians;
 operator:=(const {%H-}C2: TSquareCoulombIdentifier): TSquareCoulombFactorIdentifier;
 operator:=(const ASquareCharge: TSquareCoulombs): TSquareCoulombsFactor;
 operator:=(const ASquareCharge: TSquareCoulombsFactor): TSquareCoulombs;
-
-operator:=(const ASquareSpeed: TSquareMetersPerSquareSecond): TSieverts;
-operator:=(const AEquivalentDose: TSieverts): TSquareMetersPerSquareSecond;
 
 // combining units
 operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m: TMeterIdentifier): THertzIdentifier; inline;
@@ -1337,17 +1347,17 @@ operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier
 
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): TGrayIdentifier; inline;
 
-operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TSievertIdentifier; inline;
+operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TSquareMeterPerSquareSecondIdentifier; inline;
 
-// alternative definition of Sv = J / kg
-operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): TSievertIdentifier; inline;
-operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}Sv: TSievertIdentifier): TJouleIdentifier; inline;
-operator *(const {%H-}Sv: TSievertIdentifier; const {%H-}kg: TKilogramIdentifier): TJouleIdentifier; inline;
-operator /(const {%H-}J: TJouleIdentifier; const {%H-}Sv: TSievertIdentifier): TKilogramIdentifier; inline;
+// alternative definition of m2_s2 = J / kg
+operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): TSquareMeterPerSquareSecondIdentifier; inline;
+operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier): TJouleIdentifier; inline;
+operator *(const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier; const {%H-}kg: TKilogramIdentifier): TJouleIdentifier; inline;
+operator /(const {%H-}J: TJouleIdentifier; const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier): TKilogramIdentifier; inline;
 
-// alternative definition Sv = m/s * m/s
-operator *(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m_s_: TMeterPerSecondIdentifier): TSievertIdentifier; inline;
-operator /(const {%H-}Sv: TSievertIdentifier; const {%H-}m_s: TMeterPerSecondIdentifier): TMeterPerSecondIdentifier; inline;
+// alternative definition m2_s2 = m/s * m/s
+operator *(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m_s_: TMeterPerSecondIdentifier): TSquareMeterPerSquareSecondIdentifier; inline;
+operator /(const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier; const {%H-}m_s: TMeterPerSecondIdentifier): TMeterPerSecondIdentifier; inline;
 
 operator /(const {%H-}mol: TMoleIdentifier; const {%H-}s: TSecondIdentifier): TKatalIdentifier; inline;
 
@@ -1441,17 +1451,17 @@ operator /(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuanti
 
 operator /(const AEnergy: TJoules; const AMass: TKilograms): TGrays; inline;
 
-operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSieverts; inline;
+operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSquareMetersPerSquareSecond; inline;
 
-// alternative definition of Sv = J / kg
-operator /(const AWork: TJoules; const AMass: TKilograms): TSieverts; inline;
-operator *(const AMass: TKilograms; const AEquivalentDose: TSieverts): TJoules; inline;
-operator *(const AEquivalentDose: TSieverts; const AMass: TKilograms): TJoules; inline;
-operator /(const AWork: TJoules; const AEquivalentDose: TSieverts): TKilograms; inline;
+// alternative definition of m2/s2 = J / kg
+operator /(const AWork: TJoules; const AMass: TKilograms): TSquareMetersPerSquareSecond; inline;
+operator *(const AMass: TKilograms; const ASquareSpeed: TSquareMetersPerSquareSecond): TJoules; inline;
+operator *(const ASquareSpeed: TSquareMetersPerSquareSecond; const AMass: TKilograms): TJoules; inline;
+operator /(const AWork: TJoules; const ASquareSpeed: TSquareMetersPerSquareSecond): TKilograms; inline;
 
-// alternative definition Sv = m/s * m/s
-operator *(const ASpeed1: TMetersPerSecond; const ASpeed2: TMetersPerSecond): TSieverts; inline;
-operator /(const AEquivalentDose: TSieverts; const ASpeed: TMetersPerSecond): TMetersPerSecond; inline;
+// alternative definition m2/s2 = m/s * m/s
+operator *(const ASpeed1: TMetersPerSecond; const ASpeed2: TMetersPerSecond): TSquareMetersPerSquareSecond; inline;
+operator /(const ASquareSpeed: TSquareMetersPerSquareSecond; const ASpeed: TMetersPerSecond): TMetersPerSecond; inline;
 
 operator /(const AAmountOfSustance: TMoles; const ATime: TSeconds): TKatals; inline;
 
@@ -1643,7 +1653,6 @@ begin
 
   case result of
   'lm/m2': result := 'lx';
-  'm2/s2': result := 'Sv';
   'mol/s': result := 'kat';
   'N/m2': result := 'Pa';
   'kN/m2': result := 'kPa';
@@ -1673,7 +1682,6 @@ begin
 
   case result of
   'lumen per square meter': result := 'lux';
-  'square meter per square second': result := 'sievert';
   'mole per second': result := 'katal';
   'newton per square meter': result := 'pascal';
   'kilonewton per square meter': result := 'kilopascal';
@@ -1727,6 +1735,20 @@ end;
 
 function TBecquerelHelper.Inverse: TSecond;
 begin end;
+
+{ TGrayHelper }
+
+function TGrayHelper.From(const ASquareSpeed: TSquareMetersPerSquareSecond): TGrays;
+begin
+  result.Value := ASquareSpeed.Value;
+end;
+
+{ TSievertHelper }
+
+function TSievertHelper.From(const ASquareSpeed: TSquareMetersPerSquareSecond): TSieverts;
+begin
+  result.Value := ASquareSpeed.Value;
+end;
 
 { TCustomUnit }
 
@@ -2750,10 +2772,10 @@ begin end;
 operator /(const {%H-}km: TKilometerIdentifier; const {%H-}h: THourIdentifier): TKilometerPerHourIdentifier;
 begin end;
 
-operator *(const m_s: TMeterPerSecondIdentifier; const m_s_: TMeterPerSecondIdentifier): TSievertIdentifier;
+operator *(const m_s: TMeterPerSecondIdentifier; const m_s_: TMeterPerSecondIdentifier): TSquareMeterPerSquareSecondIdentifier;
 begin end;
 
-operator /(const Sv: TSievertIdentifier; const m_s: TMeterPerSecondIdentifier): TMeterPerSecondIdentifier;
+operator /(const m2_s2: TSquareMeterPerSquareSecondIdentifier; const m_s: TMeterPerSecondIdentifier): TMeterPerSecondIdentifier;
 begin end;
 
 // combining dimensioned quantities
@@ -2772,14 +2794,14 @@ begin
   result.Value:= ALength.Value / ADuration.Value;
 end;
 
-operator *(const ASpeed1: TMetersPerSecond; const ASpeed2: TMetersPerSecond): TSieverts;
+operator *(const ASpeed1: TMetersPerSecond; const ASpeed2: TMetersPerSecond): TSquareMetersPerSquareSecond;
 begin
   result.Value := ASpeed1.Value * ASpeed2.Value;
 end;
 
-operator /(const AEquivalentDose: TSieverts; const ASpeed: TMetersPerSecond): TMetersPerSecond;
+operator /(const ASquareSpeed: TSquareMetersPerSquareSecond; const ASpeed: TMetersPerSecond): TMetersPerSecond;
 begin
-  result.Value := AEquivalentDose.Value / ASpeed.Value;
+  result.Value := ASquareSpeed.Value / ASpeed.Value;
 end;
 
 { Units of acceleration }
@@ -2927,8 +2949,8 @@ begin
   result := ToBase.Cosecant;
 end;
 
-class function TSquareMeterPerSquareSecond.Symbol: string; begin result := 'm2/s2'; end;
-class function TSquareMeterPerSquareSecond.Name: string;   begin result := 'square meter per square second'; end;
+class function TSievert.Symbol: string; begin result := 'Sv'; end;
+class function TSievert.Name: string;   begin result := 'sievert'; end;
 
 class function TBecquerel.Symbol: string; begin result := 'Bq'; end;
 class function TBecquerel.Name: string;   begin result := 'becquerel'; end;
@@ -2958,12 +2980,12 @@ begin
   result.Value := AWeight.Value * 1000;
 end;
 
-operator:=(const AEquivalentDose: TSieverts): TGrays;
+operator:=(const AEquivalentDose: TSieverts): TSquareMetersPerSquareSecond;
 begin
   result.Value := AEquivalentDose.Value;
 end;
 
-operator:=(const AAbsorbedDose: TGrays): TSieverts;
+operator:=(const AAbsorbedDose: TGrays): TSquareMetersPerSquareSecond;
 begin
   result.Value := AAbsorbedDose.Value;
 end;
@@ -3007,16 +3029,6 @@ end;
 operator:=(const ASquareCharge: TSquareCoulombsFactor): TSquareCoulombs;
 begin
   result.Value := ASquareCharge.Value;
-end;
-
-operator:=(const ASquareSpeed: TSquareMetersPerSquareSecond): TSieverts;
-begin
-  result.Value := ASquareSpeed.Value;
-end;
-
-operator:=(const AEquivalentDose: TSieverts): TSquareMetersPerSquareSecond;
-begin
-  result.Value := AEquivalentDose.Value;
 end;
 
 operator /(const m_s: TMeterPerSecondIdentifier; const m: TMeterIdentifier): THertzIdentifier;
@@ -3142,16 +3154,16 @@ begin end;
 operator /(const J: TJouleIdentifier; const N: TNewtonIdentifier): TMeterIdentifier;
 begin end;
 
-operator *(const kg: TKilogramIdentifier; const Sv: TSievertIdentifier): TJouleIdentifier;
+operator *(const kg: TKilogramIdentifier; const m2_s2: TSquareMeterPerSquareSecondIdentifier): TJouleIdentifier;
 begin end;
 
-operator *(const Sv: TSievertIdentifier; const kg: TKilogramIdentifier): TJouleIdentifier;
+operator *(const m2_s2: TSquareMeterPerSquareSecondIdentifier; const kg: TKilogramIdentifier): TJouleIdentifier;
 begin end;
 
-operator /(const J: TJouleIdentifier; const kg: TKilogramIdentifier): TSievertIdentifier;
+operator /(const J: TJouleIdentifier; const kg: TKilogramIdentifier): TSquareMeterPerSquareSecondIdentifier;
 begin end;
 
-operator /(const J: TJouleIdentifier; const Sv: TSievertIdentifier): TKilogramIdentifier;
+operator /(const J: TJouleIdentifier; const m2_s2: TSquareMeterPerSquareSecondIdentifier): TKilogramIdentifier;
 begin end;
 
 operator /(const J: TJouleIdentifier; const s: TSecondIdentifier): TWattIdentifier;
@@ -3274,7 +3286,7 @@ begin end;
 operator /(const J: TJouleIdentifier; const kg: TKilogramIdentifier): TGrayIdentifier;
 begin end;
 
-operator/(const m2: TSquareMeterIdentifier; const s2: TSquareSecondIdentifier): TSievertIdentifier;
+operator/(const m2: TSquareMeterIdentifier; const s2: TSquareSecondIdentifier): TSquareMeterPerSquareSecondIdentifier;
 begin end;
 
 operator/(const mol: TMoleIdentifier; const s: TSecondIdentifier): TKatalIdentifier;
@@ -3528,24 +3540,24 @@ begin
   result.Value := AWork.Value / AForce.Value;
 end;
 
-operator *(const AMass: TKilograms; const AEquivalentDose: TSieverts): TJoules;
+operator *(const AMass: TKilograms; const ASquareSpeed: TSquareMetersPerSquareSecond): TJoules;
 begin
-  result.Value := AMass.Value * AEquivalentDose.Value;
+  result.Value := AMass.Value * ASquareSpeed.Value;
 end;
 
-operator *(const AEquivalentDose: TSieverts; const AMass: TKilograms): TJoules;
+operator *(const ASquareSpeed: TSquareMetersPerSquareSecond; const AMass: TKilograms): TJoules;
 begin
-  result.Value := AEquivalentDose.Value * AMass.Value;
+  result.Value := ASquareSpeed.Value * AMass.Value;
 end;
 
-operator /(const AWork: TJoules; const AMass: TKilograms): TSieverts;
+operator /(const AWork: TJoules; const AMass: TKilograms): TSquareMetersPerSquareSecond;
 begin
   result.Value := AWork.Value / AMass.Value;
 end;
 
-operator /(const AWork: TJoules; const AEquivalentDose: TSieverts): TKilograms;
+operator /(const AWork: TJoules; const ASquareSpeed: TSquareMetersPerSquareSecond): TKilograms;
 begin
-  result.Value := AWork.Value / AEquivalentDose.Value;
+  result.Value := AWork.Value / ASquareSpeed.Value;
 end;
 
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts;
@@ -3753,7 +3765,7 @@ begin
   result.Value := AEnergy.Value / AMass.Value;
 end;
 
-operator/(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSieverts;
+operator/(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSquareMetersPerSquareSecond;
 begin
   result.Value := AArea.Value / ASquareTime.Value;
 end;
