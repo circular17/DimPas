@@ -1350,7 +1350,6 @@ operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): 
 operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TSquareMeterPerSquareSecondIdentifier; inline;
 
 // alternative definition of m2_s2 = J / kg
-operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): TSquareMeterPerSquareSecondIdentifier; inline;
 operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier): TJouleIdentifier; inline;
 operator *(const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier; const {%H-}kg: TKilogramIdentifier): TJouleIdentifier; inline;
 operator /(const {%H-}J: TJouleIdentifier; const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier): TKilogramIdentifier; inline;
@@ -1454,7 +1453,6 @@ operator /(const AEnergy: TJoules; const AMass: TKilograms): TGrays; inline;
 operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSquareMetersPerSquareSecond; inline;
 
 // alternative definition of m2/s2 = J / kg
-operator /(const AWork: TJoules; const AMass: TKilograms): TSquareMetersPerSquareSecond; inline;
 operator *(const AMass: TKilograms; const ASquareSpeed: TSquareMetersPerSquareSecond): TJoules; inline;
 operator *(const ASquareSpeed: TSquareMetersPerSquareSecond; const AMass: TKilograms): TJoules; inline;
 operator /(const AWork: TJoules; const ASquareSpeed: TSquareMetersPerSquareSecond): TKilograms; inline;
@@ -3160,9 +3158,6 @@ begin end;
 operator *(const m2_s2: TSquareMeterPerSquareSecondIdentifier; const kg: TKilogramIdentifier): TJouleIdentifier;
 begin end;
 
-operator /(const J: TJouleIdentifier; const kg: TKilogramIdentifier): TSquareMeterPerSquareSecondIdentifier;
-begin end;
-
 operator /(const J: TJouleIdentifier; const m2_s2: TSquareMeterPerSquareSecondIdentifier): TKilogramIdentifier;
 begin end;
 
@@ -3548,11 +3543,6 @@ end;
 operator *(const ASquareSpeed: TSquareMetersPerSquareSecond; const AMass: TKilograms): TJoules;
 begin
   result.Value := ASquareSpeed.Value * AMass.Value;
-end;
-
-operator /(const AWork: TJoules; const AMass: TKilograms): TSquareMetersPerSquareSecond;
-begin
-  result.Value := AWork.Value / AMass.Value;
 end;
 
 operator /(const AWork: TJoules; const ASquareSpeed: TSquareMetersPerSquareSecond): TKilograms;
