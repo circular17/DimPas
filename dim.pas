@@ -1,4 +1,4 @@
-{$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+{$IFNDEF DIM}{$DEFINE DIM}
 unit Dim;
 
 {$H+}{$modeSwitch advancedRecords}
@@ -37,7 +37,7 @@ type
     class function Exponent: integer; virtual; abstract;
   end;
 
-  {$UNDEF INCLUDING}{$ENDIF}
+  {$UNDEF DIM}{$ENDIF}
   // derive TUnit and TFactoredUnit classes
   {$IF defined(UNIT_OV_INTF) or defined(FACTORED_UNIT_INTF)}
   {$IFDEF FACTORED_UNIT_INTF}
@@ -62,7 +62,7 @@ type
     class function Exponent: integer; override;
   end;
   {$ENDIF}{$UNDEF FACTORED_POWER_UNIT_INTF}
-  {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+  {$IFNDEF DIM}{$DEFINE DIM}
 
 
   generic TSquareUnit<BaseU: TUnit> = {$DEFINE POWER_UNIT_INTF}{$i dim.pas}
@@ -100,17 +100,17 @@ type
 
   { Dimensionned quantities }
 
-  {$UNDEF INCLUDING}{$ENDIF}
-  // simulate inheritance for TDimensionedQuantity record
-  {$IF defined(BASIC_DIM_QTY_INTF) or defined(DIM_QTY_INTF)}
+  {$UNDEF DIM}{$ENDIF}
+  // simulate inheritance for TQuantity record
+  {$IF defined(BASIC_QTY_INTF) or defined(QTY_INTF)}
   public
     Value: double;
     function ToString: string;
     function ToVerboseString: string;
     function Abs: TSelf;
     constructor Assign(const AQuantity: TSelf); overload;
-  {$ENDIF}{$UNDEF BASIC_DIM_QTY_INTF}
-  {$IFDEF DIM_QTY_INTF}
+  {$ENDIF}{$UNDEF BASIC_QTY_INTF}
+  {$IFDEF QTY_INTF}
     class operator +(const AQuantity1, AQuantity2: TSelf): TSelf;
     class operator -(const AQuantity1, AQuantity2: TSelf): TSelf;
     class operator *(const AFactor: double; const AQuantity: TSelf): TSelf;
@@ -123,7 +123,7 @@ type
     class operator =(const AQuantity1, AQuantity2: TSelf): boolean;
     class operator >(const AQuantity1, AQuantity2: TSelf): boolean;
     class operator >=(const AQuantity1, AQuantity2: TSelf): boolean;
-  {$ENDIF}{$UNDEF DIM_QTY_INTF}
+  {$ENDIF}{$UNDEF QTY_INTF}
   {$IFDEF SQUARABLE_QTY_INTF}
     class operator *(const AQuantity1, AQuantity2: TSelf): TSquareQuantity;
     class operator /(const ASquareQuantity: TSquareQuantity; const AQuantity: TSelf): TSelf;
@@ -143,17 +143,17 @@ type
     class operator /(const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
     class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): TNumeratorQuantity;
     class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
-    class operator :=(const ARatio: TDimensionedRatio): TSelf;
-    class operator :=(const ASelf: TSelf): TDimensionedRatio;
+    class operator :=(const ARatio: TRatio): TSelf;
+    class operator :=(const ASelf: TSelf): TRatio;
     {$IFDEF FACTORED_QTY_INTF}
-    class operator :=(const ASelf: TSelf): TBaseDimensionedRatio;
+    class operator :=(const ASelf: TSelf): TBaseRatio;
     {$ENDIF}
   {$ENDIF}{$UNDEF RATIO_QTY_INTF}
   {$IFDEF QTY_PROD_INTF}
     //class operator /(const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
     class operator /(const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
-    class operator :=(const AProduct: TDimensionedProduct): TSelf;
-    class operator :=(const ASelf: TSelf): TDimensionedProduct;
+    class operator :=(const AProduct: TProduct): TSelf;
+    class operator :=(const ASelf: TSelf): TProduct;
   {$ENDIF}{$UNDEF QTY_PROD_INTF}
   {$IFDEF RECIP_QTY_INTF}
     class operator /(const AValue: double; const ASelf: TSelf): TDenomQuantity;
@@ -161,191 +161,191 @@ type
     class operator *(const ADenominator: TDenomQuantity; const ASelf: TSelf): double;
   {$ENDIF}{$UNDEF RECIP_QTY_INTF}
   {$IFDEF FACTORED_QTY_INTF}
-    function ToBase: TBaseDimensionedQuantity;
-    constructor Assign(const AQuantity: TBaseDimensionedQuantity); overload;
-    class operator :=(const AQuantity: TSelf): TBaseDimensionedQuantity;
-    class function From(const AQuantity: TBaseDimensionedQuantity): TSelf; static; inline;
+    function ToBase: TBaseQuantity;
+    constructor Assign(const AQuantity: TBaseQuantity); overload;
+    class operator :=(const AQuantity: TSelf): TBaseQuantity;
+    class function From(const AQuantity: TBaseQuantity): TSelf; static; inline;
   {$ENDIF}{$UNDEF FACTORED_QTY_INTF}
-  {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+  {$IFNDEF DIM}{$DEFINE DIM}
 
-  generic TQuarticDimensionedQuantity<BaseU: TUnit> = record
-    type TSelf = specialize TQuarticDimensionedQuantity<BaseU>;
+  generic TQuarticQuantity<BaseU: TUnit> = record
+    type TSelf = specialize TQuarticQuantity<BaseU>;
     type U = specialize TQuarticUnit<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$i dim.pas}
+    {$DEFINE QTY_INTF}{$i dim.pas}
   end;
 
-  generic TCubicDimensionedQuantity<BaseU: TUnit> = record
-    type TSelf = specialize TCubicDimensionedQuantity<BaseU>;
+  generic TCubicQuantity<BaseU: TUnit> = record
+    type TSelf = specialize TCubicQuantity<BaseU>;
     type U = specialize TCubicUnit<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$i dim.pas}
+    {$DEFINE QTY_INTF}{$i dim.pas}
   end;
 
-  generic TSquareDimensionedQuantity<BaseU: TUnit> = record
-    type TSelf = specialize TSquareDimensionedQuantity<BaseU>;
+  generic TSquareQuantity<BaseU: TUnit> = record
+    type TSelf = specialize TSquareQuantity<BaseU>;
     type U = specialize TSquareUnit<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$i dim.pas}
+    {$DEFINE QTY_INTF}{$i dim.pas}
   end;
 
-  generic TDimensionedQuantity<U: TUnit> = record
-    type TSelf = specialize TDimensionedQuantity<U>;
-    type TSquareQuantity = specialize TSquareDimensionedQuantity<U>;
-    type TCubicQuantity = specialize TCubicDimensionedQuantity<U>;
-    type TQuarticQuantity = specialize TQuarticDimensionedQuantity<U>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
+  generic TQuantity<U: TUnit> = record
+    type TSelf = specialize TQuantity<U>;
+    type TSquareQuantity = specialize TSquareQuantity<U>;
+    type TCubicQuantity = specialize TCubicQuantity<U>;
+    type TQuarticQuantity = specialize TQuarticQuantity<U>;
+    {$DEFINE QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TBasicDimensionedQuantity<U: TUnit> = record
-    type TSelf = specialize TBasicDimensionedQuantity<U>;
-    {$DEFINE BASIC_DIM_QTY_INTF}{$i dim.pas}
+  generic TBasicQuantity<U: TUnit> = record
+    type TSelf = specialize TBasicQuantity<U>;
+    {$DEFINE BASIC_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TReciprocalDimensionedQuantity<DenomU: TUnit> = record
+  generic TReciprocalQuantity<DenomU: TUnit> = record
     type U = specialize TReciprocalUnit<DenomU>;
-    type TSelf = specialize TReciprocalDimensionedQuantity<DenomU>;
-    type TDenomQuantity = specialize TDimensionedQuantity<DenomU>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE RECIP_QTY_INTF}{$i dim.pas}
+    type TSelf = specialize TReciprocalQuantity<DenomU>;
+    type TDenomQuantity = specialize TQuantity<DenomU>;
+    {$DEFINE QTY_INTF}{$DEFINE RECIP_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TRatioDimensionedQuantity<NumeratorU, DenomU: TUnit> = record
+  generic TRatioQuantity<NumeratorU, DenomU: TUnit> = record
     type U = specialize TRatioUnit<NumeratorU, DenomU>;
-    type TSelf = specialize TRatioDimensionedQuantity<NumeratorU, DenomU>;
-    type TNumeratorQuantity = specialize TDimensionedQuantity<NumeratorU>;
-    type TDenomQuantity = specialize TDimensionedQuantity<DenomU>;
-    type TDimensionedRatio = specialize TDimensionedQuantity<U>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
+    type TSelf = specialize TRatioQuantity<NumeratorU, DenomU>;
+    type TNumeratorQuantity = specialize TQuantity<NumeratorU>;
+    type TDenomQuantity = specialize TQuantity<DenomU>;
+    type TRatio = specialize TQuantity<U>;
+    {$DEFINE QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TDimensionedQuantityProduct<U1, U2: TUnit> = record
+  generic TQuantityProduct<U1, U2: TUnit> = record
     type U = specialize TUnitProduct<U1, U2>;
-    type TSelf = specialize TDimensionedQuantityProduct<U1, U2>;
-    type TQuantity1 = specialize TDimensionedQuantity<U1>;
-    type TQuantity2 = specialize TDimensionedQuantity<U2>;
-    type TDimensionedProduct = specialize TDimensionedQuantity<U>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
+    type TSelf = specialize TQuantityProduct<U1, U2>;
+    type TQuantity1 = specialize TQuantity<U1>;
+    type TQuantity2 = specialize TQuantity<U2>;
+    type TProduct = specialize TQuantity<U>;
+    {$DEFINE QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredQuarticDimensionedQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
-    type TSelf = specialize TFactoredQuarticDimensionedQuantity<BaseU, U1>;
+  generic TFactoredQuarticQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
+    type TSelf = specialize TFactoredQuarticQuantity<BaseU, U1>;
     type U = specialize TFactoredQuarticUnit<U1>;
-    type TBaseDimensionedQuantity = specialize TQuarticDimensionedQuantity<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
+    type TBaseQuantity = specialize TQuarticQuantity<BaseU>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredCubicDimensionedQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
-    type TSelf = specialize TFactoredCubicDimensionedQuantity<BaseU, U1>;
+  generic TFactoredCubicQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
+    type TSelf = specialize TFactoredCubicQuantity<BaseU, U1>;
     type U = specialize TFactoredCubicUnit<U1>;
-    type TBaseDimensionedQuantity = specialize TCubicDimensionedQuantity<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
+    type TBaseQuantity = specialize TCubicQuantity<BaseU>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredSquareDimensionedQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
-    type TSelf = specialize TFactoredSquareDimensionedQuantity<BaseU, U1>;
+  generic TFactoredSquareQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
+    type TSelf = specialize TFactoredSquareQuantity<BaseU, U1>;
     type U = specialize TFactoredSquareUnit<U1>;
-    type TBaseDimensionedQuantity = specialize TSquareDimensionedQuantity<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
+    type TBaseQuantity = specialize TSquareQuantity<BaseU>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredDimensionedQuantity<BaseU: TUnit; U: TFactoredUnit> = record
-    type TSelf = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    type TBaseDimensionedQuantity = specialize TDimensionedQuantity<BaseU>;
-    type TSquareQuantity = specialize TFactoredSquareDimensionedQuantity<BaseU, U>;
-    type TCubicQuantity = specialize TFactoredCubicDimensionedQuantity<BaseU, U>;
-    type TQuarticQuantity = specialize TFactoredQuarticDimensionedQuantity<BaseU, U>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
+  generic TFactoredQuantity<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredQuantity<BaseU, U>;
+    type TBaseQuantity = specialize TQuantity<BaseU>;
+    type TSquareQuantity = specialize TFactoredSquareQuantity<BaseU, U>;
+    type TCubicQuantity = specialize TFactoredCubicQuantity<BaseU, U>;
+    type TQuarticQuantity = specialize TFactoredQuarticQuantity<BaseU, U>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredReciprocalDimensionedQuantity<BaseDenomU: TUnit; DenomU: TFactoredUnit> = record
+  generic TFactoredReciprocalQuantity<BaseDenomU: TUnit; DenomU: TFactoredUnit> = record
     type U = specialize TFactoredReciprocalUnit<DenomU>;
     type BaseU = specialize TReciprocalUnit<BaseDenomU>;
-    type TBaseDimensionedQuantity = specialize TReciprocalDimensionedQuantity<BaseDenomU>;
-    type TSelf = specialize TFactoredReciprocalDimensionedQuantity<BaseDenomU, DenomU>;
-    type TDenomQuantity = specialize TFactoredDimensionedQuantity<BaseDenomU, DenomU>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RECIP_QTY_INTF}{$i dim.pas}
+    type TBaseQuantity = specialize TReciprocalQuantity<BaseDenomU>;
+    type TSelf = specialize TFactoredReciprocalQuantity<BaseDenomU, DenomU>;
+    type TDenomQuantity = specialize TFactoredQuantity<BaseDenomU, DenomU>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RECIP_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU: TUnit;
+  generic TFactoredRatioQuantity<BaseNumeratorU, BaseDenomU: TUnit;
                                             NumeratorU, DenomU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
-    type TBaseDimensionedQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type U = specialize TFactoredRatioUnit<NumeratorU, DenomU>;
-    type TSelf = specialize TFactoredRatioDimensionedQuantity
+    type TSelf = specialize TFactoredRatioQuantity
                  <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
-    type TNumeratorQuantity = specialize TFactoredDimensionedQuantity<BaseNumeratorU, NumeratorU>;
-    type TDenomQuantity = specialize TFactoredDimensionedQuantity<BaseDenomU, DenomU>;
-    type TDimensionedRatio = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    type TBaseDimensionedRatio = specialize TDimensionedQuantity<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
+    type TNumeratorQuantity = specialize TFactoredQuantity<BaseNumeratorU, NumeratorU>;
+    type TDenomQuantity = specialize TFactoredQuantity<BaseDenomU, DenomU>;
+    type TRatio = specialize TFactoredQuantity<BaseU, U>;
+    type TBaseRatio = specialize TQuantity<BaseU>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredNumeratorDimensionedQuantity<BaseNumeratorU, BaseDenomU: TUnit;
+  generic TFactoredNumeratorQuantity<BaseNumeratorU, BaseDenomU: TUnit;
                                                 NumeratorU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
-    type TBaseDimensionedQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type DenomU = BaseDenomU;
     type U = specialize TFactoredNumeratorUnit<NumeratorU, DenomU>;
-    type TSelf = specialize TFactoredNumeratorDimensionedQuantity
+    type TSelf = specialize TFactoredNumeratorQuantity
                  <BaseNumeratorU, BaseDenomU, NumeratorU>;
-    type TNumeratorQuantity = specialize TFactoredDimensionedQuantity<BaseNumeratorU, NumeratorU>;
-    type TDenomQuantity = specialize TDimensionedQuantity<DenomU>;
-    type TDimensionedRatio = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    type TBaseDimensionedRatio = specialize TDimensionedQuantity<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
+    type TNumeratorQuantity = specialize TFactoredQuantity<BaseNumeratorU, NumeratorU>;
+    type TDenomQuantity = specialize TQuantity<DenomU>;
+    type TRatio = specialize TFactoredQuantity<BaseU, U>;
+    type TBaseRatio = specialize TQuantity<BaseU>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredDenominatorDimensionedQuantity<BaseNumeratorU, BaseDenomU: TUnit;
+  generic TFactoredDenominatorQuantity<BaseNumeratorU, BaseDenomU: TUnit;
                                                   DenomU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
-    type TBaseDimensionedQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type NumeratorU = BaseNumeratorU;
     type U = specialize TFactoredDenominatorUnit<NumeratorU, DenomU>;
-    type TSelf = specialize TFactoredDenominatorDimensionedQuantity
+    type TSelf = specialize TFactoredDenominatorQuantity
                  <BaseNumeratorU, BaseDenomU, DenomU>;
-    type TNumeratorQuantity = specialize TDimensionedQuantity<NumeratorU>;
-    type TDenomQuantity = specialize TFactoredDimensionedQuantity<BaseDenomU, DenomU>;
-    type TDimensionedRatio = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    type TBaseDimensionedRatio = specialize TDimensionedQuantity<BaseU>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
+    type TNumeratorQuantity = specialize TQuantity<NumeratorU>;
+    type TDenomQuantity = specialize TFactoredQuantity<BaseDenomU, DenomU>;
+    type TRatio = specialize TFactoredQuantity<BaseU, U>;
+    type TBaseRatio = specialize TQuantity<BaseU>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
-    type TSelf = specialize TFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1, U2>;
+  generic TFactoredQuantityProduct<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
+    type TSelf = specialize TFactoredQuantityProduct<BaseU1, BaseU2, U1, U2>;
     type U = specialize TFactoredUnitProduct<U1, U2>;
-    type TQuantity1 = specialize TFactoredDimensionedQuantity<BaseU1, U1>;
-    type TQuantity2 = specialize TFactoredDimensionedQuantity<BaseU2, U2>;
-    type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type TQuantity1 = specialize TFactoredQuantity<BaseU1, U1>;
+    type TQuantity2 = specialize TFactoredQuantity<BaseU2, U2>;
+    type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
-    type TDimensionedProduct = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
+    type TProduct = specialize TFactoredQuantity<BaseU, U>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
-  generic TLeftFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U1: TFactoredUnit> = record
+  generic TLeftFactoredQuantityProduct<BaseU1, BaseU2: TUnit; U1: TFactoredUnit> = record
     type U2 = BaseU2;
-    type TSelf = specialize TLeftFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1>;
+    type TSelf = specialize TLeftFactoredQuantityProduct<BaseU1, BaseU2, U1>;
     type U = specialize TLeftFactoredUnitProduct<U1, U2>;
-    type TQuantity1 = specialize TFactoredDimensionedQuantity<BaseU1, U1>;
-    type TQuantity2 = specialize TDimensionedQuantity<U2>;
-    type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type TQuantity1 = specialize TFactoredQuantity<BaseU1, U1>;
+    type TQuantity2 = specialize TQuantity<U2>;
+    type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
-    type TDimensionedProduct = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
+    type TProduct = specialize TFactoredQuantity<BaseU, U>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
-  generic TRightFactoredDimensionedQuantityProduct<BaseU1, BaseU2: TUnit; U2: TFactoredUnit> = record
+  generic TRightFactoredQuantityProduct<BaseU1, BaseU2: TUnit; U2: TFactoredUnit> = record
     type U1 = BaseU1;
-    type TSelf = specialize TRightFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U2>;
+    type TSelf = specialize TRightFactoredQuantityProduct<BaseU1, BaseU2, U2>;
     type U = specialize TRightFactoredUnitProduct<U1, U2>;
-    type TQuantity1 = specialize TDimensionedQuantity<U1>;
-    type TQuantity2 = specialize TFactoredDimensionedQuantity<BaseU2, U2>;
-    type TBaseDimensionedQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
+    type TQuantity1 = specialize TQuantity<U1>;
+    type TQuantity2 = specialize TFactoredQuantity<BaseU2, U2>;
+    type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
-    type TDimensionedProduct = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    {$DEFINE DIM_QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
+    type TProduct = specialize TFactoredQuantity<BaseU, U>;
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
   { Unit identifiers }
 
-  {$UNDEF INCLUDING}{$ENDIF}
-  // simulate inheritance for TUnitIdentifier record
+  {$UNDEF DIM}{$ENDIF}
+  // simulate inheritance for TUnitId record
   {$IFDEF UNIT_ID_INTF}
   public
     class operator *(const AValue: double; const {%H-}TheUnit: TSelf): TQuantity;
@@ -356,241 +356,241 @@ type
     class function From(const AQuantity: TQuantity): TQuantity; inline; static;
   {$ENDIF}{$UNDEF UNIT_ID_INTF}
   {$IFDEF SQUARABLE_UNIT_ID_INTF}
-    class operator *(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): TSquareIdentifier;
-    class operator /(const {%H-}TheSquareUnit: TSquareIdentifier; const {%H-}TheUnit: TSelf): TSelf;
+    class operator *(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): TSquareId;
+    class operator /(const {%H-}TheSquareUnit: TSquareId; const {%H-}TheUnit: TSelf): TSelf;
 
-    class operator *(const {%H-}TheSquareUnit: TSquareIdentifier; const {%H-}TheUnit: TSelf): TCubicIdentifier;
-    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheSquareUnit: TSquareIdentifier): TCubicIdentifier;
-    class operator /(const {%H-}TheCubicUnit: TCubicIdentifier; const {%H-}TheUnit: TSelf): TSquareIdentifier;
+    class operator *(const {%H-}TheSquareUnit: TSquareId; const {%H-}TheUnit: TSelf): TCubicId;
+    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheSquareUnit: TSquareId): TCubicId;
+    class operator /(const {%H-}TheCubicUnit: TCubicId; const {%H-}TheUnit: TSelf): TSquareId;
 
-    class operator *(const {%H-}TheCubicUnit: TCubicIdentifier; const {%H-}TheUnit: TSelf): TQuarticIdentifier;
-    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheCubicUnit: TCubicIdentifier): TQuarticIdentifier;
-    class operator /(const {%H-}TheQuarticUnit: TQuarticIdentifier; const {%H-}TheUnit: TSelf): TCubicIdentifier;
-    function Squared: TSquareIdentifier;
-    function Cubed: TCubicIdentifier;
-    function Quarted: TQuarticIdentifier;
+    class operator *(const {%H-}TheCubicUnit: TCubicId; const {%H-}TheUnit: TSelf): TQuarticId;
+    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheCubicUnit: TCubicId): TQuarticId;
+    class operator /(const {%H-}TheQuarticUnit: TQuarticId; const {%H-}TheUnit: TSelf): TCubicId;
+    function Squared: TSquareId;
+    function Cubed: TCubicId;
+    function Quarted: TQuarticId;
     function SquareRoot(const ASquareQuantity: TSquareQuantity): TQuantity;
     function CubicRoot(const ACubicQuantity: TCubicQuantity): TQuantity;
   {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_INTF}
   {$IFDEF FACTORED_UNIT_ID_INTF}
     class function From(const AQuantity: TBaseQuantity): TQuantity; inline; static;
-    class function BaseUnit: TBaseUnitIdentifier; inline; static;
+    class function BaseUnit: TBaseUnitId; inline; static;
     class function Factor: double; inline; static;
   {$ENDIF}{$UNDEF FACTORED_UNIT_ID_INTF}
   {$IFDEF RECIP_UNIT_ID_INTF}
-    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomIdentifier): double;
-    class function Inverse: TDenomIdentifier; inline; static;
+    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomId): double;
+    class function Inverse: TDenomId; inline; static;
   {$ENDIF}{$UNDEF RECIP_UNIT_ID_INTF}
   {$IFDEF RATIO_UNIT_ID_INTF}
-    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomIdentifier): TNumeratorIdentifier;
+    class operator *(const {%H-}TheUnit: TSelf; const {%H-}TheDenom: TDenomId): TNumeratorId;
   {$ENDIF}{$UNDEF RATIO_UNIT_ID_INTF}
   {$IFDEF UNIT_PROD_ID_INTF}
-    //class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TIdentifier1): TIdentifier2;
-    class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
+    //class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TId1): TId2;
+    class operator /(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TId2): TId1;
   {$ENDIF}{$UNDEF UNIT_PROD_ID_INTF}
-  {$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+  {$IFNDEF DIM}{$DEFINE DIM}
 
-  generic TQuarticUnitIdentifier<BaseU: TUnit> = record
+  generic TQuarticUnitId<BaseU: TUnit> = record
     type U = specialize TQuarticUnit<BaseU>;
-    type TSelf = specialize TQuarticUnitIdentifier<BaseU>;
-    type TQuantity = specialize TQuarticDimensionedQuantity<BaseU>;
+    type TSelf = specialize TQuarticUnitId<BaseU>;
+    type TQuantity = specialize TQuarticQuantity<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TCubicUnitIdentifier<BaseU: TUnit> = record
+  generic TCubicUnitId<BaseU: TUnit> = record
     type U = specialize TCubicUnit<BaseU>;
-    type TSelf = specialize TCubicUnitIdentifier<BaseU>;
-    type TQuantity = specialize TCubicDimensionedQuantity<BaseU>;
+    type TSelf = specialize TCubicUnitId<BaseU>;
+    type TQuantity = specialize TCubicQuantity<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TSquareUnitIdentifier<BaseU: TUnit> = record
+  generic TSquareUnitId<BaseU: TUnit> = record
     type U = specialize TSquareUnit<BaseU>;
-    type TSelf = specialize TSquareUnitIdentifier<BaseU>;
-    type TQuantity = specialize TSquareDimensionedQuantity<BaseU>;
+    type TSelf = specialize TSquareUnitId<BaseU>;
+    type TQuantity = specialize TSquareQuantity<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TBasicUnitIdentifier<U: TUnit> = record
-    type TSelf = specialize TBasicUnitIdentifier<U>;
-    type TQuantity = specialize TBasicDimensionedQuantity<U>;
+  generic TBasicUnitId<U: TUnit> = record
+    type TSelf = specialize TBasicUnitId<U>;
+    type TQuantity = specialize TBasicQuantity<U>;
     {$DEFINE UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TUnitIdentifier<U: TUnit> = record
-    type TSelf = specialize TUnitIdentifier<U>;
-    type TQuantity = specialize TDimensionedQuantity<U>;
-    type TSquareIdentifier = specialize TSquareUnitIdentifier<U>;
-    type TSquareQuantity = specialize TSquareDimensionedQuantity<U>;
-    type TCubicIdentifier = specialize TCubicUnitIdentifier<U>;
-    type TCubicQuantity = specialize TCubicDimensionedQuantity<U>;
-    type TQuarticIdentifier = specialize TQuarticUnitIdentifier<U>;
+  generic TUnitId<U: TUnit> = record
+    type TSelf = specialize TUnitId<U>;
+    type TQuantity = specialize TQuantity<U>;
+    type TSquareId = specialize TSquareUnitId<U>;
+    type TSquareQuantity = specialize TSquareQuantity<U>;
+    type TCubicId = specialize TCubicUnitId<U>;
+    type TCubicQuantity = specialize TCubicQuantity<U>;
+    type TQuarticId = specialize TQuarticUnitId<U>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredQuarticUnitIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
-    type TSelf = specialize TFactoredQuarticUnitIdentifier<BaseU, U>;
-    type TQuantity = specialize TFactoredQuarticDimensionedQuantity<BaseU, U>;
-    type TBaseQuantity = specialize TQuarticDimensionedQuantity<BaseU>;
-    type TBaseUnitIdentifier = specialize TQuarticUnitIdentifier<BaseU>;
+  generic TFactoredQuarticUnitId<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredQuarticUnitId<BaseU, U>;
+    type TQuantity = specialize TFactoredQuarticQuantity<BaseU, U>;
+    type TBaseQuantity = specialize TQuarticQuantity<BaseU>;
+    type TBaseUnitId = specialize TQuarticUnitId<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredCubicUnitIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
-    type TSelf = specialize TFactoredCubicUnitIdentifier<BaseU, U>;
-    type TQuantity = specialize TFactoredCubicDimensionedQuantity<BaseU, U>;
-    type TBaseQuantity = specialize TCubicDimensionedQuantity<BaseU>;
-    type TBaseUnitIdentifier = specialize TCubicUnitIdentifier<BaseU>;
+  generic TFactoredCubicUnitId<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredCubicUnitId<BaseU, U>;
+    type TQuantity = specialize TFactoredCubicQuantity<BaseU, U>;
+    type TBaseQuantity = specialize TCubicQuantity<BaseU>;
+    type TBaseUnitId = specialize TCubicUnitId<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredSquareUnitIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
-    type TSelf = specialize TFactoredSquareUnitIdentifier<BaseU, U>;
-    type TQuantity = specialize TFactoredSquareDimensionedQuantity<BaseU, U>;
-    type TBaseQuantity = specialize TSquareDimensionedQuantity<BaseU>;
-    type TBaseUnitIdentifier = specialize TSquareUnitIdentifier<BaseU>;
+  generic TFactoredSquareUnitId<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredSquareUnitId<BaseU, U>;
+    type TQuantity = specialize TFactoredSquareQuantity<BaseU, U>;
+    type TBaseQuantity = specialize TSquareQuantity<BaseU>;
+    type TBaseUnitId = specialize TSquareUnitId<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredUnitIdentifier<BaseU: TUnit; U: TFactoredUnit> = record
-    type TSelf = specialize TFactoredUnitIdentifier<BaseU, U>;
-    type TQuantity = specialize TFactoredDimensionedQuantity<BaseU, U>;
-    type TBaseQuantity = specialize TDimensionedQuantity<BaseU>;
-    type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
-    type TSquareIdentifier = specialize TFactoredSquareUnitIdentifier<BaseU, U>;
-    type TSquareQuantity = specialize TFactoredSquareDimensionedQuantity<BaseU, U>;
-    type TCubicIdentifier = specialize TFactoredCubicUnitIdentifier<BaseU, U>;
-    type TCubicQuantity = specialize TFactoredCubicDimensionedQuantity<BaseU, U>;
-    type TQuarticIdentifier = specialize TFactoredQuarticUnitIdentifier<BaseU, U>;
+  generic TFactoredUnitId<BaseU: TUnit; U: TFactoredUnit> = record
+    type TSelf = specialize TFactoredUnitId<BaseU, U>;
+    type TQuantity = specialize TFactoredQuantity<BaseU, U>;
+    type TBaseQuantity = specialize TQuantity<BaseU>;
+    type TBaseUnitId = specialize TUnitId<BaseU>;
+    type TSquareId = specialize TFactoredSquareUnitId<BaseU, U>;
+    type TSquareQuantity = specialize TFactoredSquareQuantity<BaseU, U>;
+    type TCubicId = specialize TFactoredCubicUnitId<BaseU, U>;
+    type TCubicQuantity = specialize TFactoredCubicQuantity<BaseU, U>;
+    type TQuarticId = specialize TFactoredQuarticUnitId<BaseU, U>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TReciprocalUnitIdentifier<DenomU: TUnit> = record
+  generic TReciprocalUnitId<DenomU: TUnit> = record
     type U = specialize TReciprocalUnit<DenomU>;
-    type TSelf = specialize TReciprocalUnitIdentifier<DenomU>;
-    type TQuantity = specialize TReciprocalDimensionedQuantity<DenomU>;
-    type TDenomIdentifier = specialize TUnitIdentifier<DenomU>;
+    type TSelf = specialize TReciprocalUnitId<DenomU>;
+    type TQuantity = specialize TReciprocalQuantity<DenomU>;
+    type TDenomId = specialize TUnitId<DenomU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE RECIP_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredReciprocalUnitIdentifier<BaseDenomU: TUnit; DenomU: TFactoredUnit> = record
+  generic TFactoredReciprocalUnitId<BaseDenomU: TUnit; DenomU: TFactoredUnit> = record
     type U = specialize TFactoredReciprocalUnit<DenomU>;
     type BaseU = specialize TReciprocalUnit<BaseDenomU>;
-    type TBaseQuantity = specialize TReciprocalDimensionedQuantity<BaseDenomU>;
-    type TBaseUnitIdentifier = specialize TReciprocalUnitIdentifier<BaseDenomU>;
-    type TSelf = specialize TFactoredReciprocalUnitIdentifier<BaseDenomU, DenomU>;
-    type TQuantity = specialize TFactoredReciprocalDimensionedQuantity<BaseDenomU, DenomU>;
-    type TDenomIdentifier = specialize TFactoredUnitIdentifier<BaseDenomU, DenomU>;
+    type TBaseQuantity = specialize TReciprocalQuantity<BaseDenomU>;
+    type TBaseUnitId = specialize TReciprocalUnitId<BaseDenomU>;
+    type TSelf = specialize TFactoredReciprocalUnitId<BaseDenomU, DenomU>;
+    type TQuantity = specialize TFactoredReciprocalQuantity<BaseDenomU, DenomU>;
+    type TDenomId = specialize TFactoredUnitId<BaseDenomU, DenomU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE RECIP_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TRatioUnitIdentifier<NumeratorU, DenomU: TUnit> = record
+  generic TRatioUnitId<NumeratorU, DenomU: TUnit> = record
     type U = specialize TRatioUnit<NumeratorU, DenomU>;
-    type TSelf = specialize TRatioUnitIdentifier<NumeratorU, DenomU>;
-    type TQuantity = specialize TRatioDimensionedQuantity<NumeratorU, DenomU>;
-    type TNumeratorIdentifier = specialize TUnitIdentifier<NumeratorU>;
-    type TDenomIdentifier = specialize TUnitIdentifier<DenomU>;
-    type TSquareIdentifier = specialize TSquareUnitIdentifier<U>;
-    type TSquareQuantity = specialize TSquareDimensionedQuantity<U>;
-    type TCubicIdentifier = specialize TCubicUnitIdentifier<U>;
-    type TCubicQuantity = specialize TCubicDimensionedQuantity<U>;
-    type TQuarticIdentifier = specialize TQuarticUnitIdentifier<U>;
+    type TSelf = specialize TRatioUnitId<NumeratorU, DenomU>;
+    type TQuantity = specialize TRatioQuantity<NumeratorU, DenomU>;
+    type TNumeratorId = specialize TUnitId<NumeratorU>;
+    type TDenomId = specialize TUnitId<DenomU>;
+    type TSquareId = specialize TSquareUnitId<U>;
+    type TSquareQuantity = specialize TSquareQuantity<U>;
+    type TCubicId = specialize TCubicUnitId<U>;
+    type TCubicQuantity = specialize TCubicQuantity<U>;
+    type TQuarticId = specialize TQuarticUnitId<U>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TUnitProductIdentifier<U1, U2: TUnit> = record
-    type TSelf = specialize TUnitProductIdentifier<U1, U2>;
+  generic TUnitProductId<U1, U2: TUnit> = record
+    type TSelf = specialize TUnitProductId<U1, U2>;
     type U = specialize TUnitProduct<U1, U2>;
-    type TQuantity = specialize TDimensionedQuantityProduct<U1, U2>;
-    type TIdentifier1 = specialize TUnitIdentifier<U1>;
-    type TIdentifier2 = specialize TUnitIdentifier<U2>;
-    type TSquareIdentifier = specialize TSquareUnitIdentifier<U>;
-    type TSquareQuantity = specialize TSquareDimensionedQuantity<U>;
-    type TCubicIdentifier = specialize TCubicUnitIdentifier<U>;
-    type TCubicQuantity = specialize TCubicDimensionedQuantity<U>;
-    type TQuarticIdentifier = specialize TQuarticUnitIdentifier<U>;
+    type TQuantity = specialize TQuantityProduct<U1, U2>;
+    type TId1 = specialize TUnitId<U1>;
+    type TId2 = specialize TUnitId<U2>;
+    type TSquareId = specialize TSquareUnitId<U>;
+    type TSquareQuantity = specialize TSquareQuantity<U>;
+    type TCubicId = specialize TCubicUnitId<U>;
+    type TCubicQuantity = specialize TCubicQuantity<U>;
+    type TQuarticId = specialize TQuarticUnitId<U>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredUnitProductIdentifier<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
-    type TSelf = specialize TFactoredUnitProductIdentifier<BaseU1, BaseU2, U1, U2>;
+  generic TFactoredUnitProductId<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
+    type TSelf = specialize TFactoredUnitProductId<BaseU1, BaseU2, U1, U2>;
     type U = specialize TFactoredUnitProduct<U1, U2>;
-    type TBaseQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
-    type TBaseUnitIdentifier = specialize TUnitProductIdentifier<BaseU1, BaseU2>;
-    type TQuantity = specialize TFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1, U2>;
-    type TIdentifier1 = specialize TFactoredUnitIdentifier<BaseU1, U1>;
-    type TIdentifier2 = specialize TFactoredUnitIdentifier<BaseU2, U2>;
+    type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
+    type TBaseUnitId = specialize TUnitProductId<BaseU1, BaseU2>;
+    type TQuantity = specialize TFactoredQuantityProduct<BaseU1, BaseU2, U1, U2>;
+    type TId1 = specialize TFactoredUnitId<BaseU1, U1>;
+    type TId2 = specialize TFactoredUnitId<BaseU2, U2>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
   end;
 
-  generic TLeftFactoredUnitProductIdentifier<BaseU1, BaseU2: TUnit; U1: TFactoredUnit> = record
+  generic TLeftFactoredUnitProductId<BaseU1, BaseU2: TUnit; U1: TFactoredUnit> = record
     type U2 = BaseU2;
-    type TSelf = specialize TLeftFactoredUnitProductIdentifier<BaseU1, BaseU2, U1>;
+    type TSelf = specialize TLeftFactoredUnitProductId<BaseU1, BaseU2, U1>;
     type U = specialize TLeftFactoredUnitProduct<U1, U2>;
-    type TBaseQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
-    type TBaseUnitIdentifier = specialize TUnitProductIdentifier<BaseU1, BaseU2>;
-    type TQuantity = specialize TLeftFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U1>;
-    type TIdentifier1 = specialize TFactoredUnitIdentifier<BaseU1, U1>;
-    type TIdentifier2 = specialize TUnitIdentifier<U2>;
+    type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
+    type TBaseUnitId = specialize TUnitProductId<BaseU1, BaseU2>;
+    type TQuantity = specialize TLeftFactoredQuantityProduct<BaseU1, BaseU2, U1>;
+    type TId1 = specialize TFactoredUnitId<BaseU1, U1>;
+    type TId2 = specialize TUnitId<U2>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
   end;
 
-  generic TRightFactoredUnitProductIdentifier<BaseU1, BaseU2: TUnit; U2: TFactoredUnit> = record
+  generic TRightFactoredUnitProductId<BaseU1, BaseU2: TUnit; U2: TFactoredUnit> = record
     type U1 = BaseU1;
-    type TSelf = specialize TRightFactoredUnitProductIdentifier<BaseU1, BaseU2, U2>;
+    type TSelf = specialize TRightFactoredUnitProductId<BaseU1, BaseU2, U2>;
     type U = specialize TRightFactoredUnitProduct<U1, U2>;
-    type TBaseQuantity = specialize TDimensionedQuantityProduct<BaseU1, BaseU2>;
-    type TBaseUnitIdentifier = specialize TUnitProductIdentifier<BaseU1, BaseU2>;
-    type TQuantity = specialize TRightFactoredDimensionedQuantityProduct<BaseU1, BaseU2, U2>;
-    type TIdentifier1 = specialize TUnitIdentifier<U1>;
-    type TIdentifier2 = specialize TFactoredUnitIdentifier<BaseU2, U2>;
+    type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
+    type TBaseUnitId = specialize TUnitProductId<BaseU1, BaseU2>;
+    type TQuantity = specialize TRightFactoredQuantityProduct<BaseU1, BaseU2, U2>;
+    type TId1 = specialize TUnitId<U1>;
+    type TId2 = specialize TFactoredUnitId<BaseU2, U2>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredRatioUnitIdentifier<BaseNumeratorU, BaseDenomU: TUnit;
+  generic TFactoredRatioUnitId<BaseNumeratorU, BaseDenomU: TUnit;
                                        NumeratorU, DenomU: TFactoredUnit> = record
-    type TSelf = specialize TFactoredRatioUnitIdentifier
+    type TSelf = specialize TFactoredRatioUnitId
                  <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
     type U = specialize TFactoredRatioUnit<NumeratorU, DenomU>;
-    type TQuantity = specialize TFactoredRatioDimensionedQuantity
+    type TQuantity = specialize TFactoredRatioQuantity
                      <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
-    type TNumeratorIdentifier = specialize TFactoredUnitIdentifier<BaseNumeratorU, NumeratorU>;
-    type TDenomIdentifier = specialize TFactoredUnitIdentifier<BaseDenomU, DenomU>;
-    type TBaseQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type TNumeratorId = specialize TFactoredUnitId<BaseNumeratorU, NumeratorU>;
+    type TDenomId = specialize TFactoredUnitId<BaseDenomU, DenomU>;
+    type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
-    type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
+    type TBaseUnitId = specialize TUnitId<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredNumeratorUnitIdentifier<BaseNumeratorU, BaseDenomU: TUnit;
+  generic TFactoredNumeratorUnitId<BaseNumeratorU, BaseDenomU: TUnit;
                                        NumeratorU: TFactoredUnit> = record
-    type TSelf = specialize TFactoredNumeratorUnitIdentifier
+    type TSelf = specialize TFactoredNumeratorUnitId
                  <BaseNumeratorU, BaseDenomU, NumeratorU>;
     type DenomU = BaseDenomU;
     type U = specialize TFactoredNumeratorUnit<NumeratorU, DenomU>;
-    type TQuantity = specialize TFactoredNumeratorDimensionedQuantity
+    type TQuantity = specialize TFactoredNumeratorQuantity
                      <BaseNumeratorU, BaseDenomU, NumeratorU>;
-    type TNumeratorIdentifier = specialize TFactoredUnitIdentifier<BaseNumeratorU, NumeratorU>;
-    type TDenomIdentifier = specialize TUnitIdentifier<DenomU>;
-    type TBaseQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type TNumeratorId = specialize TFactoredUnitId<BaseNumeratorU, NumeratorU>;
+    type TDenomId = specialize TUnitId<DenomU>;
+    type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
-    type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
+    type TBaseUnitId = specialize TUnitId<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TFactoredDenominatorUnitIdentifier<BaseNumeratorU, BaseDenomU: TUnit;
+  generic TFactoredDenominatorUnitId<BaseNumeratorU, BaseDenomU: TUnit;
                                        DenomU: TFactoredUnit> = record
-    type TSelf = specialize TFactoredDenominatorUnitIdentifier
+    type TSelf = specialize TFactoredDenominatorUnitId
                  <BaseNumeratorU, BaseDenomU, DenomU>;
     type NumeratorU = BaseNumeratorU;
     type U = specialize TFactoredDenominatorUnit<NumeratorU, DenomU>;
-    type TQuantity = specialize TFactoredDenominatorDimensionedQuantity
+    type TQuantity = specialize TFactoredDenominatorQuantity
                      <BaseNumeratorU, BaseDenomU, DenomU>;
-    type TNumeratorIdentifier = specialize TUnitIdentifier<NumeratorU>;
-    type TDenomIdentifier = specialize TFactoredUnitIdentifier<BaseDenomU, DenomU>;
-    type TBaseQuantity = specialize TRatioDimensionedQuantity<BaseNumeratorU, BaseDenomU>;
+    type TNumeratorId = specialize TUnitId<NumeratorU>;
+    type TDenomId = specialize TFactoredUnitId<BaseDenomU, DenomU>;
+    type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
-    type TBaseUnitIdentifier = specialize TUnitIdentifier<BaseU>;
+    type TBaseUnitId = specialize TUnitId<BaseU>;
     {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
   end;
 
@@ -600,46 +600,46 @@ type
 
 type
   TSecond = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TSecondIdentifier = specialize TUnitIdentifier<TSecond>;
-  TSeconds = specialize TDimensionedQuantity<TSecond>;
+  TSecondId = specialize TUnitId<TSecond>;
+  TSeconds = specialize TQuantity<TSecond>;
 
-  TMilliseconds = specialize TFactoredDimensionedQuantity
+  TMilliseconds = specialize TFactoredQuantity
                              <TSecond, specialize TMilliUnit<TSecond>>;
-  TMicroseconds = specialize TFactoredDimensionedQuantity
+  TMicroseconds = specialize TFactoredQuantity
                              <TSecond, specialize TMicroUnit<TSecond>>;
-  TNanoseconds = specialize TFactoredDimensionedQuantity
+  TNanoseconds = specialize TFactoredQuantity
                             <TSecond, specialize TNanoUnit<TSecond>>;
 
   TMinute = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  TMinutes = specialize TFactoredDimensionedQuantity<TSecond, TMinute>;
+  TMinutes = specialize TFactoredQuantity<TSecond, TMinute>;
 
   THour = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  THourIdentifier = specialize TFactoredUnitIdentifier<TSecond, THour>;
-  THours = specialize TFactoredDimensionedQuantity<TSecond, THour>;
+  THourId = specialize TFactoredUnitId<TSecond, THour>;
+  THours = specialize TFactoredQuantity<TSecond, THour>;
 
   TDay = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  TDays = specialize TFactoredDimensionedQuantity<TSecond, TDay>;
+  TDays = specialize TFactoredQuantity<TSecond, TDay>;
 
   // this unit is not really to be used directly because
   // time is divided one exponent at a time: m/s2 -> (m/s)/s
   // thus acceleration are "per second squared" instead of "per square second"
   TSquareSecond = specialize TSquareUnit<TSecond>;
-  TSquareSecondIdentifier = specialize TSquareUnitIdentifier<TSecond>;
-  TSquareSecondFactorIdentifier = specialize TUnitIdentifier<TSquareSecond>;
-  TSquareSeconds = specialize TSquareDimensionedQuantity<TSecond>;
-  TSquareSecondsFactor = specialize TDimensionedQuantity<TSquareSecond>;
+  TSquareSecondId = specialize TSquareUnitId<TSecond>;
+  TSquareSecondFactorId = specialize TUnitId<TSquareSecond>;
+  TSquareSeconds = specialize TSquareQuantity<TSecond>;
+  TSquareSecondsFactor = specialize TQuantity<TSquareSecond>;
 
 var
-  ns: specialize TFactoredUnitIdentifier<TSecond, specialize TNanoUnit<TSecond>>;
-  us: specialize TFactoredUnitIdentifier<TSecond, specialize TMicroUnit<TSecond>>;
-  ms: specialize TFactoredUnitIdentifier<TSecond, specialize TMilliUnit<TSecond>>;
-  s: TSecondIdentifier;
-  s2: TSquareSecondIdentifier;
-  mn: specialize TFactoredUnitIdentifier<TSecond, TMinute>;
-  h: THourIdentifier;
-  day: specialize TFactoredUnitIdentifier<TSecond, TDay>;
+  ns: specialize TFactoredUnitId<TSecond, specialize TNanoUnit<TSecond>>;
+  us: specialize TFactoredUnitId<TSecond, specialize TMicroUnit<TSecond>>;
+  ms: specialize TFactoredUnitId<TSecond, specialize TMilliUnit<TSecond>>;
+  s: TSecondId;
+  s2: TSquareSecondId;
+  mn: specialize TFactoredUnitId<TSecond, TMinute>;
+  h: THourId;
+  day: specialize TFactoredUnitId<TSecond, TDay>;
 
-operator:=(const {%H-}s2: TSquareSecondIdentifier): TSquareSecondFactorIdentifier;
+operator:=(const {%H-}s2: TSquareSecondId): TSquareSecondFactorId;
 operator:=(const ASquareTime: TSquareSeconds): TSquareSecondsFactor;
 operator:=(const ASquareTime: TSquareSecondsFactor): TSquareSeconds;
 
@@ -647,121 +647,121 @@ operator:=(const ASquareTime: TSquareSecondsFactor): TSquareSeconds;
 
 type
   TMeter = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TMeterIdentifier = specialize TUnitIdentifier<TMeter>;
-  TMeters = specialize TDimensionedQuantity<TMeter>;
+  TMeterId = specialize TUnitId<TMeter>;
+  TMeters = specialize TQuantity<TMeter>;
 
   TSquareMeter = specialize TSquareUnit<TMeter>;
-  TSquareMeterIdentifier = specialize TSquareUnitIdentifier<TMeter>;
-  TSquareMeterFactorIdentifier = specialize TUnitIdentifier<TSquareMeter>;
-  TSquareMeters = specialize TSquareDimensionedQuantity<TMeter>;
-  TSquareMetersFactor = specialize TDimensionedQuantity<TSquareMeter>;
+  TSquareMeterId = specialize TSquareUnitId<TMeter>;
+  TSquareMeterFactorId = specialize TUnitId<TSquareMeter>;
+  TSquareMeters = specialize TSquareQuantity<TMeter>;
+  TSquareMetersFactor = specialize TQuantity<TSquareMeter>;
 
   TCubicMeter = specialize TCubicUnit<TMeter>;
-  TCubicMeterIdentifier = specialize TCubicUnitIdentifier<TMeter>;
-  TCubicMeterFactorIdentifier = specialize TUnitIdentifier<TCubicMeter>;
-  TCubicMeters = specialize TCubicDimensionedQuantity<TMeter>;
-  TCubicMetersFactor = specialize TDimensionedQuantity<TCubicMeter>;
+  TCubicMeterId = specialize TCubicUnitId<TMeter>;
+  TCubicMeterFactorId = specialize TUnitId<TCubicMeter>;
+  TCubicMeters = specialize TCubicQuantity<TMeter>;
+  TCubicMetersFactor = specialize TQuantity<TCubicMeter>;
 
   TQuarticMeter = specialize TQuarticUnit<TMeter>;
-  TQuarticMeterIdentifier = specialize TQuarticUnitIdentifier<TMeter>;
-  TQuarticMeterFactorIdentifier = specialize TUnitIdentifier<TQuarticMeter>;
-  TQuarticMeters = specialize TQuarticDimensionedQuantity<TMeter>;
-  TQuarticMetersFactor = specialize TDimensionedQuantity<TQuarticMeter>;
+  TQuarticMeterId = specialize TQuarticUnitId<TMeter>;
+  TQuarticMeterFactorId = specialize TUnitId<TQuarticMeter>;
+  TQuarticMeters = specialize TQuarticQuantity<TMeter>;
+  TQuarticMetersFactor = specialize TQuantity<TQuarticMeter>;
 
   TKilometer = specialize TKiloUnit<TMeter>;
-  TKilometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TKilometer>;
-  TKilometers = specialize TFactoredDimensionedQuantity<TMeter, TKilometer>;
-  TSquareKilometers = specialize TFactoredSquareDimensionedQuantity<TMeter, TKilometer>;
-  TCubicKilometers = specialize TFactoredCubicDimensionedQuantity<TMeter, TKilometer>;
-  TQuarticKilometers = specialize TFactoredQuarticDimensionedQuantity<TMeter, TKilometer>;
+  TKilometerId = specialize TFactoredUnitId<TMeter, TKilometer>;
+  TKilometers = specialize TFactoredQuantity<TMeter, TKilometer>;
+  TSquareKilometers = specialize TFactoredSquareQuantity<TMeter, TKilometer>;
+  TCubicKilometers = specialize TFactoredCubicQuantity<TMeter, TKilometer>;
+  TQuarticKilometers = specialize TFactoredQuarticQuantity<TMeter, TKilometer>;
 
   TDecimeter = specialize TDeciUnit<TMeter>;
-  TDecimeters = specialize TFactoredDimensionedQuantity<TMeter, TDecimeter>;
-  TSquareDecimeters = specialize TFactoredSquareDimensionedQuantity<TMeter, TDecimeter>;
-  TCubicDecimeters = specialize TFactoredCubicDimensionedQuantity<TMeter, TDecimeter>;
-  TQuarticDecimeters = specialize TFactoredQuarticDimensionedQuantity<TMeter, TDecimeter>;
+  TDecimeters = specialize TFactoredQuantity<TMeter, TDecimeter>;
+  TSquareDecimeters = specialize TFactoredSquareQuantity<TMeter, TDecimeter>;
+  TCubicDecimeters = specialize TFactoredCubicQuantity<TMeter, TDecimeter>;
+  TQuarticDecimeters = specialize TFactoredQuarticQuantity<TMeter, TDecimeter>;
 
   TCentimeter = specialize TCentiUnit<TMeter>;
-  TCentimeters = specialize TFactoredDimensionedQuantity<TMeter, TCentimeter>;
-  TSquareCentimeters = specialize TFactoredSquareDimensionedQuantity<TMeter, TCentimeter>;
-  TCubicCentimeters = specialize TFactoredCubicDimensionedQuantity<TMeter, TCentimeter>;
-  TQuarticCentimeters = specialize TFactoredQuarticDimensionedQuantity<TMeter, TCentimeter>;
+  TCentimeters = specialize TFactoredQuantity<TMeter, TCentimeter>;
+  TSquareCentimeters = specialize TFactoredSquareQuantity<TMeter, TCentimeter>;
+  TCubicCentimeters = specialize TFactoredCubicQuantity<TMeter, TCentimeter>;
+  TQuarticCentimeters = specialize TFactoredQuarticQuantity<TMeter, TCentimeter>;
 
   TMillimeter = specialize TMilliUnit<TMeter>;
-  TMillimeterIdentifier = specialize TFactoredUnitIdentifier<TMeter, TMillimeter>;
-  TMillimeters = specialize TFactoredDimensionedQuantity<TMeter, TMillimeter>;
+  TMillimeterId = specialize TFactoredUnitId<TMeter, TMillimeter>;
+  TMillimeters = specialize TFactoredQuantity<TMeter, TMillimeter>;
 
   TSquareMillimeter = specialize TFactoredSquareUnit<TMillimeter>;
-  TSquareMillimeterIdentifier = specialize TFactoredSquareUnitIdentifier<TMeter, TMillimeter>;
-  TSquareMillimeterFactorIdentifier = specialize TFactoredUnitIdentifier
+  TSquareMillimeterId = specialize TFactoredSquareUnitId<TMeter, TMillimeter>;
+  TSquareMillimeterFactorId = specialize TFactoredUnitId
                                       <TSquareMeter, TSquareMillimeter>;
-  TSquareMillimeters = specialize TFactoredSquareDimensionedQuantity<TMeter, TMillimeter>;
-  TSquareMillimetersFactor = specialize TFactoredDimensionedQuantity<TSquareMeter, TSquareMillimeter>;
+  TSquareMillimeters = specialize TFactoredSquareQuantity<TMeter, TMillimeter>;
+  TSquareMillimetersFactor = specialize TFactoredQuantity<TSquareMeter, TSquareMillimeter>;
 
   TCubicMillimeter = specialize TFactoredCubicUnit<TMillimeter>;
-  TCubicMillimeterIdentifier = specialize TFactoredCubicUnitIdentifier<TMeter, TMillimeter>;
-  TCubicMillimeterFactorIdentifier = specialize TFactoredUnitIdentifier
+  TCubicMillimeterId = specialize TFactoredCubicUnitId<TMeter, TMillimeter>;
+  TCubicMillimeterFactorId = specialize TFactoredUnitId
                                      <TCubicMeter, TCubicMillimeter>;
-  TCubicMillimeters = specialize TFactoredCubicDimensionedQuantity<TMeter, TMillimeter>;
-  TCubicMillimetersFactor = specialize TFactoredDimensionedQuantity<TCubicMeter, TCubicMillimeter>;
+  TCubicMillimeters = specialize TFactoredCubicQuantity<TMeter, TMillimeter>;
+  TCubicMillimetersFactor = specialize TFactoredQuantity<TCubicMeter, TCubicMillimeter>;
 
-  TQuarticMillimeters = specialize TFactoredQuarticDimensionedQuantity<TMeter, TMillimeter>;
+  TQuarticMillimeters = specialize TFactoredQuarticQuantity<TMeter, TMillimeter>;
 
   TMicrometer = specialize TMicroUnit<TMeter>;
-  TMicrometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TMicrometer>;
-  TMicrometers = specialize TFactoredDimensionedQuantity<TMeter, TMicrometer>;
+  TMicrometerId = specialize TFactoredUnitId<TMeter, TMicrometer>;
+  TMicrometers = specialize TFactoredQuantity<TMeter, TMicrometer>;
 
   TNanometer = specialize TNanoUnit<TMeter>;
-  TNanometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TNanometer>;
-  TNanometers = specialize TFactoredDimensionedQuantity<TMeter, TNanometer>;
+  TNanometerId = specialize TFactoredUnitId<TMeter, TNanometer>;
+  TNanometers = specialize TFactoredQuantity<TMeter, TNanometer>;
 
   TPicometer = specialize TPicoUnit<TMeter>;
-  TPicometerIdentifier = specialize TFactoredUnitIdentifier<TMeter, TPicometer>;
-  TPicometers = specialize TFactoredDimensionedQuantity<TMeter, TPicometer>;
+  TPicometerId = specialize TFactoredUnitId<TMeter, TPicometer>;
+  TPicometers = specialize TFactoredQuantity<TMeter, TPicometer>;
 
   TLitre = class(TUnit)
     class function Symbol: string; override;
     class function Name: string; override;
   end;
-  TLitreIdentifier = specialize TUnitIdentifier<TLitre>;
-  TLitres = specialize TDimensionedQuantity<TLitre>;
+  TLitreId = specialize TUnitId<TLitre>;
+  TLitres = specialize TQuantity<TLitre>;
 
   { TLitreHelper }
 
-  TLitreHelper = record helper for TLitreIdentifier
+  TLitreHelper = record helper for TLitreId
     function From(const AVolume: TCubicMeters): TLitres;
     function From(const AVolume: TCubicDecimeters): TLitres;
   end;
 
 var
-  km: TKilometerIdentifier;
-  km2:specialize TFactoredSquareUnitIdentifier<TMeter, TKilometer>;
-  km3:specialize TFactoredCubicUnitIdentifier<TMeter, TKilometer>;
-  km4:specialize TFactoredQuarticUnitIdentifier<TMeter, TKilometer>;
-  m:  TMeterIdentifier;
-  m2: TSquareMeterIdentifier;
-  m3: TCubicMeterIdentifier;
-  m4: TQuarticMeterIdentifier;
-  cm: specialize TFactoredUnitIdentifier<TMeter, TCentimeter>;
-  cm2:specialize TFactoredSquareUnitIdentifier<TMeter, TCentimeter>;
-  cm3:specialize TFactoredCubicUnitIdentifier<TMeter, TCentimeter>;
-  cm4:specialize TFactoredQuarticUnitIdentifier<TMeter, TCentimeter>;
-  mm: TMillimeterIdentifier;
-  mm2:TSquareMillimeterIdentifier;
-  mm3:TCubicMillimeterIdentifier;
-  mm4:specialize TFactoredQuarticUnitIdentifier<TMeter, TMillimeter>;
-  um: TMicrometerIdentifier;
-  nm: TNanometerIdentifier;
-  pm: TPicometerIdentifier;
+  km: TKilometerId;
+  km2:specialize TFactoredSquareUnitId<TMeter, TKilometer>;
+  km3:specialize TFactoredCubicUnitId<TMeter, TKilometer>;
+  km4:specialize TFactoredQuarticUnitId<TMeter, TKilometer>;
+  m:  TMeterId;
+  m2: TSquareMeterId;
+  m3: TCubicMeterId;
+  m4: TQuarticMeterId;
+  cm: specialize TFactoredUnitId<TMeter, TCentimeter>;
+  cm2:specialize TFactoredSquareUnitId<TMeter, TCentimeter>;
+  cm3:specialize TFactoredCubicUnitId<TMeter, TCentimeter>;
+  cm4:specialize TFactoredQuarticUnitId<TMeter, TCentimeter>;
+  mm: TMillimeterId;
+  mm2:TSquareMillimeterId;
+  mm3:TCubicMillimeterId;
+  mm4:specialize TFactoredQuarticUnitId<TMeter, TMillimeter>;
+  um: TMicrometerId;
+  nm: TNanometerId;
+  pm: TPicometerId;
 
-  L: TLitreIdentifier;
+  L: TLitreId;
 
 // combining units
-operator /(const {%H-}m3: TCubicMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TMeterIdentifier; inline;
-operator /(const {%H-}m4: TQuarticMeterIdentifier; const {%H-}m3: TCubicMeterIdentifier): TMeterIdentifier; inline;
-operator /(const {%H-}m4: TQuarticMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TSquareMeterIdentifier; inline;
+operator /(const {%H-}m3: TCubicMeterId; const {%H-}m2: TSquareMeterId): TMeterId; inline;
+operator /(const {%H-}m4: TQuarticMeterId; const {%H-}m3: TCubicMeterId): TMeterId; inline;
+operator /(const {%H-}m4: TQuarticMeterId; const {%H-}m2: TSquareMeterId): TSquareMeterId; inline;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const AVolume: TCubicMeters; const ASurface: TSquareMeters): TMeters; inline;
 operator /(const AMomentOfArea: TQuarticMeters; const AVolume: TCubicMeters): TMeters; inline;
 operator /(const AMomentOfArea: TQuarticMeters; const AArea: TSquareMeters): TSquareMeters; inline;
@@ -770,21 +770,21 @@ operator /(const AMomentOfArea: TQuarticMeters; const AArea: TSquareMeters): TSq
 operator:=(const AVolume: TLitres): TCubicMeters;
 operator:=(const AVolume: TLitres): TCubicDecimeters;
 
-operator:=(const {%H-}m2: TSquareMeterIdentifier): TSquareMeterFactorIdentifier;
+operator:=(const {%H-}m2: TSquareMeterId): TSquareMeterFactorId;
 operator:=(const ASurface: TSquareMeters): TSquareMetersFactor;
 operator:=(const ASurface: TSquareMetersFactor): TSquareMeters;
-operator:=(const {%H-}mm2: TSquareMillimeterIdentifier): TSquareMillimeterFactorIdentifier;
+operator:=(const {%H-}mm2: TSquareMillimeterId): TSquareMillimeterFactorId;
 operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor;
 operator:=(const ASurface: TSquareMillimetersFactor): TSquareMillimeters;
 
-operator:=(const {%H-}m3: TCubicMeterIdentifier): TCubicMeterFactorIdentifier;
+operator:=(const {%H-}m3: TCubicMeterId): TCubicMeterFactorId;
 operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
 operator:=(const AVolume: TCubicMetersFactor): TCubicMeters;
-operator:=(const {%H-}mm3: TCubicMillimeterIdentifier): TCubicMillimeterFactorIdentifier;
+operator:=(const {%H-}mm3: TCubicMillimeterId): TCubicMillimeterFactorId;
 operator:=(const AVolume: TCubicMillimeters): TCubicMillimetersFactor;
 operator:=(const AVolume: TCubicMillimetersFactor): TCubicMillimeters;
 
-operator:=(const {%H-}m4: TQuarticMeterIdentifier): TQuarticMeterFactorIdentifier;
+operator:=(const {%H-}m4: TQuarticMeterId): TQuarticMeterFactorId;
 operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
 operator:=(const AHyperVolume: TQuarticMetersFactor): TQuarticMeters;
 
@@ -792,31 +792,31 @@ operator:=(const AHyperVolume: TQuarticMetersFactor): TQuarticMeters;
 
 type
   TGram = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TGramIdentifier = specialize TUnitIdentifier<TGram>;
-  TGrams = specialize TDimensionedQuantity<TGram>;
+  TGramId = specialize TUnitId<TGram>;
+  TGrams = specialize TQuantity<TGram>;
 
   TMilligram = specialize TMilliUnit<TGram>;
-  TMilligrams = specialize TFactoredDimensionedQuantity<TGram, TMilligram>;
+  TMilligrams = specialize TFactoredQuantity<TGram, TMilligram>;
 
   TKilogram = specialize TKiloUnit<TGram>;
-  TKilogramIdentifier = specialize TFactoredUnitIdentifier<TGram, TKilogram>;
-  TKilograms = specialize TFactoredDimensionedQuantity<TGram, TKilogram>;
+  TKilogramId = specialize TFactoredUnitId<TGram, TKilogram>;
+  TKilograms = specialize TFactoredQuantity<TGram, TKilogram>;
 
   TTon = specialize TMegaUnit<TGram>;
-  TTons = specialize TFactoredDimensionedQuantity<TGram, TTon>;
+  TTons = specialize TFactoredQuantity<TGram, TTon>;
 
 var
-  mg: specialize TFactoredUnitIdentifier<TGram, TMilligram>;
-  g: TGramIdentifier;
-  kg: TKilogramIdentifier;
-  ton: specialize TFactoredUnitIdentifier<TGram, TTon>;
+  mg: specialize TFactoredUnitId<TGram, TMilligram>;
+  g: TGramId;
+  kg: TKilogramId;
+  ton: specialize TFactoredUnitId<TGram, TTon>;
 
 { Units of amount of substance }
 
 type
   TMole = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TMoleIdentifier = specialize TUnitIdentifier<TMole>;
-  TMoles = specialize TDimensionedQuantity<TMole>;
+  TMoleId = specialize TUnitId<TMole>;
+  TMoles = specialize TQuantity<TMole>;
 
 var
   mol: TMole;
@@ -825,52 +825,52 @@ var
 
 type
   TAmpere = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TAmpereIdentifier = specialize TUnitIdentifier<TAmpere>;
-  TAmperes = specialize TDimensionedQuantity<TAmpere>;
+  TAmpereId = specialize TUnitId<TAmpere>;
+  TAmperes = specialize TQuantity<TAmpere>;
 
   TSquareAmpere = specialize TSquareUnit<TAmpere>;
-  TSquareAmpereIdentifier = specialize TSquareUnitIdentifier<TAmpere>;
-  TSquareAmperes = specialize TSquareDimensionedQuantity<TAmpere>;
+  TSquareAmpereId = specialize TSquareUnitId<TAmpere>;
+  TSquareAmperes = specialize TSquareQuantity<TAmpere>;
 
   TMilliampere = specialize TMilliUnit<TAmpere>;
-  TMilliampereIdentifier = specialize TFactoredUnitIdentifier<TAmpere, TMilliampere>;
-  TMilliamperes = specialize TFactoredDimensionedQuantity<TAmpere, TMilliampere>;
+  TMilliampereId = specialize TFactoredUnitId<TAmpere, TMilliampere>;
+  TMilliamperes = specialize TFactoredQuantity<TAmpere, TMilliampere>;
 
   TSquareMilliampere = specialize TFactoredSquareUnit<TMilliampere>;
-  TSquareMilliampereIdentifier = specialize TFactoredSquareUnitIdentifier<TAmpere, TMilliampere>;
-  TSquareMilliamperes = specialize TFactoredSquareDimensionedQuantity<TAmpere, TMilliampere>;
+  TSquareMilliampereId = specialize TFactoredSquareUnitId<TAmpere, TMilliampere>;
+  TSquareMilliamperes = specialize TFactoredSquareQuantity<TAmpere, TMilliampere>;
 
 var
-  A: TAmpereIdentifier;
-  mA: TMilliampereIdentifier;
-  A2: TSquareAmpereIdentifier;
-  mA2: TSquareMilliampereIdentifier;
+  A: TAmpereId;
+  mA: TMilliampereId;
+  A2: TSquareAmpereId;
+  mA2: TSquareMilliampereId;
 
 { Units of temperature }
 
 type
   TKelvin = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TKelvinIdentifier = specialize TUnitIdentifier<TKelvin>;
-  TKelvins = specialize TDimensionedQuantity<TKelvin>;
+  TKelvinId = specialize TUnitId<TKelvin>;
+  TKelvins = specialize TQuantity<TKelvin>;
 
   TDegreeCelsius = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TDegreeCelsiusIdentifier = specialize TBasicUnitIdentifier<TDegreeCelsius>;
-  TDegreesCelsius = specialize TBasicDimensionedQuantity<TDegreeCelsius>;
-  TDegreeCelsiusIdentifierHelper = record helper for TDegreeCelsiusIdentifier
+  TDegreeCelsiusId = specialize TBasicUnitId<TDegreeCelsius>;
+  TDegreesCelsius = specialize TBasicQuantity<TDegreeCelsius>;
+  TDegreeCelsiusIdHelper = record helper for TDegreeCelsiusId
     class function From(const ATemperature: TKelvins): TDegreesCelsius; inline; static; overload;
   end;
 
   TDegreeFahrenheit = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TDegreeFahrenheitIdentifier = specialize TBasicUnitIdentifier<TDegreeFahrenheit>;
-  TDegreesFahrenheit = specialize TBasicDimensionedQuantity<TDegreeFahrenheit>;
-  TDegreeFahrenheitIdentifierHelper = record helper for TDegreeFahrenheitIdentifier
+  TDegreeFahrenheitId = specialize TBasicUnitId<TDegreeFahrenheit>;
+  TDegreesFahrenheit = specialize TBasicQuantity<TDegreeFahrenheit>;
+  TDegreeFahrenheitIdHelper = record helper for TDegreeFahrenheitId
     class function From(const ATemperature: TKelvins): TDegreesFahrenheit; inline; static; overload;
   end;
 
 var
-  K: TKelvinIdentifier;
-  degC: TDegreeCelsiusIdentifier;
-  degF: TDegreeFahrenheitIdentifier;
+  K: TKelvinId;
+  degC: TDegreeCelsiusId;
+  degF: TDegreeFahrenheitId;
 
 operator :=(const ATemperature: TDegreesCelsius): TKelvins;
 operator :=(const ATemperature: TDegreesFahrenheit): TDegreesCelsius;
@@ -883,11 +883,11 @@ operator +(const ADifference: TKelvins; const ATemperature: TDegreesCelsius): TD
 
 type
   TCandela = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TCandelaIdentifier = specialize TUnitIdentifier<TCandela>;
-  TCandelas = specialize TDimensionedQuantity<TCandela>;
+  TCandelaId = specialize TUnitId<TCandela>;
+  TCandelas = specialize TQuantity<TCandela>;
 
 var
-  cd: TCandelaIdentifier;
+  cd: TCandelaId;
 
 /////////////////////// UNITS DERIVED FROM BASE UNITS ////////////////////////
 
@@ -895,27 +895,27 @@ var
 
 type
   TMeterPerSecond = specialize TRatioUnit<TMeter, TSecond>;
-  TMeterPerSecondIdentifier = specialize TRatioUnitIdentifier<TMeter, TSecond>;
-  TMetersPerSecond = specialize TRatioDimensionedQuantity<TMeter, TSecond>;
+  TMeterPerSecondId = specialize TRatioUnitId<TMeter, TSecond>;
+  TMetersPerSecond = specialize TRatioQuantity<TMeter, TSecond>;
 
   TMillimeterPerSecond = specialize TFactoredNumeratorUnit<TMilliMeter, TSecond>;
-  TMillimeterPerSecondIdentifier = specialize TFactoredNumeratorUnitIdentifier
+  TMillimeterPerSecondId = specialize TFactoredNumeratorUnitId
                                            <TMeter, TSecond, TMilliMeter>;
-  TMillimetersPerSecond = specialize TFactoredNumeratorDimensionedQuantity
+  TMillimetersPerSecond = specialize TFactoredNumeratorQuantity
                                    <TMeter, TSecond, TMilliMeter>;
 
   TKilometerPerHour = specialize TFactoredRatioUnit<TKilometer, THour>;
-  TKilometerPerHourIdentifier = specialize TFactoredRatioUnitIdentifier
+  TKilometerPerHourId = specialize TFactoredRatioUnitId
                                            <TMeter, TSecond, TKilometer, THour>;
-  TKilometersPerHour = specialize TFactoredRatioDimensionedQuantity
+  TKilometersPerHour = specialize TFactoredRatioQuantity
                                   <TMeter, TSecond, TKilometer, THour>;
 
 // combining units
-operator /(const {%H-}m: TMeterIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondIdentifier; inline;
-operator /(const {%H-}mm: TMillimeterIdentifier; const {%H-}s: TSecondIdentifier): TMillimeterPerSecondIdentifier; inline;
-operator /(const {%H-}km: TKilometerIdentifier; const {%H-}h: THourIdentifier): TKilometerPerHourIdentifier; inline;
+operator /(const {%H-}m: TMeterId; const {%H-}s: TSecondId): TMeterPerSecondId; inline;
+operator /(const {%H-}mm: TMillimeterId; const {%H-}s: TSecondId): TMillimeterPerSecondId; inline;
+operator /(const {%H-}km: TKilometerId; const {%H-}h: THourId): TKilometerPerHourId; inline;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const ALength: TMeters; const ADuration: TSeconds): TMetersPerSecond; inline;
 operator /(const ALength: TMillimeters; const ADuration: TSeconds): TMillimetersPerSecond; inline;
 operator /(const ALength: TKilometers; const ADuration: THours): TKilometersPerHour; inline;
@@ -924,20 +924,20 @@ operator /(const ALength: TKilometers; const ADuration: THours): TKilometersPerH
 
 type
   TMeterPerSecondSquared = specialize TRatioUnit<TMeterPerSecond, TSecond>;
-  TMeterPerSecondSquaredIdentifier = specialize TRatioUnitIdentifier<TMeterPerSecond, TSecond>;
-  TMetersPerSecondSquared = specialize TRatioDimensionedQuantity<TMeterPerSecond, TSecond>;
+  TMeterPerSecondSquaredId = specialize TRatioUnitId<TMeterPerSecond, TSecond>;
+  TMetersPerSecondSquared = specialize TRatioQuantity<TMeterPerSecond, TSecond>;
 
-  TKilometerPerHourPerSecondIdentifier = specialize TFactoredNumeratorUnitIdentifier
+  TKilometerPerHourPerSecondId = specialize TFactoredNumeratorUnitId
                                                     <TMeterPerSecond, TSecond, TKilometerPerHour>;
-  TKilometersPerHourPerSecond = specialize TFactoredNumeratorDimensionedQuantity
+  TKilometersPerHourPerSecond = specialize TFactoredNumeratorQuantity
                                            <TMeterPerSecond, TSecond, TKilometerPerHour>;
 
 // combining units
-operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMeterPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}km_h: TKilometerPerHourIdentifier; const {%H-}s: TSecondIdentifier): TKilometerPerHourPerSecondIdentifier; inline;
+operator /(const {%H-}m_s: TMeterPerSecondId; const {%H-}s: TSecondId): TMeterPerSecondSquaredId; inline;
+operator /(const {%H-}m: TMeterId; const {%H-}s2: TSquareSecondId): TMeterPerSecondSquaredId; inline;
+operator /(const {%H-}km_h: TKilometerPerHourId; const {%H-}s: TSecondId): TKilometerPerHourPerSecondId; inline;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const ASpeed: TMetersPerSecond; const ATime: TSeconds): TMetersPerSecondSquared; inline;
 operator /(const ALength: TMeters; const ASquareTime: TSquareSeconds): TMetersPerSecondSquared; inline;
 operator /(const ASpeed: TKilometersPerHour; const ATime: TSeconds): TKilometersPerHourPerSecond; inline;
@@ -946,37 +946,37 @@ operator /(const ASpeed: TKilometersPerHour; const ATime: TSeconds): TKilometers
 
 type
   TGramPerCubicMeter = specialize TRatioUnit<TGram, TCubicMeter>;
-  TGramPerCubicMeterIdentifier = specialize TRatioUnitIdentifier
+  TGramPerCubicMeterId = specialize TRatioUnitId
                                             <TGram, TCubicMeter>;
-  TGramsPerCubicMeter = specialize TRatioDimensionedQuantity
+  TGramsPerCubicMeter = specialize TRatioQuantity
                                    <TGram, TCubicMeter>;
 
   TGramPerCubicMillimeter = specialize TFactoredDenominatorUnit<TGram, TCubicMillimeter>;
-  TGramPerCubicMillimeterIdentifier = specialize TFactoredDenominatorUnitIdentifier
+  TGramPerCubicMillimeterId = specialize TFactoredDenominatorUnitId
                                                  <TGram, TCubicMeter, TCubicMillimeter>;
-  TGramsPerCubicMillimeter = specialize TFactoredDenominatorDimensionedQuantity
+  TGramsPerCubicMillimeter = specialize TFactoredDenominatorQuantity
                                         <TGram, TCubicMeter, TCubicMillimeter>;
 
   TKilogramPerCubicMeter = specialize TFactoredNumeratorUnit<TKilogram, TCubicMeter>;
-  TKilogramPerCubicMeterIdentifier = specialize TFactoredNumeratorUnitIdentifier
+  TKilogramPerCubicMeterId = specialize TFactoredNumeratorUnitId
                                                 <TGram, TCubicMeter, TKilogram>;
-  TKilogramsPerCubicMeter = specialize TFactoredNumeratorDimensionedQuantity
+  TKilogramsPerCubicMeter = specialize TFactoredNumeratorQuantity
                                        <TGram, TCubicMeter, TKilogram>;
 
   TKilogramPerCubicMillimeter = specialize TFactoredRatioUnit<TKilogram, TCubicMillimeter>;
-  TKilogramPerCubicMillimeterIdentifier = specialize TFactoredRatioUnitIdentifier
+  TKilogramPerCubicMillimeterId = specialize TFactoredRatioUnitId
                                           <TGram, TCubicMeter, TKilogram, TCubicMillimeter>;
-  TKilogramsPerCubicMillimeter = specialize TFactoredRatioDimensionedQuantity
+  TKilogramsPerCubicMillimeter = specialize TFactoredRatioQuantity
                                  <TGram, TCubicMeter, TKilogram, TCubicMillimeter>;
 
 // combining units
-operator /(const {%H-}g: TGramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TGramPerCubicMeterIdentifier; inline;
-operator /(const {%H-}g: TGramIdentifier; const {%H-}mm3: TCubicMillimeterIdentifier): TGramPerCubicMillimeterIdentifier; inline;
+operator /(const {%H-}g: TGramId; const {%H-}m3: TCubicMeterId): TGramPerCubicMeterId; inline;
+operator /(const {%H-}g: TGramId; const {%H-}mm3: TCubicMillimeterId): TGramPerCubicMillimeterId; inline;
 
-operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}m3: TCubicMeterIdentifier): TKilogramPerCubicMeterIdentifier; inline;
-operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}mm3: TCubicMillimeterIdentifier): TKilogramPerCubicMillimeterIdentifier; inline;
+operator /(const {%H-}kg: TKilogramId; const {%H-}m3: TCubicMeterId): TKilogramPerCubicMeterId; inline;
+operator /(const {%H-}kg: TKilogramId; const {%H-}mm3: TCubicMillimeterId): TKilogramPerCubicMillimeterId; inline;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const AMass: TGrams; const AVolume: TCubicMeters): TGramsPerCubicMeter; inline;
 operator /(const AMass: TGrams; const AVolume: TCubicMillimeters): TGramsPerCubicMillimeter; inline;
 
@@ -987,30 +987,30 @@ operator /(const AMass: TKilograms; const AVolume: TCubicMillimeters): TKilogram
 
 { Special units }
 type
-  THertzIdentifier = specialize TReciprocalUnitIdentifier<TSecond>;
-  THertz = specialize TReciprocalDimensionedQuantity<TSecond>;
+  THertzId = specialize TReciprocalUnitId<TSecond>;
+  THertz = specialize TReciprocalQuantity<TSecond>;
 
-  TKilohertz = specialize TFactoredReciprocalDimensionedQuantity
+  TKilohertz = specialize TFactoredReciprocalQuantity
                           <TSecond, specialize TMilliUnit<TSecond>>;
-  TMegahertz = specialize TFactoredReciprocalDimensionedQuantity
+  TMegahertz = specialize TFactoredReciprocalQuantity
                           <TSecond, specialize TMicroUnit<TSecond>>;
-  TGigahertz = specialize TFactoredReciprocalDimensionedQuantity
+  TGigahertz = specialize TFactoredReciprocalQuantity
                           <TSecond, specialize TNanoUnit<TSecond>>;
-  TTerahertz = specialize TFactoredReciprocalDimensionedQuantity
+  TTerahertz = specialize TFactoredReciprocalQuantity
                           <TSecond, specialize TPicoUnit<TSecond>>;
 
   TRadian = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TRadianIdentifier = specialize TUnitIdentifier<TRadian>;
-  TRadians = specialize TDimensionedQuantity<TRadian>;
+  TRadianId = specialize TUnitId<TRadian>;
+  TRadians = specialize TQuantity<TRadian>;
   TSteradian = specialize TSquareUnit<TRadian>;
-  TSteradianIdentifier = specialize TSquareUnitIdentifier<TRadian>;
-  TSteradianFactorIdentifier = specialize TUnitIdentifier<TSteradian>;
-  TSteradians = specialize TSquareDimensionedQuantity<TRadian>;
-  TSteradiansFactor = specialize TDimensionedQuantity<TSteradian>;
+  TSteradianId = specialize TSquareUnitId<TRadian>;
+  TSteradianFactorId = specialize TUnitId<TSteradian>;
+  TSteradians = specialize TSquareQuantity<TRadian>;
+  TSteradiansFactor = specialize TQuantity<TSteradian>;
 
   { TRadianHelper }
 
-  TRadianHelper = record helper for TRadianIdentifier
+  TRadianHelper = record helper for TRadianId
     function ArcCos(AValue: double): TRadians;
     function ArcSin(AValue: double): TRadians;
     function ArcTan(AValue: double): TRadians;
@@ -1029,14 +1029,14 @@ type
   end;
 
   TDegree = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  TDegreeIdentifier = specialize TFactoredUnitIdentifier<TRadian, TDegree>;
-  TDegrees = specialize TFactoredDimensionedQuantity<TRadian, TDegree>;
-  TSquareDegreeIdentifier = specialize TFactoredSquareUnitIdentifier<TRadian, TDegree>;
-  TSquareDegrees = specialize TFactoredSquareDimensionedQuantity<TRadian, TDegree>;
+  TDegreeId = specialize TFactoredUnitId<TRadian, TDegree>;
+  TDegrees = specialize TFactoredQuantity<TRadian, TDegree>;
+  TSquareDegreeId = specialize TFactoredSquareUnitId<TRadian, TDegree>;
+  TSquareDegrees = specialize TFactoredSquareQuantity<TRadian, TDegree>;
 
   { TDegreeHelper }
 
-  TDegreeHelper = record helper for TDegreeIdentifier
+  TDegreeHelper = record helper for TDegreeId
     function ArcCos(AValue: double): TDegrees;
     function ArcSin(AValue: double): TDegrees;
     function ArcTan(AValue: double): TDegrees;
@@ -1054,194 +1054,194 @@ type
     function Cosecant: double;
   end;
 
-  TGramMeterIdentifier = specialize TUnitProductIdentifier<TGram, TMeter>;
-  TGramMeters = specialize TDimensionedQuantityProduct<TGram, TMeter>;
-  TKilogramMeterIdentifier = specialize TLeftFactoredUnitProductIdentifier
+  TGramMeterId = specialize TUnitProductId<TGram, TMeter>;
+  TGramMeters = specialize TQuantityProduct<TGram, TMeter>;
+  TKilogramMeterId = specialize TLeftFactoredUnitProductId
                                         <TGram, TMeter, TKilogram>;
-  TKilogramMeters = specialize TLeftFactoredDimensionedQuantityProduct
+  TKilogramMeters = specialize TLeftFactoredQuantityProduct
                            <TGram, TMeter, TKilogram>;
 
   // the kg is also a base unit for special units in SI
   TBaseKilogram = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TBaseKilograms = specialize TDimensionedQuantity<TBaseKilogram>;
+  TBaseKilograms = specialize TQuantity<TBaseKilogram>;
 
 type
   TNewton = specialize TUnitProduct<TBaseKilogram, TMeterPerSecondSquared>;
-  TNewtonIdentifier = specialize TUnitProductIdentifier<TBaseKilogram, TMeterPerSecondSquared>;
-  TNewtons = specialize TDimensionedQuantityProduct<TBaseKilogram, TMeterPerSecondSquared>;
+  TNewtonId = specialize TUnitProductId<TBaseKilogram, TMeterPerSecondSquared>;
+  TNewtons = specialize TQuantityProduct<TBaseKilogram, TMeterPerSecondSquared>;
   TMillinewton = specialize TMilliUnit<TNewton>;
-  TMillinewtonIdentifier = specialize TFactoredUnitIdentifier<TNewton, TMillinewton>;
-  TMillinewtons = specialize TFactoredDimensionedQuantity<TNewton, TMillinewton>;
+  TMillinewtonId = specialize TFactoredUnitId<TNewton, TMillinewton>;
+  TMillinewtons = specialize TFactoredQuantity<TNewton, TMillinewton>;
   TKilonewton = specialize TKiloUnit<TNewton>;
-  TKilonewtonIdentifier = specialize TFactoredUnitIdentifier<TNewton, TKilonewton>;
-  TKilonewtons = specialize TFactoredDimensionedQuantity<TNewton, TKilonewton>;
+  TKilonewtonId = specialize TFactoredUnitId<TNewton, TKilonewton>;
+  TKilonewtons = specialize TFactoredQuantity<TNewton, TKilonewton>;
 
   TPascal = specialize TRatioUnit<TNewton, TSquareMeter>;
-  TPascalIdentifier = specialize TRatioUnitIdentifier<TNewton, TSquareMeter>;
-  TPascals = specialize TRatioDimensionedQuantity<TNewton, TSquareMeter>;
+  TPascalId = specialize TRatioUnitId<TNewton, TSquareMeter>;
+  TPascals = specialize TRatioQuantity<TNewton, TSquareMeter>;
 
   TKilopascal = specialize TFactoredNumeratorUnit<TKilonewton, TSquareMeter>;
-  TKilopascalIdentifier = specialize TFactoredNumeratorUnitIdentifier<TNewton, TSquareMeter, TKilonewton>;
-  TKilopascals = specialize TFactoredNumeratorDimensionedQuantity<TNewton, TSquareMeter, TKilonewton>;
+  TKilopascalId = specialize TFactoredNumeratorUnitId<TNewton, TSquareMeter, TKilonewton>;
+  TKilopascals = specialize TFactoredNumeratorQuantity<TNewton, TSquareMeter, TKilonewton>;
 
   TMegapascal = specialize TFactoredDenominatorUnit<TNewton, TSquareMillimeter>;
-  TMegapascalIdentifier = specialize TFactoredDenominatorUnitIdentifier<TNewton, TSquareMeter, TSquareMillimeter>;
-  TMegapascals = specialize TFactoredDenominatorDimensionedQuantity<TNewton, TSquareMeter, TSquareMillimeter>;
+  TMegapascalId = specialize TFactoredDenominatorUnitId<TNewton, TSquareMeter, TSquareMillimeter>;
+  TMegapascals = specialize TFactoredDenominatorQuantity<TNewton, TSquareMeter, TSquareMillimeter>;
 
   TJoule = specialize TUnitProduct<TNewton, TMeter>;
-  TJouleIdentifier = specialize TUnitProductIdentifier<TNewton, TMeter>;
-  TJoules = specialize TDimensionedQuantityProduct<TNewton, TMeter>;
+  TJouleId = specialize TUnitProductId<TNewton, TMeter>;
+  TJoules = specialize TQuantityProduct<TNewton, TMeter>;
 
   TWatt = specialize TRatioUnit<TJoule, TSecond>;
-  TWattIdentifier = specialize TRatioUnitIdentifier<TJoule, TSecond>;
-  TWatts = specialize TRatioDimensionedQuantity<TJoule, TSecond>;
+  TWattId = specialize TRatioUnitId<TJoule, TSecond>;
+  TWatts = specialize TRatioQuantity<TJoule, TSecond>;
 
   TCoulomb = specialize TUnitProduct<TAmpere, TSecond>;
-  TCoulombIdentifier = specialize TUnitProductIdentifier<TAmpere, TSecond>;
-  TCoulombs = specialize TDimensionedQuantityProduct<TAmpere, TSecond>;
+  TCoulombId = specialize TUnitProductId<TAmpere, TSecond>;
+  TCoulombs = specialize TQuantityProduct<TAmpere, TSecond>;
 
   TSquareCoulomb = specialize TSquareUnit<TCoulomb>;
-  TSquareCoulombIdentifier = specialize TSquareUnitIdentifier<TCoulomb>;
-  TSquareCoulombFactorIdentifier = specialize TUnitIdentifier<TSquareCoulomb>;
-  TSquareCoulombs = specialize TSquareDimensionedQuantity<TCoulomb>;
-  TSquareCoulombsFactor = specialize TDimensionedQuantity<TSquareCoulomb>;
+  TSquareCoulombId = specialize TSquareUnitId<TCoulomb>;
+  TSquareCoulombFactorId = specialize TUnitId<TSquareCoulomb>;
+  TSquareCoulombs = specialize TSquareQuantity<TCoulomb>;
+  TSquareCoulombsFactor = specialize TQuantity<TSquareCoulomb>;
 
   TVolt = specialize TRatioUnit<TJoule, TCoulomb>;
-  TVoltIdentifier = specialize TRatioUnitIdentifier<TJoule, TCoulomb>;
-  TVolts = specialize TRatioDimensionedQuantity<TJoule, TCoulomb>;
+  TVoltId = specialize TRatioUnitId<TJoule, TCoulomb>;
+  TVolts = specialize TRatioQuantity<TJoule, TCoulomb>;
 
   TSquareVolt = specialize TSquareUnit<TVolt>;
-  TSquareVoltIdentifier = specialize TSquareUnitIdentifier<TVolt>;
-  TSquareVolts = specialize TSquareDimensionedQuantity<TVolt>;
+  TSquareVoltId = specialize TSquareUnitId<TVolt>;
+  TSquareVolts = specialize TSquareQuantity<TVolt>;
 
   TFarad = specialize TRatioUnit<TCoulomb, TVolt>;
-  TFaradIdentifier = specialize TRatioUnitIdentifier<TCoulomb, TVolt>;
-  TFarads = specialize TRatioDimensionedQuantity<TCoulomb, TVolt>;
+  TFaradId = specialize TRatioUnitId<TCoulomb, TVolt>;
+  TFarads = specialize TRatioQuantity<TCoulomb, TVolt>;
 
-  TMillifarads = specialize TFactoredDimensionedQuantity
+  TMillifarads = specialize TFactoredQuantity
                             <TFarad, specialize TMilliUnit<TFarad>>;
-  TMicrofarads = specialize TFactoredDimensionedQuantity
+  TMicrofarads = specialize TFactoredQuantity
                             <TFarad, specialize TMicroUnit<TFarad>>;
-  TNanofarads = specialize TFactoredDimensionedQuantity
+  TNanofarads = specialize TFactoredQuantity
                            <TFarad, specialize TNanoUnit<TFarad>>;
-  TPicofarads = specialize TFactoredDimensionedQuantity
+  TPicofarads = specialize TFactoredQuantity
                            <TFarad, specialize TPicoUnit<TFarad>>;
 
   TOhm = specialize TRatioUnit<TVolt, TAmpere>;
-  TOhmIdentifier = specialize TRatioUnitIdentifier<TVolt, TAmpere>;
-  TOhms = specialize TRatioDimensionedQuantity<TVolt, TAmpere>;
+  TOhmId = specialize TRatioUnitId<TVolt, TAmpere>;
+  TOhms = specialize TRatioQuantity<TVolt, TAmpere>;
 
-  TSiemensIdentifier = specialize TRatioUnitIdentifier<TAmpere, TVolt>;
-  TSiemens = specialize TRatioDimensionedQuantity<TAmpere, TVolt>;
+  TSiemensId = specialize TRatioUnitId<TAmpere, TVolt>;
+  TSiemens = specialize TRatioQuantity<TAmpere, TVolt>;
 
   TWeber = specialize TUnitProduct<TVolt, TSecond>;
-  TWeberIdentifier = specialize TUnitProductIdentifier<TVolt, TSecond>;
-  TWebers = specialize TDimensionedQuantityProduct<TVolt, TSecond>;
+  TWeberId = specialize TUnitProductId<TVolt, TSecond>;
+  TWebers = specialize TQuantityProduct<TVolt, TSecond>;
 
   TTesla = specialize TRatioUnit<TWeber, TSquareMeter>;
-  TTeslaIdentifier = specialize TRatioUnitIdentifier<TWeber, TSquareMeter>;
-  TTeslas = specialize TRatioDimensionedQuantity<TWeber, TSquareMeter>;
+  TTeslaId = specialize TRatioUnitId<TWeber, TSquareMeter>;
+  TTeslas = specialize TRatioQuantity<TWeber, TSquareMeter>;
 
   THenry = specialize TRatioUnit<TWeber, TAmpere>;
-  THenryIdentifier = specialize TRatioUnitIdentifier<TWeber, TAmpere>;
-  THenrys = specialize TRatioDimensionedQuantity<TWeber, TAmpere>;
+  THenryId = specialize TRatioUnitId<TWeber, TAmpere>;
+  THenrys = specialize TRatioQuantity<TWeber, TAmpere>;
 
   TLumen = specialize TUnitProduct<TCandela, TSteradian>;
-  TLumenIdentifer = specialize TUnitProductIdentifier<TCandela, TSteradian>;
-  TLumens = specialize TDimensionedQuantityProduct<TCandela, TSteradian>;
+  TLumenIdentifer = specialize TUnitProductId<TCandela, TSteradian>;
+  TLumens = specialize TQuantityProduct<TCandela, TSteradian>;
 
-  TLuxIdentifier = specialize TRatioUnitIdentifier<TLumen, TSquareMeter>;
-  TLuxQuantity = specialize TRatioDimensionedQuantity<TLumen, TSquareMeter>;
+  TLuxId = specialize TRatioUnitId<TLumen, TSquareMeter>;
+  TLuxQuantity = specialize TRatioQuantity<TLumen, TSquareMeter>;
 
   TBecquerel = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TBecquerelIdentifier = specialize TUnitIdentifier<TBecquerel>;
-  TBecquerels = specialize TDimensionedQuantity<TBecquerel>;
+  TBecquerelId = specialize TUnitId<TBecquerel>;
+  TBecquerels = specialize TQuantity<TBecquerel>;
 
   { TBecquerelHelper }
 
-  TBecquerelHelper = record helper for TBecquerelIdentifier
+  TBecquerelHelper = record helper for TBecquerelId
     function From(const AFrequency: THertz): TBecquerels;
     function Inverse: TSecond;
   end;
 
   TKilobecquerel = specialize TKiloUnit<TBecquerel>;
-  TKilobecquerelIdentifier = specialize TFactoredUnitIdentifier<TBecquerel, TKilobecquerel>;
-  TKilobecquerels = specialize TFactoredDimensionedQuantity<TBecquerel, TKilobecquerel>;
+  TKilobecquerelId = specialize TFactoredUnitId<TBecquerel, TKilobecquerel>;
+  TKilobecquerels = specialize TFactoredQuantity<TBecquerel, TKilobecquerel>;
 
   TMegabecquerel = specialize TMegaUnit<TBecquerel>;
-  TMegabecquerelIdentifier = specialize TFactoredUnitIdentifier<TBecquerel, TMegabecquerel>;
-  TMegabecquerels = specialize TFactoredDimensionedQuantity<TBecquerel, TMegabecquerel>;
+  TMegabecquerelId = specialize TFactoredUnitId<TBecquerel, TMegabecquerel>;
+  TMegabecquerels = specialize TFactoredQuantity<TBecquerel, TMegabecquerel>;
 
   TCurie = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  TCurieIdentifier = specialize TFactoredUnitIdentifier<TBecquerel, TCurie>;
-  TCuries = specialize TFactoredDimensionedQuantity<TBecquerel, TCurie>;
+  TCurieId = specialize TFactoredUnitId<TBecquerel, TCurie>;
+  TCuries = specialize TFactoredQuantity<TBecquerel, TCurie>;
 
   TSquareMeterPerSquareSecond = specialize TRatioUnit<TSquareMeter, TSquareSecond>;
-  TSquareMeterPerSquareSecondIdentifier = specialize TRatioUnitIdentifier<TSquareMeter, TSquareSecond>;
-  TSquareMetersPerSquareSecond = specialize TRatioDimensionedQuantity<TSquareMeter, TSquareSecond>;
+  TSquareMeterPerSquareSecondId = specialize TRatioUnitId<TSquareMeter, TSquareSecond>;
+  TSquareMetersPerSquareSecond = specialize TRatioQuantity<TSquareMeter, TSquareSecond>;
 
-  TGrayIdentifier = specialize TRatioUnitIdentifier<TJoule, TBaseKilogram>;
-  TGrays = specialize TRatioDimensionedQuantity<TJoule, TBaseKilogram>;
+  TGrayId = specialize TRatioUnitId<TJoule, TBaseKilogram>;
+  TGrays = specialize TRatioQuantity<TJoule, TBaseKilogram>;
 
   { TGrayHelper }
 
-  TGrayHelper = record helper for TGrayIdentifier
+  TGrayHelper = record helper for TGrayId
     function From(const ASquareSpeed: TSquareMetersPerSquareSecond): TGrays;
   end;
 
   TSievert = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  TSievertIdentifier = specialize TUnitIdentifier<TSievert>;
-  TSieverts = specialize TDimensionedQuantity<TSievert>;
+  TSievertId = specialize TUnitId<TSievert>;
+  TSieverts = specialize TQuantity<TSievert>;
 
   { TSievertHelper }
 
-  TSievertHelper = record helper for TSievertIdentifier
+  TSievertHelper = record helper for TSievertId
     function From(const ASquareSpeed: TSquareMetersPerSquareSecond): TSieverts;
   end;
 
-  TKatalIdentifier = specialize TRatioUnitIdentifier<TMole, TSecond>;
-  TKatals = specialize TRatioDimensionedQuantity<TMole, TSecond>;
+  TKatalId = specialize TRatioUnitId<TMole, TSecond>;
+  TKatals = specialize TRatioQuantity<TMole, TSecond>;
 
 var
-  Hz: THertzIdentifier;
-  kHz: specialize TFactoredReciprocalUnitIdentifier<TSecond, specialize TMilliUnit<TSecond>>;
-  MHz: specialize TFactoredReciprocalUnitIdentifier<TSecond, specialize TMicroUnit<TSecond>>;
-  GHz: specialize TFactoredReciprocalUnitIdentifier<TSecond, specialize TNanoUnit<TSecond>>;
-  THz: specialize TFactoredReciprocalUnitIdentifier<TSecond, specialize TPicoUnit<TSecond>>;
-  rad: TRadianIdentifier;
-  sr: TSteradianIdentifier;
-  deg: TDegreeIdentifier;
+  Hz: THertzId;
+  kHz: specialize TFactoredReciprocalUnitId<TSecond, specialize TMilliUnit<TSecond>>;
+  MHz: specialize TFactoredReciprocalUnitId<TSecond, specialize TMicroUnit<TSecond>>;
+  GHz: specialize TFactoredReciprocalUnitId<TSecond, specialize TNanoUnit<TSecond>>;
+  THz: specialize TFactoredReciprocalUnitId<TSecond, specialize TPicoUnit<TSecond>>;
+  rad: TRadianId;
+  sr: TSteradianId;
+  deg: TDegreeId;
   deg2: TSquareDegrees;
-  N: TNewtonIdentifier;
-  kN: TKilonewtonIdentifier;
-  Pa: TPascalIdentifier;
-  kPa: TKilopascalIdentifier;
-  MPa: TMegapascalIdentifier;
-  J: TJouleIdentifier;
-  C: TCoulombIdentifier;
-  C2: TSquareCoulombIdentifier;
+  N: TNewtonId;
+  kN: TKilonewtonId;
+  Pa: TPascalId;
+  kPa: TKilopascalId;
+  MPa: TMegapascalId;
+  J: TJouleId;
+  C: TCoulombId;
+  C2: TSquareCoulombId;
   lm: TLumenIdentifer;
-  lx: TLuxIdentifier;
-  Gy: TGrayIdentifier;
-  Sv: TSievertIdentifier;
-  kat: TKatalIdentifier;
-  W: TWattIdentifier;
-  V: TVoltIdentifier;
-  V2: TSquareVoltIdentifier;
-  F: TFaradIdentifier;
-  mF: specialize TFactoredUnitIdentifier<TFarad, specialize TMilliUnit<TFarad>>;
-  uF: specialize TFactoredUnitIdentifier<TFarad, specialize TMicroUnit<TFarad>>;
-  nF: specialize TFactoredUnitIdentifier<TFarad, specialize TNanoUnit<TFarad>>;
-  pF: specialize TFactoredUnitIdentifier<TFarad, specialize TPicoUnit<TFarad>>;
-  ohm: TOhmIdentifier;
-  siemens, mho: TSiemensIdentifier;
-  Wb: TWeberIdentifier;
-  T: TTeslaIdentifier;
-  henry: THenryIdentifier;
-  Bq: TBecquerelIdentifier;
+  lx: TLuxId;
+  Gy: TGrayId;
+  Sv: TSievertId;
+  kat: TKatalId;
+  W: TWattId;
+  V: TVoltId;
+  V2: TSquareVoltId;
+  F: TFaradId;
+  mF: specialize TFactoredUnitId<TFarad, specialize TMilliUnit<TFarad>>;
+  uF: specialize TFactoredUnitId<TFarad, specialize TMicroUnit<TFarad>>;
+  nF: specialize TFactoredUnitId<TFarad, specialize TNanoUnit<TFarad>>;
+  pF: specialize TFactoredUnitId<TFarad, specialize TPicoUnit<TFarad>>;
+  ohm: TOhmId;
+  siemens, mho: TSiemensId;
+  Wb: TWeberId;
+  T: TTeslaId;
+  henry: THenryId;
+  Bq: TBecquerelId;
   kBq: TKilobecquerel;
   MBq: TMegabecquerel;
-  Ci: TCurieIdentifier;
+  Ci: TCurieId;
 
 // dimension equivalence
 operator:=(const AWeight: TKilograms): TBaseKilograms;
@@ -1254,113 +1254,113 @@ operator:=(const AAbsorbedDose: TGrays): TSquareMetersPerSquareSecond;
 
 operator:=(const ARadioactivity: TBecquerels): THertz;
 
-operator:=(const {%H-}sr: TSteradianIdentifier): TSteradianFactorIdentifier;
+operator:=(const {%H-}sr: TSteradianId): TSteradianFactorId;
 operator:=(const ASolidAngle: TSteradians): TSteradiansFactor;
 operator:=(const ASolidAngle: TSteradiansFactor): TSteradians;
 
-operator:=(const {%H-}C2: TSquareCoulombIdentifier): TSquareCoulombFactorIdentifier;
+operator:=(const {%H-}C2: TSquareCoulombId): TSquareCoulombFactorId;
 operator:=(const ASquareCharge: TSquareCoulombs): TSquareCoulombsFactor;
 operator:=(const ASquareCharge: TSquareCoulombsFactor): TSquareCoulombs;
 
 // combining units
-operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m: TMeterIdentifier): THertzIdentifier; inline;
-operator /(const {%H-}mm_s: TMillimeterPerSecondIdentifier; const {%H-}mm: TMillimeterIdentifier): THertzIdentifier; inline;
+operator /(const {%H-}m_s: TMeterPerSecondId; const {%H-}m: TMeterId): THertzId; inline;
+operator /(const {%H-}mm_s: TMillimeterPerSecondId; const {%H-}mm: TMillimeterId): THertzId; inline;
 
-operator *(const {%H-}g: TGramIdentifier; const {%H-}m: TMeterIdentifier): TGramMeterIdentifier; inline;
-operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m: TMeterIdentifier): TKilogramMeterIdentifier; inline;
+operator *(const {%H-}g: TGramId; const {%H-}m: TMeterId): TGramMeterId; inline;
+operator *(const {%H-}kg: TKilogramId; const {%H-}m: TMeterId): TKilogramMeterId; inline;
 
-operator *(const {%H-}g: TGramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier; inline;
-operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}g: TGramIdentifier): TMillinewtonIdentifier; inline;
-operator /(const {%H-}mN: TMillinewtonIdentifier; const {%H-}g: TGramMeterIdentifier): TMeterPerSecondSquaredIdentifier; inline;
+operator *(const {%H-}g: TGramId; const {%H-}m_s2: TMeterPerSecondSquaredId): TMillinewtonId; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredId; const {%H-}g: TGramId): TMillinewtonId; inline;
+operator /(const {%H-}mN: TMillinewtonId; const {%H-}g: TGramMeterId): TMeterPerSecondSquaredId; inline;
 
-operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier; inline;
-operator *(const {%H-}g: TGramMeterIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier;
-operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}kg: TKilogramIdentifier): TNewtonIdentifier; inline;
-operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}g: TGramMeterIdentifier): TMillinewtonIdentifier; inline;
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}kg: TKilogramIdentifier): TMeterPerSecondSquaredIdentifier; inline;
+operator *(const {%H-}kg: TKilogramId; const {%H-}m_s2: TMeterPerSecondSquaredId): TNewtonId; inline;
+operator *(const {%H-}g: TGramMeterId; const {%H-}m_s2: TMeterPerSecondSquaredId): TMillinewtonId;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredId; const {%H-}kg: TKilogramId): TNewtonId; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredId; const {%H-}g: TGramMeterId): TMillinewtonId; inline;
+operator /(const {%H-}N: TNewtonId; const {%H-}kg: TKilogramId): TMeterPerSecondSquaredId; inline;
 
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TPascalIdentifier; inline;
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm2: TSquareMillimeterIdentifier): TMegapascalIdentifier; inline;
-operator /(const {%H-}kN: TKilonewtonIdentifier; const {%H-}m2: TSquareMeterIdentifier): TKilopascalIdentifier; inline;
+operator /(const {%H-}N: TNewtonId; const {%H-}m2: TSquareMeterId): TPascalId; inline;
+operator /(const {%H-}N: TNewtonId; const {%H-}mm2: TSquareMillimeterId): TMegapascalId; inline;
+operator /(const {%H-}kN: TKilonewtonId; const {%H-}m2: TSquareMeterId): TKilopascalId; inline;
 
-operator *(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TJouleIdentifier; inline;
-operator *(const {%H-}m: TMeterIdentifier; const {%H-}N: TNewtonIdentifier): TJouleIdentifier; inline;
-operator /(const {%H-}J: TJouleIdentifier; const {%H-}N: TNewtonIdentifier): TMeterIdentifier; inline;
+operator *(const {%H-}N: TNewtonId; const {%H-}m: TMeterId): TJouleId; inline;
+operator *(const {%H-}m: TMeterId; const {%H-}N: TNewtonId): TJouleId; inline;
+operator /(const {%H-}J: TJouleId; const {%H-}N: TNewtonId): TMeterId; inline;
 
-operator /(const {%H-}J: TJouleIdentifier; const {%H-}s: TSecondIdentifier): TWattIdentifier; inline;
+operator /(const {%H-}J: TJouleId; const {%H-}s: TSecondId): TWattId; inline;
 
 // definition A2 = W / Ω
-operator /(const {%H-}W: TWattIdentifier; const {%H-}Ohm: TOhmIdentifier): TSquareAmpereIdentifier; inline;
-operator /(const {%H-}W: TWattIdentifier; const {%H-}A2: TSquareAmpereIdentifier): TOhmIdentifier; inline;
-operator *(const {%H-}A2: TSquareAmpereIdentifier; const {%H-}Ohm: TOhmIdentifier): TWattIdentifier; inline;
-operator *(const {%H-}Ohm: TOhmIdentifier; const {%H-}A2: TSquareAmpereIdentifier): TWattIdentifier; inline;
+operator /(const {%H-}W: TWattId; const {%H-}Ohm: TOhmId): TSquareAmpereId; inline;
+operator /(const {%H-}W: TWattId; const {%H-}A2: TSquareAmpereId): TOhmId; inline;
+operator *(const {%H-}A2: TSquareAmpereId; const {%H-}Ohm: TOhmId): TWattId; inline;
+operator *(const {%H-}Ohm: TOhmId; const {%H-}A2: TSquareAmpereId): TWattId; inline;
 
-operator /(const {%H-}J: TJouleIdentifier; const {%H-}C: TCoulombIdentifier): TVoltIdentifier; inline;
+operator /(const {%H-}J: TJouleId; const {%H-}C: TCoulombId): TVoltId; inline;
 // alternative definition of V = W / A
-operator /(const {%H-}W: TWattIdentifier; const {%H-}A: TAmpereIdentifier): TVoltIdentifier; inline;
-operator /(const {%H-}W: TWattIdentifier; const {%H-}V: TVoltIdentifier): TAmpereIdentifier; inline;
-operator *(const {%H-}A: TAmpereIdentifier; const {%H-}V: TVoltIdentifier): TWattIdentifier; inline;
-operator *(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TWattIdentifier; inline;
+operator /(const {%H-}W: TWattId; const {%H-}A: TAmpereId): TVoltId; inline;
+operator /(const {%H-}W: TWattId; const {%H-}V: TVoltId): TAmpereId; inline;
+operator *(const {%H-}A: TAmpereId; const {%H-}V: TVoltId): TWattId; inline;
+operator *(const {%H-}V: TVoltId; const {%H-}A: TAmpereId): TWattId; inline;
 
 // definition of V2 = W * Ω
-operator *(const {%H-}W: TWattIdentifier; const {%H-}Ohm: TOhmIdentifier): TSquareVoltIdentifier; inline;
-operator *(const {%H-}Ohm: TOhmIdentifier; const {%H-}W: TWattIdentifier): TSquareVoltIdentifier; inline;
-operator /(const {%H-}V2: TSquareVoltIdentifier; const {%H-}W: TWattIdentifier): TOhmIdentifier; inline;
-operator /(const {%H-}V2: TSquareVoltIdentifier; const {%H-}Ohm: TOhmIdentifier): TWattIdentifier; inline;
+operator *(const {%H-}W: TWattId; const {%H-}Ohm: TOhmId): TSquareVoltId; inline;
+operator *(const {%H-}Ohm: TOhmId; const {%H-}W: TWattId): TSquareVoltId; inline;
+operator /(const {%H-}V2: TSquareVoltId; const {%H-}W: TWattId): TOhmId; inline;
+operator /(const {%H-}V2: TSquareVoltId; const {%H-}Ohm: TOhmId): TWattId; inline;
 
-operator /(const {%H-}C: TCoulombIdentifier; const {%H-}V: TVoltIdentifier): TFaradIdentifier; inline;
+operator /(const {%H-}C: TCoulombId; const {%H-}V: TVoltId): TFaradId; inline;
 // alternative definition of F = C2 / J
-operator /(const {%H-}C2: TSquareCoulombIdentifier; const {%H-}J: TJouleIdentifier): TFaradIdentifier; inline;
-operator /(const {%H-}C2: TSquareCoulombIdentifier; const {%H-}F: TFaradIdentifier): TJouleIdentifier; inline;
-operator *(const {%H-}J: TJouleIdentifier; const {%H-}F: TFaradIdentifier): TSquareCoulombIdentifier; inline;
-operator *(const {%H-}F: TFaradIdentifier; const {%H-}J: TJouleIdentifier): TSquareCoulombIdentifier; inline;
+operator /(const {%H-}C2: TSquareCoulombId; const {%H-}J: TJouleId): TFaradId; inline;
+operator /(const {%H-}C2: TSquareCoulombId; const {%H-}F: TFaradId): TJouleId; inline;
+operator *(const {%H-}J: TJouleId; const {%H-}F: TFaradId): TSquareCoulombId; inline;
+operator *(const {%H-}F: TFaradId; const {%H-}J: TJouleId): TSquareCoulombId; inline;
 
-operator *(const {%H-}A: TAmpereIdentifier; const {%H-}s: TSecondIdentifier): TCoulombIdentifier; inline;
-operator *(const {%H-}s: TSecondIdentifier; const {%H-}A: TAmpereIdentifier): TCoulombIdentifier; inline;
-operator /(const {%H-}C: TCoulombIdentifier; const {%H-}A: TAmpereIdentifier): TSecondIdentifier; inline;
+operator *(const {%H-}A: TAmpereId; const {%H-}s: TSecondId): TCoulombId; inline;
+operator *(const {%H-}s: TSecondId; const {%H-}A: TAmpereId): TCoulombId; inline;
+operator /(const {%H-}C: TCoulombId; const {%H-}A: TAmpereId): TSecondId; inline;
 
-operator /(const {%H-}V: TVoltIdentifier; const {%H-}A: TAmpereIdentifier): TOhmIdentifier; inline;
+operator /(const {%H-}V: TVoltId; const {%H-}A: TAmpereId): TOhmId; inline;
 // alternative definition of Ω = s / F
-operator /(const {%H-}s: TSecondIdentifier; const {%H-}F: TFaradIdentifier): TOhmIdentifier; inline;
-operator /(const {%H-}s: TSecondIdentifier; const {%H-}Ohm: TOhmIdentifier): TFaradIdentifier; inline;
-operator *(const {%H-}F: TFaradIdentifier; const {%H-}Ohm: TOhmIdentifier): TSecondIdentifier; inline;
-operator *(const {%H-}Ohm: TOhmIdentifier; const {%H-}F: TFaradIdentifier): TSecondIdentifier; inline;
+operator /(const {%H-}s: TSecondId; const {%H-}F: TFaradId): TOhmId; inline;
+operator /(const {%H-}s: TSecondId; const {%H-}Ohm: TOhmId): TFaradId; inline;
+operator *(const {%H-}F: TFaradId; const {%H-}Ohm: TOhmId): TSecondId; inline;
+operator *(const {%H-}Ohm: TOhmId; const {%H-}F: TFaradId): TSecondId; inline;
 
-operator /(const {%H-}A: TAmpereIdentifier; const {%H-}V: TVoltIdentifier): TSiemensIdentifier; inline;
+operator /(const {%H-}A: TAmpereId; const {%H-}V: TVoltId): TSiemensId; inline;
 // alternative definition of S = 1 / Ω
-operator /(const {%H-}AValue: double; const {%H-}Ohm: TOhmIdentifier): TSiemensIdentifier; inline;
-operator /(const {%H-}AValue: double; const {%H-}S: TSiemensIdentifier): TOhmIdentifier; inline;
+operator /(const {%H-}AValue: double; const {%H-}Ohm: TOhmId): TSiemensId; inline;
+operator /(const {%H-}AValue: double; const {%H-}S: TSiemensId): TOhmId; inline;
 
-operator *(const {%H-}V: TVoltIdentifier; const {%H-}s: TSecondIdentifier): TWeberIdentifier; inline;
-operator *(const {%H-}s: TSecondIdentifier; const {%H-}V: TVoltIdentifier): TWeberIdentifier; inline;
-operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}V: TVoltIdentifier): TSecondIdentifier; inline;
+operator *(const {%H-}V: TVoltId; const {%H-}s: TSecondId): TWeberId; inline;
+operator *(const {%H-}s: TSecondId; const {%H-}V: TVoltId): TWeberId; inline;
+operator /(const {%H-}Wb: TWeberId; const {%H-}V: TVoltId): TSecondId; inline;
 
-operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}m2: TSquareMeterIdentifier): TTeslaIdentifier; inline;
+operator /(const {%H-}Wb: TWeberId; const {%H-}m2: TSquareMeterId): TTeslaId; inline;
 
-operator /(const {%H-}Wb: TWeberIdentifier; const {%H-}A: TAmpereIdentifier): THenryIdentifier; inline;
+operator /(const {%H-}Wb: TWeberId; const {%H-}A: TAmpereId): THenryId; inline;
 
-operator *(const {%H-}cd: TCandelaIdentifier; const {%H-}sr: TSteradianIdentifier): TLumenIdentifer; inline;
-operator *(const {%H-}sr: TSteradianIdentifier; const {%H-}cd: TCandelaIdentifier): TLumenIdentifer; inline;
-operator /(const {%H-}lm: TLumenIdentifer; const {%H-}cd: TCandelaIdentifier): TSteradianIdentifier; inline;
+operator *(const {%H-}cd: TCandelaId; const {%H-}sr: TSteradianId): TLumenIdentifer; inline;
+operator *(const {%H-}sr: TSteradianId; const {%H-}cd: TCandelaId): TLumenIdentifer; inline;
+operator /(const {%H-}lm: TLumenIdentifer; const {%H-}cd: TCandelaId): TSteradianId; inline;
 
-operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterIdentifier): TLuxIdentifier; inline;
+operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterId): TLuxId; inline;
 
-operator /(const {%H-}J: TJouleIdentifier; const {%H-}kg: TKilogramIdentifier): TGrayIdentifier; inline;
+operator /(const {%H-}J: TJouleId; const {%H-}kg: TKilogramId): TGrayId; inline;
 
-operator /(const {%H-}m2: TSquareMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TSquareMeterPerSquareSecondIdentifier; inline;
+operator /(const {%H-}m2: TSquareMeterId; const {%H-}s2: TSquareSecondId): TSquareMeterPerSquareSecondId; inline;
 
 // alternative definition of m2_s2 = J / kg
-operator *(const {%H-}kg: TKilogramIdentifier; const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier): TJouleIdentifier; inline;
-operator *(const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier; const {%H-}kg: TKilogramIdentifier): TJouleIdentifier; inline;
-operator /(const {%H-}J: TJouleIdentifier; const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier): TKilogramIdentifier; inline;
+operator *(const {%H-}kg: TKilogramId; const {%H-}m2_s2: TSquareMeterPerSquareSecondId): TJouleId; inline;
+operator *(const {%H-}m2_s2: TSquareMeterPerSquareSecondId; const {%H-}kg: TKilogramId): TJouleId; inline;
+operator /(const {%H-}J: TJouleId; const {%H-}m2_s2: TSquareMeterPerSquareSecondId): TKilogramId; inline;
 
 // alternative definition m2_s2 = m/s * m/s
-operator *(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}m_s_: TMeterPerSecondIdentifier): TSquareMeterPerSquareSecondIdentifier; inline;
-operator /(const {%H-}m2_s2: TSquareMeterPerSquareSecondIdentifier; const {%H-}m_s: TMeterPerSecondIdentifier): TMeterPerSecondIdentifier; inline;
+operator *(const {%H-}m_s: TMeterPerSecondId; const {%H-}m_s_: TMeterPerSecondId): TSquareMeterPerSquareSecondId; inline;
+operator /(const {%H-}m2_s2: TSquareMeterPerSquareSecondId; const {%H-}m_s: TMeterPerSecondId): TMeterPerSecondId; inline;
 
-operator /(const {%H-}mol: TMoleIdentifier; const {%H-}s: TSecondIdentifier): TKatalIdentifier; inline;
+operator /(const {%H-}mol: TMoleId; const {%H-}s: TSecondId): TKatalId; inline;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const AValue: double; const ADuration: TSeconds): THertz; inline;
 
 operator /(const AValue: double; const ARadioactivity: TBecquerels): TSeconds;
@@ -1469,26 +1469,26 @@ operator /(const AAmountOfSustance: TMoles; const ATime: TSeconds): TKatals; inl
 
 type
   TRadianPerSecond = specialize TRatioUnit<TRadian, TSecond>;
-  TRadianPerSecondIdentifier = specialize TRatioUnitIdentifier<TRadian, TSecond>;
-  TRadiansPerSecond = specialize TRatioDimensionedQuantity<TRadian, TSecond>;
+  TRadianPerSecondId = specialize TRatioUnitId<TRadian, TSecond>;
+  TRadiansPerSecond = specialize TRatioQuantity<TRadian, TSecond>;
 
 // combining units
-operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondIdentifier; inline;
+operator /(const {%H-}rad: TRadianId; const {%H-}s: TSecondId): TRadianPerSecondId; inline;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
 
 { Units of acceleration }
 
 type
-  TRadianPerSecondSquaredIdentifier = specialize TRatioUnitIdentifier<TRadianPerSecond, TSecond>;
-  TRadiansPerSecondSquared = specialize TRatioDimensionedQuantity<TRadianPerSecond, TSecond>;
+  TRadianPerSecondSquaredId = specialize TRatioUnitId<TRadianPerSecond, TSecond>;
+  TRadiansPerSecondSquared = specialize TRatioQuantity<TRadianPerSecond, TSecond>;
 
 // combining units
-operator /(const {%H-}rad_s: TRadianPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}rad: TRadianIdentifier; const {%H-}s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier; inline;
+operator /(const {%H-}rad_s: TRadianPerSecondId; const {%H-}s: TSecondId): TRadianPerSecondSquaredId; inline;
+operator /(const {%H-}rad: TRadianId; const {%H-}s2: TSquareSecondId): TRadianPerSecondSquaredId; inline;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared; inline;
 operator /(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared; inline;
 
@@ -1496,61 +1496,61 @@ operator /(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansP
 
 type
   TNewtonPerMeter = specialize TRatioUnit<TNewton, TMeter>;
-  TNewtonPerMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TMeter>;
-  TNewtonsPerMeter = specialize TRatioDimensionedQuantity<TNewton, TMeter>;
+  TNewtonPerMeterId = specialize TRatioUnitId<TNewton, TMeter>;
+  TNewtonsPerMeter = specialize TRatioQuantity<TNewton, TMeter>;
 
   TNewtonPerMilliMeter = specialize TFactoredDenominatorUnit<TNewton, TMilliMeter>;
-  TNewtonPerMilliMeterIdentifier = specialize TFactoredDenominatorUnitIdentifier<TNewton, TMeter, TMilliMeter>;
-  TNewtonsPerMilliMeter = specialize TFactoredDenominatorDimensionedQuantity<TNewton, TMeter, TMilliMeter>;
+  TNewtonPerMilliMeterId = specialize TFactoredDenominatorUnitId<TNewton, TMeter, TMilliMeter>;
+  TNewtonsPerMilliMeter = specialize TFactoredDenominatorQuantity<TNewton, TMeter, TMilliMeter>;
 
   TNewtonPerCubicMeter = specialize TRatioUnit<TNewton, TCubicMeter>;
-  TNewtonPerCubicMeterIdentifier = specialize TRatioUnitIdentifier<TNewton, TCubicMeter>;
-  TNewtonsPerCubicMeter = specialize TRatioDimensionedQuantity<TNewton, TCubicMeter>;
+  TNewtonPerCubicMeterId = specialize TRatioUnitId<TNewton, TCubicMeter>;
+  TNewtonsPerCubicMeter = specialize TRatioQuantity<TNewton, TCubicMeter>;
 
   TPascalSecond = specialize TUnitProduct<TPascal, TSecond>;
-  TPascalSecondIdentifier = specialize TUnitProductIdentifier<TPascal, TSecond>;
-  TPascalsSecond = specialize TDimensionedQuantityProduct<TPascal, TSecond>;
+  TPascalSecondId = specialize TUnitProductId<TPascal, TSecond>;
+  TPascalsSecond = specialize TQuantityProduct<TPascal, TSecond>;
 
   TKilogramPerSecond = specialize TRatioUnit<TBaseKilogram, TSecond>;
-  TKilogramPerSecondIdentifier = specialize TRatioUnitIdentifier<TBaseKilogram, TSecond>;
-  TKilogramsPerSecond = specialize TRatioDimensionedQuantity<TBaseKilogram, TSecond>;
+  TKilogramPerSecondId = specialize TRatioUnitId<TBaseKilogram, TSecond>;
+  TKilogramsPerSecond = specialize TRatioQuantity<TBaseKilogram, TSecond>;
 
 // combining units
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier; inline;
+operator /(const {%H-}N: TNewtonId; const {%H-}m: TMeterId): TNewtonPerMeterId; inline;
+operator /(const {%H-}N: TNewtonId; const {%H-}mm: TMillimeterId): TNewtonPerMillimeterId; inline;
 
-operator *(const {%H-}Pa: TPascalIdentifier; const {%H-}m: TMeterIdentifier): TNewtonPerMeterIdentifier; inline;
-operator *(const {%H-}m: TMeterIdentifier; const {%H-}Pa: TPascalIdentifier): TNewtonPerMeterIdentifier; inline;
-operator *(const {%H-}MPa: TMegapascalIdentifier; const {%H-}mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier; inline;
-operator *(const {%H-}mm: TMillimeterIdentifier; const {%H-}MPa: TMegapascalIdentifier): TNewtonPerMillimeterIdentifier; inline;
+operator *(const {%H-}Pa: TPascalId; const {%H-}m: TMeterId): TNewtonPerMeterId; inline;
+operator *(const {%H-}m: TMeterId; const {%H-}Pa: TPascalId): TNewtonPerMeterId; inline;
+operator *(const {%H-}MPa: TMegapascalId; const {%H-}mm: TMillimeterId): TNewtonPerMillimeterId; inline;
+operator *(const {%H-}mm: TMillimeterId; const {%H-}MPa: TMegapascalId): TNewtonPerMillimeterId; inline;
 
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m3: TCubicMeterIdentifier): TNewtonPerCubicMeterIdentifier; inline;
+operator /(const {%H-}N: TNewtonId; const {%H-}m3: TCubicMeterId): TNewtonPerCubicMeterId; inline;
 
 // alternative definition N/m3 = kg/m3 * m/s2
-operator *(const {%H-}kg_m3: TKilogramPerCubicMeterIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TNewtonPerCubicMeterIdentifier; inline;
-operator *(const {%H-}m_s2: TMeterPerSecondSquaredIdentifier; const {%H-}kg_m3: TKilogramPerCubicMeterIdentifier): TNewtonPerCubicMeterIdentifier; inline;
-operator /(const {%H-}N_m3: TNewtonPerCubicMeterIdentifier; const {%H-}kg_m3: TKilogramPerCubicMeterIdentifier): TMeterPerSecondSquaredIdentifier; inline;
-operator /(const {%H-}N_m3: TNewtonPerCubicMeterIdentifier; const {%H-}m_s2: TMeterPerSecondSquaredIdentifier): TKilogramPerCubicMeterIdentifier; inline;
+operator *(const {%H-}kg_m3: TKilogramPerCubicMeterId; const {%H-}m_s2: TMeterPerSecondSquaredId): TNewtonPerCubicMeterId; inline;
+operator *(const {%H-}m_s2: TMeterPerSecondSquaredId; const {%H-}kg_m3: TKilogramPerCubicMeterId): TNewtonPerCubicMeterId; inline;
+operator /(const {%H-}N_m3: TNewtonPerCubicMeterId; const {%H-}kg_m3: TKilogramPerCubicMeterId): TMeterPerSecondSquaredId; inline;
+operator /(const {%H-}N_m3: TNewtonPerCubicMeterId; const {%H-}m_s2: TMeterPerSecondSquaredId): TKilogramPerCubicMeterId; inline;
 
-operator *(const {%H-}Pa: TPascalIdentifier; const {%H-}s: TSecondIdentifier): TPascalSecondIdentifier; inline;
-operator *(const {%H-}s: TSecondIdentifier; const {%H-}Pa: TPascalIdentifier): TPascalSecondIdentifier; inline;
-operator /(const {%H-}Pas: TPascalSecondIdentifier; const {%H-}Pa: TPascalIdentifier): TSecondIdentifier; inline;
+operator *(const {%H-}Pa: TPascalId; const {%H-}s: TSecondId): TPascalSecondId; inline;
+operator *(const {%H-}s: TSecondId; const {%H-}Pa: TPascalId): TPascalSecondId; inline;
+operator /(const {%H-}Pas: TPascalSecondId; const {%H-}Pa: TPascalId): TSecondId; inline;
 
-operator /(const {%H-}kg: TKilogramIdentifier; const {%H-}s: TSecondIdentifier): TKilogramPerSecondIdentifier; inline;
+operator /(const {%H-}kg: TKilogramId; const {%H-}s: TSecondId): TKilogramPerSecondId; inline;
 
 // alternative definition kg/s = Pa*s * m
-operator *(const {%H-}Pas: TPascalSecondIdentifier; const {%H-}m: TMeterIdentifier): TKilogramPerSecondIdentifier; inline;
-operator *(const {%H-}m: TMeterIdentifier; const {%H-}Pas: TPascalSecondIdentifier): TKilogramPerSecondIdentifier; inline;
-operator /(const {%H-}kg_s: TKilogramPerSecondIdentifier; const {%H-}Pas: TPascalSecondIdentifier): TMeterIdentifier; inline;
-operator /(const {%H-}kg_s: TKilogramPerSecondIdentifier; const {%H-}m: TMeterIdentifier): TPascalSecondIdentifier; inline;
+operator *(const {%H-}Pas: TPascalSecondId; const {%H-}m: TMeterId): TKilogramPerSecondId; inline;
+operator *(const {%H-}m: TMeterId; const {%H-}Pas: TPascalSecondId): TKilogramPerSecondId; inline;
+operator /(const {%H-}kg_s: TKilogramPerSecondId; const {%H-}Pas: TPascalSecondId): TMeterId; inline;
+operator /(const {%H-}kg_s: TKilogramPerSecondId; const {%H-}m: TMeterId): TPascalSecondId; inline;
 
 // alternative definition kg/s = N / m/s
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}m_s: TMeterPerSecondIdentifier): TKilogramPerSecondIdentifier; inline;
-operator *(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}kg_s: TKilogramPerSecondIdentifier): TNewtonIdentifier; inline;
-operator *(const {%H-}kg_s: TKilogramPerSecondIdentifier; const {%H-}m_s: TMeterPerSecondIdentifier): TNewtonIdentifier; inline;
-operator /(const {%H-}N: TNewtonIdentifier; const {%H-}kg_s: TKilogramPerSecondIdentifier): TMeterPerSecondIdentifier; inline;
+operator /(const {%H-}N: TNewtonId; const {%H-}m_s: TMeterPerSecondId): TKilogramPerSecondId; inline;
+operator *(const {%H-}m_s: TMeterPerSecondId; const {%H-}kg_s: TKilogramPerSecondId): TNewtonId; inline;
+operator *(const {%H-}kg_s: TKilogramPerSecondId; const {%H-}m_s: TMeterPerSecondId): TNewtonId; inline;
+operator /(const {%H-}N: TNewtonId; const {%H-}kg_s: TKilogramPerSecondId): TMeterPerSecondId; inline;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 operator /(const AForce: TNewtons; const ALength: TMillimeters): TNewtonsPerMillimeter; inline;
 
@@ -1999,7 +1999,7 @@ end;
 
 { Factored units }
 
-{$UNDEF INCLUDING}{$ENDIF}
+{$UNDEF DIM}{$ENDIF}
 // simulating generic const parameters
 {$IFDEF FACTORED_UNIT_IMPL}
   class function T_FACTORED_UNIT.Factor: double;
@@ -2025,7 +2025,7 @@ end;
     end;
   end;
 {$ENDIF}{$UNDEF FACTORED_UNIT_IMPL}
-{$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+{$IFNDEF DIM}{$DEFINE DIM}
 
 {$DEFINE FACTORED_UNIT_IMPL}{$DEFINE T_FACTORED_UNIT:=TTeraUnit}
 {$DEFINE V_FACTOR:=1E12}{$DEFINE V_SYMBOL:='T'}{$DEFINE V_NAME:='tera'}{$i dim.pas}
@@ -2065,8 +2065,8 @@ end;
 
 { Unit identifiers }
 
-{$UNDEF INCLUDING}{$ENDIF}
-// generic implementation of TUnitIdentifier
+{$UNDEF DIM}{$ENDIF}
+// generic implementation of TUnitId
 {$IFDEF UNIT_ID_IMPL}
   class operator T_UNIT_ID.*(const AValue: double;
     const TheUnit: TSelf): TQuantity;
@@ -2100,43 +2100,43 @@ end;
   end;
 {$ENDIF}{$UNDEF UNIT_ID_IMPL}
 {$IFDEF SQUARABLE_UNIT_ID_IMPL}
-  class operator T_UNIT_ID.*(const TheUnit1, TheUnit2: TSelf): TSquareIdentifier;
+  class operator T_UNIT_ID.*(const TheUnit1, TheUnit2: TSelf): TSquareId;
   begin end;
 
-  class operator T_UNIT_ID./(const TheSquareUnit: TSquareIdentifier;
+  class operator T_UNIT_ID./(const TheSquareUnit: TSquareId;
                              const TheUnit: TSelf): TSelf;
   begin end;
 
 
   class operator T_UNIT_ID.*(const TheUnit: TSelf;
-    const TheSquareUnit: TSquareIdentifier): TCubicIdentifier;
+    const TheSquareUnit: TSquareId): TCubicId;
   begin end;
 
-  class operator T_UNIT_ID.*(const TheSquareUnit: TSquareIdentifier;
-    const TheUnit: TSelf): TCubicIdentifier;
+  class operator T_UNIT_ID.*(const TheSquareUnit: TSquareId;
+    const TheUnit: TSelf): TCubicId;
   begin end;
 
-  class operator T_UNIT_ID./(const TheCubicUnit: TCubicIdentifier;
-                             const TheUnit: TSelf): TSquareIdentifier;
+  class operator T_UNIT_ID./(const TheCubicUnit: TCubicId;
+                             const TheUnit: TSelf): TSquareId;
   begin end;
 
 
-  class operator T_UNIT_ID.*(const TheCubicUnit: TCubicIdentifier;
-    const TheUnit: TSelf): TQuarticIdentifier;
+  class operator T_UNIT_ID.*(const TheCubicUnit: TCubicId;
+    const TheUnit: TSelf): TQuarticId;
   begin end;
 
   class operator T_UNIT_ID.*(const TheUnit: TSelf;
-    const TheCubicUnit: TCubicIdentifier): TQuarticIdentifier;
+    const TheCubicUnit: TCubicId): TQuarticId;
   begin end;
 
-  class operator T_UNIT_ID./(const TheQuarticUnit: TQuarticIdentifier;
-                             const TheUnit: TSelf): TCubicIdentifier;
+  class operator T_UNIT_ID./(const TheQuarticUnit: TQuarticId;
+                             const TheUnit: TSelf): TCubicId;
   begin end;
 
 
-  function T_UNIT_ID.Squared: TSquareIdentifier; begin end;
-  function T_UNIT_ID.Cubed: TCubicIdentifier; begin end;
-  function T_UNIT_ID.Quarted: TQuarticIdentifier; begin end;
+  function T_UNIT_ID.Squared: TSquareId; begin end;
+  function T_UNIT_ID.Cubed: TCubicId; begin end;
+  function T_UNIT_ID.Quarted: TQuarticId; begin end;
 
   function T_UNIT_ID.SquareRoot(const ASquareQuantity: TSquareQuantity): TQuantity;
   begin
@@ -2153,7 +2153,7 @@ end;
   begin
     result.Assign(AQuantity);
   end;
-  class function T_UNIT_ID.BaseUnit: TBaseUnitIdentifier;
+  class function T_UNIT_ID.BaseUnit: TBaseUnitId;
   begin end;
   class function T_UNIT_ID.Factor: double;
   begin
@@ -2161,392 +2161,392 @@ end;
   end;
 {$ENDIF}{$UNDEF FACTORED_UNIT_ID_IMPL}
 {$IFDEF RECIP_UNIT_ID_IMPL}
-  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomIdentifier): double;
+  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomId): double;
   begin result := 1; end;
 
-  class function T_UNIT_ID.Inverse: TDenomIdentifier;
+  class function T_UNIT_ID.Inverse: TDenomId;
   begin end;
 {$ENDIF}{$UNDEF RECIP_UNIT_ID_IMPL}
 {$IFDEF RATIO_UNIT_ID_IMPL}
-  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomIdentifier): TNumeratorIdentifier;
+  class operator T_UNIT_ID.*(const TheUnit: TSelf; const TheDenom: TDenomId): TNumeratorId;
   begin end;
 {$ENDIF}{$UNDEF RATIO_UNIT_ID_IMPL}
 {$IFDEF UNIT_PROD_ID_IMPL}
-  {class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TIdentifier1): TIdentifier2;
+  {class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit1: TId1): TId2;
   begin end;}
 
-  class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TIdentifier2): TIdentifier1;
+  class operator T_UNIT_ID./(const {%H-}TheUnit: TSelf; const {%H-}Unit2: TId2): TId1;
   begin end;
 {$ENDIF}{$UNDEF UNIT_PROD_ID_IMPL}
-{$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+{$IFNDEF DIM}{$DEFINE DIM}
 
 {$DEFINE UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TQuarticUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TQuarticUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TCubicUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TCubicUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TSquareUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TSquareUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TBasicUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TBasicUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE RECIP_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TReciprocalUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TReciprocalUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RECIP_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredReciprocalUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredReciprocalUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TRatioUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TRatioUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TUnitProductIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TUnitProductId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredQuarticUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredQuarticUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredCubicUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredCubicUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredSquareUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredSquareUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredRatioUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredRatioUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredNumeratorUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredNumeratorUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredDenominatorUnitIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredDenominatorUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TFactoredUnitProductIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TFactoredUnitProductId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TLeftFactoredUnitProductIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TLeftFactoredUnitProductId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TRightFactoredUnitProductIdentifier}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TRightFactoredUnitProductId}{$i dim.pas}
 
 { Dimensioned quantities }
 
-{$UNDEF INCLUDING}{$ENDIF}
-{$IF defined(BASIC_DIM_QTY_IMPL) or defined(DIM_QTY_IMPL)}
-  function T_DIM_QUANTITY.ToString: string;
+{$UNDEF DIM}{$ENDIF}
+{$IF defined(BASIC_QTY_IMPL) or defined(QTY_IMPL)}
+  function T_QUANTITY.ToString: string;
   begin
     result := FormatValue(Value) + ' ' + U.Symbol;
   end;
 
-  function T_DIM_QUANTITY.ToVerboseString: string;
+  function T_QUANTITY.ToVerboseString: string;
   begin
     result := FormatValue(Value) + ' ' + FormatUnitName(U.Name, Value);
   end;
 
-  function T_DIM_QUANTITY.Abs: TSelf;
+  function T_QUANTITY.Abs: TSelf;
   begin
     result.Value := System.Abs(Value);
   end;
 
-  constructor T_DIM_QUANTITY.Assign(const AQuantity: TSelf);
+  constructor T_QUANTITY.Assign(const AQuantity: TSelf);
   begin
     self := AQuantity;
   end;
-{$ENDIF}{$UNDEF BASIC_DIM_QTY_IMPL}
-{$IFDEF DIM_QTY_IMPL}
-  class operator T_DIM_QUANTITY.+(const AQuantity1, AQuantity2: TSelf): TSelf;
+{$ENDIF}{$UNDEF BASIC_QTY_IMPL}
+{$IFDEF QTY_IMPL}
+  class operator T_QUANTITY.+(const AQuantity1, AQuantity2: TSelf): TSelf;
   begin
     result.Value := AQuantity1.Value + AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.-(const AQuantity1, AQuantity2: TSelf): TSelf;
+  class operator T_QUANTITY.-(const AQuantity1, AQuantity2: TSelf): TSelf;
   begin
     result.Value := AQuantity1.Value - AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.*(const AFactor: double; const AQuantity: TSelf): TSelf;
+  class operator T_QUANTITY.*(const AFactor: double; const AQuantity: TSelf): TSelf;
   begin
     result.Value := AFactor * AQuantity.Value;
   end;
 
-  class operator T_DIM_QUANTITY.*(const AQuantity: TSelf; const AFactor: double): TSelf;
+  class operator T_QUANTITY.*(const AQuantity: TSelf; const AFactor: double): TSelf;
   begin
     result.Value := AQuantity.Value * AFactor;
   end;
 
-  class operator T_DIM_QUANTITY./(const AQuantity: TSelf; const AFactor: double): TSelf;
+  class operator T_QUANTITY./(const AQuantity: TSelf; const AFactor: double): TSelf;
   begin
     result.Value := AQuantity.Value / AFactor;
   end;
 
-  class operator T_DIM_QUANTITY./(const AQuantity1, AQuantity2: TSelf): double;
+  class operator T_QUANTITY./(const AQuantity1, AQuantity2: TSelf): double;
   begin
     result := AQuantity1.Value / AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.mod(const AQuantity1, AQuantity2: TSelf): TSelf;
+  class operator T_QUANTITY.mod(const AQuantity1, AQuantity2: TSelf): TSelf;
   begin
     result.Value := AQuantity1.Value mod AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.<(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator T_QUANTITY.<(const AQuantity1, AQuantity2: TSelf): boolean;
   begin
     result := AQuantity1.Value < AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.<=(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator T_QUANTITY.<=(const AQuantity1, AQuantity2: TSelf): boolean;
   begin
     result := AQuantity1.Value <= AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.=(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator T_QUANTITY.=(const AQuantity1, AQuantity2: TSelf): boolean;
   begin
     result := AQuantity1.Value = AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.>(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator T_QUANTITY.>(const AQuantity1, AQuantity2: TSelf): boolean;
   begin
     result := AQuantity1.Value > AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.>=(const AQuantity1, AQuantity2: TSelf): boolean;
+  class operator T_QUANTITY.>=(const AQuantity1, AQuantity2: TSelf): boolean;
   begin
     result := AQuantity1.Value >= AQuantity2.Value;
   end;
 
-{$ENDIF}{$UNDEF DIM_QTY_IMPL}
+{$ENDIF}{$UNDEF QTY_IMPL}
 {$IFDEF SQUARABLE_QTY_IMPL}
-  class operator T_DIM_QUANTITY.*(const AQuantity1, AQuantity2: TSelf): TSquareQuantity;
+  class operator T_QUANTITY.*(const AQuantity1, AQuantity2: TSelf): TSquareQuantity;
   begin
     result.Value := AQuantity1.Value * AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY./(const ASquareQuantity: TSquareQuantity;
+  class operator T_QUANTITY./(const ASquareQuantity: TSquareQuantity;
     const AQuantity: TSelf): TSelf;
   begin
     result.Value := ASquareQuantity.Value / AQuantity.Value;
   end;
 
 
-  class operator T_DIM_QUANTITY.*(
+  class operator T_QUANTITY.*(
   const ASquareQuantity: TSquareQuantity; const AQuantity: TSelf): TCubicQuantity;
   begin
     result.Value := ASquareQuantity.Value * AQuantity.Value;
   end;
 
-  class operator T_DIM_QUANTITY.*(const AQuantity: TSelf;
+  class operator T_QUANTITY.*(const AQuantity: TSelf;
   const ASquareQuantity: TSquareQuantity): TCubicQuantity;
   begin
     result.Value := AQuantity.Value * ASquareQuantity.Value;
   end;
 
-  class operator T_DIM_QUANTITY./(const ACubicQuantity: TCubicQuantity;
+  class operator T_QUANTITY./(const ACubicQuantity: TCubicQuantity;
     const AQuantity: TSelf): TSquareQuantity;
   begin
     result.Value := ACubicQuantity.Value / AQuantity.Value;
   end;
 
 
-  class operator T_DIM_QUANTITY.*(const AQuantity: TSelf;
+  class operator T_QUANTITY.*(const AQuantity: TSelf;
   const ACubicQuantity: TCubicQuantity): TQuarticQuantity;
   begin
     result.Value := AQuantity.Value * ACubicQuantity.Value;
   end;
 
-  class operator T_DIM_QUANTITY.*(const ACubicQuantity: TCubicQuantity;
+  class operator T_QUANTITY.*(const ACubicQuantity: TCubicQuantity;
   const AQuantity: TSelf): TQuarticQuantity;
   begin
     result.Value := ACubicQuantity.Value * AQuantity.Value;
   end;
 
-  class operator T_DIM_QUANTITY./(const AQuarticQuantity: TQuarticQuantity;
+  class operator T_QUANTITY./(const AQuarticQuantity: TQuarticQuantity;
   const AQuantity: TSelf): TCubicQuantity;
   begin
     result.Value := AQuarticQuantity.Value / AQuantity.Value;
   end;
 
 
-  function T_DIM_QUANTITY.Squared: TSquareQuantity;
+  function T_QUANTITY.Squared: TSquareQuantity;
   begin
     result.Value := sqr(self.Value);
   end;
 
-  function T_DIM_QUANTITY.Cubed: TCubicQuantity;
+  function T_QUANTITY.Cubed: TCubicQuantity;
   begin
     result.Value := sqr(self.Value) * self.Value;
   end;
 
-  function T_DIM_QUANTITY.Quarted: TQuarticQuantity;
+  function T_QUANTITY.Quarted: TQuarticQuantity;
   begin
     result.Value := sqr(self.Value) * sqr(self.Value);
   end;
 
 {$ENDIF}{$UNDEF SQUARABLE_QTY_IMPL}
 {$IFDEF RECIP_QTY_IMPL}
-  class operator T_DIM_QUANTITY./(
+  class operator T_QUANTITY./(
     const AValue: double; const ASelf: TSelf): TDenomQuantity;
   begin
     result.Value := AValue / ASelf.Value;
   end;
 
-  class operator T_DIM_QUANTITY.*(const ASelf: TSelf;
+  class operator T_QUANTITY.*(const ASelf: TSelf;
     const ADenominator: TDenomQuantity): double;
   begin
     result := ASelf.Value * ADenominator.Value;
   end;
 
-  class operator T_DIM_QUANTITY.*(
+  class operator T_QUANTITY.*(
     const ADenominator: TDenomQuantity; const ASelf: TSelf): double;
   begin
     result := ADenominator.Value * ASelf.Value;
   end;
 {$ENDIF}{$UNDEF RECIP_QTY_IMPL}
 {$IFDEF RATIO_QTY_IMPL}
-  class operator T_DIM_QUANTITY./(
+  class operator T_QUANTITY./(
     const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
   begin
     result.Value := ANumerator.Value / ASelf.Value;
   end;
 
-  class operator T_DIM_QUANTITY.*(const ASelf: TSelf;
+  class operator T_QUANTITY.*(const ASelf: TSelf;
     const ADenominator: TDenomQuantity): TNumeratorQuantity;
   begin
     result.Value := ASelf.Value * ADenominator.Value;
   end;
 
-  class operator T_DIM_QUANTITY.*(
+  class operator T_QUANTITY.*(
     const ADenominator: TDenomQuantity; const ASelf: TSelf): TNumeratorQuantity;
   begin
     result.Value := ADenominator.Value * ASelf.Value;
   end;
 
-  class operator T_DIM_QUANTITY.:=(const ARatio: TDimensionedRatio): TSelf;
+  class operator T_QUANTITY.:=(const ARatio: TRatio): TSelf;
   begin
     result.Value := ARatio.Value;
   end;
 
-  class operator T_DIM_QUANTITY.:=(const ASelf: TSelf): TDimensionedRatio;
+  class operator T_QUANTITY.:=(const ASelf: TSelf): TRatio;
   begin
     result.Value := ASelf.Value;
   end;
   {$IFDEF FACTORED_QTY_IMPL}
-  class operator T_DIM_QUANTITY.:=(const ASelf: TSelf): TBaseDimensionedRatio;
+  class operator T_QUANTITY.:=(const ASelf: TSelf): TBaseRatio;
   begin
     result.Value := ASelf.ToBase.Value;
   end;
   {$ENDIF}
 {$ENDIF}{$UNDEF RATIO_QTY_IMPL}
 {$IFDEF QTY_PROD_IMPL}
-  {class operator T_DIM_QUANTITY./(
+  {class operator T_QUANTITY./(
     const ASelf: TSelf; const AQuantity1: TQuantity1): TQuantity2;
   begin
     result.Value := ASelf.Value / AQuantity1.Value;
   end;}
 
-  class operator T_DIM_QUANTITY./(
+  class operator T_QUANTITY./(
     const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
   begin
     result.Value := ASelf.Value / AQuantity2.Value;
   end;
 
-  class operator T_DIM_QUANTITY.:=(const AProduct: TDimensionedProduct): TSelf;
+  class operator T_QUANTITY.:=(const AProduct: TProduct): TSelf;
   begin
     result.Value := AProduct.Value;
   end;
 
-  class operator T_DIM_QUANTITY.:=(const ASelf: TSelf): TDimensionedProduct;
+  class operator T_QUANTITY.:=(const ASelf: TSelf): TProduct;
   begin
     result.Value := ASelf.Value;
   end;
 {$ENDIF}{$UNDEF QTY_PROD_IMPL}
 {$IFDEF FACTORED_QTY_IMPL}
-  function T_DIM_QUANTITY.ToBase: TBaseDimensionedQuantity;
+  function T_QUANTITY.ToBase: TBaseQuantity;
   begin
     result := self;
   end;
 
-  constructor T_DIM_QUANTITY.Assign(const AQuantity: TBaseDimensionedQuantity);
+  constructor T_QUANTITY.Assign(const AQuantity: TBaseQuantity);
   begin
     self.Value := AQuantity.Value / U.Factor;
   end;
 
-  class function T_DIM_QUANTITY.From(
-    const AQuantity: TBaseDimensionedQuantity): TSelf;
+  class function T_QUANTITY.From(
+    const AQuantity: TBaseQuantity): TSelf;
   begin
     result.Value := AQuantity.Value / U.Factor;
   end;
 
-  class operator T_DIM_QUANTITY.:=(const AQuantity: TSelf): TBaseDimensionedQuantity;
+  class operator T_QUANTITY.:=(const AQuantity: TSelf): TBaseQuantity;
   begin
     result.Value := AQuantity.Value * U.Factor;
   end;
 {$ENDIF}{$UNDEF FACTORED_QTY_IMPL}
-{$IFNDEF INCLUDING}{$DEFINE INCLUDING}
+{$IFNDEF DIM}{$DEFINE DIM}
 
-{$DEFINE DIM_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TQuarticDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}
+{$DEFINE T_QUANTITY:=TQuarticQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TCubicDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}
+{$DEFINE T_QUANTITY:=TCubicQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TSquareDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}
+{$DEFINE T_QUANTITY:=TSquareQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TQuantity}{$i dim.pas}
 
-{$DEFINE BASIC_DIM_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TBasicDimensionedQuantity}{$i dim.pas}
+{$DEFINE BASIC_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TBasicQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE RECIP_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TReciprocalDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE RECIP_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TReciprocalQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TRatioDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TRatioQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TDimensionedQuantityProduct}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
+{$DEFINE T_QUANTITY:=TQuantityProduct}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredQuarticDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredQuarticQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredCubicDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredCubicQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredSquareDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredSquareQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RECIP_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredReciprocalDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RECIP_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredReciprocalQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredRatioDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredRatioQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredNumeratorDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredNumeratorQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredDenominatorDimensionedQuantity}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredDenominatorQuantity}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TFactoredDimensionedQuantityProduct}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
+{$DEFINE T_QUANTITY:=TFactoredQuantityProduct}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TLeftFactoredDimensionedQuantityProduct}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
+{$DEFINE T_QUANTITY:=TLeftFactoredQuantityProduct}{$i dim.pas}
 
-{$DEFINE DIM_QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
-{$DEFINE T_DIM_QUANTITY:=TRightFactoredDimensionedQuantityProduct}{$i dim.pas}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
+{$DEFINE T_QUANTITY:=TRightFactoredQuantityProduct}{$i dim.pas}
 
 { Base units }
 
@@ -2571,7 +2571,7 @@ class function TMeter.Name: string;   begin result := 'meter'; end;
 class function TLitre.Symbol: string; begin result := 'L'; end;
 class function TLitre.Name: string;   begin result := 'litre'; end;
 
-operator:=(const s2: TSquareSecondIdentifier): TSquareSecondFactorIdentifier;
+operator:=(const s2: TSquareSecondId): TSquareSecondFactorId;
 begin end;
 
 operator:=(const ASquareTime: TSquareSeconds): TSquareSecondsFactor;
@@ -2584,13 +2584,13 @@ begin
   result.Value := ASquareTime.Value;
 end;
 
-operator /(const {%H-}m3: TCubicMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TMeterIdentifier;
+operator /(const {%H-}m3: TCubicMeterId; const {%H-}m2: TSquareMeterId): TMeterId;
 begin end;
 
-operator /(const {%H-}m4: TQuarticMeterIdentifier; const {%H-}m3: TCubicMeterIdentifier): TMeterIdentifier;
+operator /(const {%H-}m4: TQuarticMeterId; const {%H-}m3: TCubicMeterId): TMeterId;
 begin end;
 
-operator /(const {%H-}m4: TQuarticMeterIdentifier; const {%H-}m2: TSquareMeterIdentifier): TSquareMeterIdentifier;
+operator /(const {%H-}m4: TQuarticMeterId; const {%H-}m2: TSquareMeterId): TSquareMeterId;
 begin end;
 
 operator /(const AVolume: TCubicMeters; const ASurface: TSquareMeters): TMeters;
@@ -2618,7 +2618,7 @@ begin
   result.Value := AVolume.Value;
 end;
 
-operator:=(const m2: TSquareMeterIdentifier): TSquareMeterFactorIdentifier;
+operator:=(const m2: TSquareMeterId): TSquareMeterFactorId;
 begin end;
 
 operator:=(const ASurface: TSquareMeters): TSquareMetersFactor;
@@ -2626,7 +2626,7 @@ begin
   result.Value := ASurface.Value;
 end;
 
-operator:=(const mm2: TSquareMillimeterIdentifier): TSquareMillimeterFactorIdentifier;
+operator:=(const mm2: TSquareMillimeterId): TSquareMillimeterFactorId;
 begin end;
 
 operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor;
@@ -2634,7 +2634,7 @@ begin
   result.Value := ASurface.Value;
 end;
 
-operator:=(const m3: TCubicMeterIdentifier): TCubicMeterFactorIdentifier;
+operator:=(const m3: TCubicMeterId): TCubicMeterFactorId;
 begin end;
 
 operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
@@ -2642,7 +2642,7 @@ begin
   result.Value := AVolume.Value;
 end;
 
-operator:=(const mm3: TCubicMillimeterIdentifier): TCubicMillimeterFactorIdentifier;
+operator:=(const mm3: TCubicMillimeterId): TCubicMillimeterFactorId;
 begin end;
 
 operator:=(const AVolume: TCubicMillimeters): TCubicMillimetersFactor;
@@ -2650,7 +2650,7 @@ begin
   result.Value := AVolume.Value;
 end;
 
-operator:=(const m4: TQuarticMeterIdentifier): TQuarticMeterFactorIdentifier;
+operator:=(const m4: TQuarticMeterId): TQuarticMeterFactorId;
 begin end;
 
 operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
@@ -2719,7 +2719,7 @@ begin
   result.Value := ATemperature.Value + 273.15;
 end;
 
-class function TDegreeCelsiusIdentifierHelper.From(const ATemperature: TKelvins): TDegreesCelsius;
+class function TDegreeCelsiusIdHelper.From(const ATemperature: TKelvins): TDegreesCelsius;
 begin
   result.Value := ATemperature.Value - 273.15;
 end;
@@ -2729,7 +2729,7 @@ begin
   result.Value := (ATemperature.Value - 32)/1.8;
 end;
 
-class function TDegreeFahrenheitIdentifierHelper.From(
+class function TDegreeFahrenheitIdHelper.From(
   const ATemperature: TKelvins): TDegreesFahrenheit;
 begin
   result.Value := degC.From(ATemperature).Value*1.8 + 32;
@@ -2761,22 +2761,22 @@ class function TCandela.Name: string;   begin result := 'candela'; end;
 { Units of speed }
 
 // combining units
-operator /(const {%H-}m: TMeterIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondIdentifier;
+operator /(const {%H-}m: TMeterId; const {%H-}s: TSecondId): TMeterPerSecondId;
 begin end;
 
-operator /(const mm: TMillimeterIdentifier; const s: TSecondIdentifier): TMillimeterPerSecondIdentifier;
+operator /(const mm: TMillimeterId; const s: TSecondId): TMillimeterPerSecondId;
 begin end;
 
-operator /(const {%H-}km: TKilometerIdentifier; const {%H-}h: THourIdentifier): TKilometerPerHourIdentifier;
+operator /(const {%H-}km: TKilometerId; const {%H-}h: THourId): TKilometerPerHourId;
 begin end;
 
-operator *(const m_s: TMeterPerSecondIdentifier; const m_s_: TMeterPerSecondIdentifier): TSquareMeterPerSquareSecondIdentifier;
+operator *(const m_s: TMeterPerSecondId; const m_s_: TMeterPerSecondId): TSquareMeterPerSquareSecondId;
 begin end;
 
-operator /(const m2_s2: TSquareMeterPerSquareSecondIdentifier; const m_s: TMeterPerSecondIdentifier): TMeterPerSecondIdentifier;
+operator /(const m2_s2: TSquareMeterPerSquareSecondId; const m_s: TMeterPerSecondId): TMeterPerSecondId;
 begin end;
 
-// combining dimensioned quantities
+// combining quantities
 operator/(const ALength: TMeters; const ADuration: TSeconds): TMetersPerSecond;
 begin
   result.Value:= ALength.Value / ADuration.Value;
@@ -2805,16 +2805,16 @@ end;
 { Units of acceleration }
 
 // combining units
-operator /(const {%H-}m_s: TMeterPerSecondIdentifier; const {%H-}s: TSecondIdentifier): TMeterPerSecondSquaredIdentifier;
+operator /(const {%H-}m_s: TMeterPerSecondId; const {%H-}s: TSecondId): TMeterPerSecondSquaredId;
 begin end;
 
-operator /(const {%H-}m: TMeterIdentifier; const {%H-}s2: TSquareSecondIdentifier): TMeterPerSecondSquaredIdentifier;
+operator /(const {%H-}m: TMeterId; const {%H-}s2: TSquareSecondId): TMeterPerSecondSquaredId;
 begin end;
 
-operator/(const km_h: TKilometerPerHourIdentifier; const s: TSecondIdentifier): TKilometerPerHourPerSecondIdentifier;
+operator/(const km_h: TKilometerPerHourId; const s: TSecondId): TKilometerPerHourPerSecondId;
 begin end;
 
-// combining dimensioned quantities
+// combining quantities
 operator /(const ASpeed: TMetersPerSecond; const ATime: TSeconds): TMetersPerSecondSquared;
 begin
   result.Value := ASpeed.Value / ATime.Value;
@@ -2994,16 +2994,16 @@ begin
 end;
 
 // combining units
-operator/(const rad: TRadianIdentifier; const s: TSecondIdentifier): TRadianPerSecondIdentifier;
+operator/(const rad: TRadianId; const s: TSecondId): TRadianPerSecondId;
 begin end;
 
-operator/(const rad_s: TRadianPerSecondIdentifier; const s: TSecondIdentifier): TRadianPerSecondSquaredIdentifier;
+operator/(const rad_s: TRadianPerSecondId; const s: TSecondId): TRadianPerSecondSquaredId;
 begin end;
 
-operator/(const rad: TRadianIdentifier; const s2: TSquareSecondIdentifier): TRadianPerSecondSquaredIdentifier;
+operator/(const rad: TRadianId; const s2: TSquareSecondId): TRadianPerSecondSquaredId;
 begin end;
 
-operator:=(const sr: TSteradianIdentifier): TSteradianFactorIdentifier;
+operator:=(const sr: TSteradianId): TSteradianFactorId;
 begin end;
 
 operator:=(const ASolidAngle: TSteradians): TSteradiansFactor;
@@ -3016,7 +3016,7 @@ begin
   result.Value := ASolidAngle.Value;
 end;
 
-operator:=(const C2: TSquareCoulombIdentifier): TSquareCoulombFactorIdentifier;
+operator:=(const C2: TSquareCoulombId): TSquareCoulombFactorId;
 begin end;
 
 operator:=(const ASquareCharge: TSquareCoulombs): TSquareCoulombsFactor;
@@ -3029,277 +3029,277 @@ begin
   result.Value := ASquareCharge.Value;
 end;
 
-operator /(const m_s: TMeterPerSecondIdentifier; const m: TMeterIdentifier): THertzIdentifier;
+operator /(const m_s: TMeterPerSecondId; const m: TMeterId): THertzId;
 begin end;
 
-operator /(const mm_s: TMillimeterPerSecondIdentifier; const mm: TMillimeterIdentifier): THertzIdentifier;
+operator /(const mm_s: TMillimeterPerSecondId; const mm: TMillimeterId): THertzId;
 begin end;
 
-operator*(const g: TGramIdentifier; const m: TMeterIdentifier): TGramMeterIdentifier;
+operator*(const g: TGramId; const m: TMeterId): TGramMeterId;
 begin end;
 
-operator*(const kg: TKilogramIdentifier; const m: TMeterIdentifier): TKilogramMeterIdentifier;
+operator*(const kg: TKilogramId; const m: TMeterId): TKilogramMeterId;
 begin end;
 
-operator*(const g: TGramIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier;
+operator*(const g: TGramId; const m_s2: TMeterPerSecondSquaredId): TMillinewtonId;
 begin end;
 
-operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const g: TGramIdentifier): TMillinewtonIdentifier;
+operator *(const m_s2: TMeterPerSecondSquaredId; const g: TGramId): TMillinewtonId;
 begin end;
 
-operator /(const mN: TMillinewtonIdentifier; const g: TGramMeterIdentifier): TMeterPerSecondSquaredIdentifier;
+operator /(const mN: TMillinewtonId; const g: TGramMeterId): TMeterPerSecondSquaredId;
 begin end;
 
-operator*(const kg: TKilogramIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TNewtonIdentifier;
+operator*(const kg: TKilogramId; const m_s2: TMeterPerSecondSquaredId): TNewtonId;
 begin end;
 
-operator*(const g: TGramMeterIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TMillinewtonIdentifier;
+operator*(const g: TGramMeterId; const m_s2: TMeterPerSecondSquaredId): TMillinewtonId;
 begin end;
 
-operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const kg: TKilogramIdentifier): TNewtonIdentifier;
+operator *(const m_s2: TMeterPerSecondSquaredId; const kg: TKilogramId): TNewtonId;
 begin end;
 
-operator*(const m_s2: TMeterPerSecondSquaredIdentifier; const g: TGramMeterIdentifier): TMillinewtonIdentifier;
+operator*(const m_s2: TMeterPerSecondSquaredId; const g: TGramMeterId): TMillinewtonId;
 begin end;
 
-operator /(const N: TNewtonIdentifier; const kg: TKilogramIdentifier): TMeterPerSecondSquaredIdentifier;
+operator /(const N: TNewtonId; const kg: TKilogramId): TMeterPerSecondSquaredId;
 begin end;
 
-operator /(const N: TNewtonIdentifier; const m2: TSquareMeterIdentifier): TPascalIdentifier;
+operator /(const N: TNewtonId; const m2: TSquareMeterId): TPascalId;
 begin end;
 
-operator /(const N: TNewtonIdentifier; const mm2: TSquareMillimeterIdentifier): TMegapascalIdentifier;
+operator /(const N: TNewtonId; const mm2: TSquareMillimeterId): TMegapascalId;
 begin end;
 
-operator/(const kN: TKilonewtonIdentifier; const m2: TSquareMeterIdentifier): TKilopascalIdentifier;
+operator/(const kN: TKilonewtonId; const m2: TSquareMeterId): TKilopascalId;
 begin end;
 
-operator /(const N: TNewtonIdentifier; const m: TMeterIdentifier): TNewtonPerMeterIdentifier;
+operator /(const N: TNewtonId; const m: TMeterId): TNewtonPerMeterId;
 begin end;
 
-operator /(const N: TNewtonIdentifier; const mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier;
+operator /(const N: TNewtonId; const mm: TMillimeterId): TNewtonPerMillimeterId;
 begin end;
 
-operator *(const Pa: TPascalIdentifier; const m: TMeterIdentifier): TNewtonPerMeterIdentifier;
+operator *(const Pa: TPascalId; const m: TMeterId): TNewtonPerMeterId;
 begin end;
 
-operator *(const m: TMeterIdentifier; const Pa: TPascalIdentifier): TNewtonPerMeterIdentifier;
+operator *(const m: TMeterId; const Pa: TPascalId): TNewtonPerMeterId;
 begin end;
 
-operator *(const MPa: TMegapascalIdentifier; const mm: TMillimeterIdentifier): TNewtonPerMillimeterIdentifier;
+operator *(const MPa: TMegapascalId; const mm: TMillimeterId): TNewtonPerMillimeterId;
 begin end;
 
-operator *(const mm: TMillimeterIdentifier; const MPa: TMegapascalIdentifier): TNewtonPerMillimeterIdentifier;
+operator *(const mm: TMillimeterId; const MPa: TMegapascalId): TNewtonPerMillimeterId;
 begin end;
 
-operator /(const N: TNewtonIdentifier; const m3: TCubicMeterIdentifier): TNewtonPerCubicMeterIdentifier;
+operator /(const N: TNewtonId; const m3: TCubicMeterId): TNewtonPerCubicMeterId;
 begin end;
 
-operator *(const kg_m3: TKilogramPerCubicMeterIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TNewtonPerCubicMeterIdentifier;
+operator *(const kg_m3: TKilogramPerCubicMeterId; const m_s2: TMeterPerSecondSquaredId): TNewtonPerCubicMeterId;
 begin end;
 
-operator *(const m_s2: TMeterPerSecondSquaredIdentifier; const kg_m3: TKilogramPerCubicMeterIdentifier): TNewtonPerCubicMeterIdentifier;
+operator *(const m_s2: TMeterPerSecondSquaredId; const kg_m3: TKilogramPerCubicMeterId): TNewtonPerCubicMeterId;
 begin end;
 
-operator /(const N_m3: TNewtonPerCubicMeterIdentifier; const kg_m3: TKilogramPerCubicMeterIdentifier): TMeterPerSecondSquaredIdentifier;
+operator /(const N_m3: TNewtonPerCubicMeterId; const kg_m3: TKilogramPerCubicMeterId): TMeterPerSecondSquaredId;
 begin end;
 
-operator /(const N_m3: TNewtonPerCubicMeterIdentifier; const m_s2: TMeterPerSecondSquaredIdentifier): TKilogramPerCubicMeterIdentifier;
+operator /(const N_m3: TNewtonPerCubicMeterId; const m_s2: TMeterPerSecondSquaredId): TKilogramPerCubicMeterId;
 begin end;
 
-operator *(const Pa: TPascalIdentifier; const s: TSecondIdentifier): TPascalSecondIdentifier;
+operator *(const Pa: TPascalId; const s: TSecondId): TPascalSecondId;
 begin end;
 
-operator *(const s: TSecondIdentifier; const Pa: TPascalIdentifier): TPascalSecondIdentifier;
+operator *(const s: TSecondId; const Pa: TPascalId): TPascalSecondId;
 begin end;
 
-operator /(const Pas: TPascalSecondIdentifier; const Pa: TPascalIdentifier): TSecondIdentifier;
+operator /(const Pas: TPascalSecondId; const Pa: TPascalId): TSecondId;
 begin end;
 
-operator /(const kg: TKilogramIdentifier; const s: TSecondIdentifier): TKilogramPerSecondIdentifier;
+operator /(const kg: TKilogramId; const s: TSecondId): TKilogramPerSecondId;
 begin end;
 
-operator *(const Pas: TPascalSecondIdentifier; const m: TMeterIdentifier): TKilogramPerSecondIdentifier;
+operator *(const Pas: TPascalSecondId; const m: TMeterId): TKilogramPerSecondId;
 begin end;
 
-operator *(const m: TMeterIdentifier; const Pas: TPascalSecondIdentifier): TKilogramPerSecondIdentifier;
+operator *(const m: TMeterId; const Pas: TPascalSecondId): TKilogramPerSecondId;
 begin end;
 
-operator /(const kg_s: TKilogramPerSecondIdentifier; const Pas: TPascalSecondIdentifier): TMeterIdentifier;
+operator /(const kg_s: TKilogramPerSecondId; const Pas: TPascalSecondId): TMeterId;
 begin end;
 
-operator /(const kg_s: TKilogramPerSecondIdentifier; const m: TMeterIdentifier): TPascalSecondIdentifier;
+operator /(const kg_s: TKilogramPerSecondId; const m: TMeterId): TPascalSecondId;
 begin end;
 
-operator /(const N: TNewtonIdentifier; const m_s: TMeterPerSecondIdentifier): TKilogramPerSecondIdentifier;
+operator /(const N: TNewtonId; const m_s: TMeterPerSecondId): TKilogramPerSecondId;
 begin end;
 
-operator *(const m_s: TMeterPerSecondIdentifier; const kg_s: TKilogramPerSecondIdentifier): TNewtonIdentifier;
+operator *(const m_s: TMeterPerSecondId; const kg_s: TKilogramPerSecondId): TNewtonId;
 begin end;
 
-operator *(const kg_s: TKilogramPerSecondIdentifier; const m_s: TMeterPerSecondIdentifier): TNewtonIdentifier;
+operator *(const kg_s: TKilogramPerSecondId; const m_s: TMeterPerSecondId): TNewtonId;
 begin end;
 
-operator /(const N: TNewtonIdentifier; const kg_s: TKilogramPerSecondIdentifier): TMeterPerSecondIdentifier;
+operator /(const N: TNewtonId; const kg_s: TKilogramPerSecondId): TMeterPerSecondId;
 begin end;
 
-operator *(const N: TNewtonIdentifier; const m: TMeterIdentifier): TJouleIdentifier;
+operator *(const N: TNewtonId; const m: TMeterId): TJouleId;
 begin end;
 
-operator *(const m: TMeterIdentifier; const N: TNewtonIdentifier): TJouleIdentifier;
+operator *(const m: TMeterId; const N: TNewtonId): TJouleId;
 begin end;
 
-operator /(const J: TJouleIdentifier; const N: TNewtonIdentifier): TMeterIdentifier;
+operator /(const J: TJouleId; const N: TNewtonId): TMeterId;
 begin end;
 
-operator *(const kg: TKilogramIdentifier; const m2_s2: TSquareMeterPerSquareSecondIdentifier): TJouleIdentifier;
+operator *(const kg: TKilogramId; const m2_s2: TSquareMeterPerSquareSecondId): TJouleId;
 begin end;
 
-operator *(const m2_s2: TSquareMeterPerSquareSecondIdentifier; const kg: TKilogramIdentifier): TJouleIdentifier;
+operator *(const m2_s2: TSquareMeterPerSquareSecondId; const kg: TKilogramId): TJouleId;
 begin end;
 
-operator /(const J: TJouleIdentifier; const m2_s2: TSquareMeterPerSquareSecondIdentifier): TKilogramIdentifier;
+operator /(const J: TJouleId; const m2_s2: TSquareMeterPerSquareSecondId): TKilogramId;
 begin end;
 
-operator /(const J: TJouleIdentifier; const s: TSecondIdentifier): TWattIdentifier;
+operator /(const J: TJouleId; const s: TSecondId): TWattId;
 begin end;
 
-operator /(const W: TWattIdentifier; const Ohm: TOhmIdentifier): TSquareAmpereIdentifier;
+operator /(const W: TWattId; const Ohm: TOhmId): TSquareAmpereId;
 begin end;
 
-operator /(const W: TWattIdentifier; const A2: TSquareAmpereIdentifier): TOhmIdentifier;
+operator /(const W: TWattId; const A2: TSquareAmpereId): TOhmId;
 begin end;
 
-operator *(const A2: TSquareAmpereIdentifier; const Ohm: TOhmIdentifier): TWattIdentifier;
+operator *(const A2: TSquareAmpereId; const Ohm: TOhmId): TWattId;
 begin end;
 
-operator *(const Ohm: TOhmIdentifier; const A2: TSquareAmpereIdentifier): TWattIdentifier;
+operator *(const Ohm: TOhmId; const A2: TSquareAmpereId): TWattId;
 begin end;
 
-operator /(const J: TJouleIdentifier; const C: TCoulombIdentifier): TVoltIdentifier;
+operator /(const J: TJouleId; const C: TCoulombId): TVoltId;
 begin end;
 
-operator /(const W: TWattIdentifier; const A: TAmpereIdentifier): TVoltIdentifier;
+operator /(const W: TWattId; const A: TAmpereId): TVoltId;
 begin end;
 
-operator /(const W: TWattIdentifier; const V: TVoltIdentifier): TAmpereIdentifier;
+operator /(const W: TWattId; const V: TVoltId): TAmpereId;
 begin end;
 
-operator *(const A: TAmpereIdentifier; const V: TVoltIdentifier): TWattIdentifier;
+operator *(const A: TAmpereId; const V: TVoltId): TWattId;
 begin end;
 
-operator *(const V: TVoltIdentifier; const A: TAmpereIdentifier): TWattIdentifier;
+operator *(const V: TVoltId; const A: TAmpereId): TWattId;
 begin end;
 
-operator *(const W: TWattIdentifier; const Ohm: TOhmIdentifier): TSquareVoltIdentifier;
+operator *(const W: TWattId; const Ohm: TOhmId): TSquareVoltId;
 begin end;
 
-operator *(const Ohm: TOhmIdentifier; const W: TWattIdentifier): TSquareVoltIdentifier;
+operator *(const Ohm: TOhmId; const W: TWattId): TSquareVoltId;
 begin end;
 
-operator /(const V2: TSquareVoltIdentifier; const W: TWattIdentifier): TOhmIdentifier;
+operator /(const V2: TSquareVoltId; const W: TWattId): TOhmId;
 begin end;
 
-operator /(const V2: TSquareVoltIdentifier; const Ohm: TOhmIdentifier): TWattIdentifier;
+operator /(const V2: TSquareVoltId; const Ohm: TOhmId): TWattId;
 begin end;
 
-operator /(const C: TCoulombIdentifier; const V: TVoltIdentifier): TFaradIdentifier;
+operator /(const C: TCoulombId; const V: TVoltId): TFaradId;
 begin end;
 
-operator /(const C2: TSquareCoulombIdentifier; const J: TJouleIdentifier): TFaradIdentifier;
+operator /(const C2: TSquareCoulombId; const J: TJouleId): TFaradId;
 begin end;
 
-operator /(const C2: TSquareCoulombIdentifier; const F: TFaradIdentifier): TJouleIdentifier;
+operator /(const C2: TSquareCoulombId; const F: TFaradId): TJouleId;
 begin end;
 
-operator *(const J: TJouleIdentifier; const F: TFaradIdentifier): TSquareCoulombIdentifier;
+operator *(const J: TJouleId; const F: TFaradId): TSquareCoulombId;
 begin end;
 
-operator *(const F: TFaradIdentifier; const J: TJouleIdentifier): TSquareCoulombIdentifier;
+operator *(const F: TFaradId; const J: TJouleId): TSquareCoulombId;
 begin end;
 
-operator *(const A: TAmpereIdentifier; const s: TSecondIdentifier): TCoulombIdentifier;
+operator *(const A: TAmpereId; const s: TSecondId): TCoulombId;
 begin end;
 
-operator *(const s: TSecondIdentifier; const A: TAmpereIdentifier): TCoulombIdentifier;
+operator *(const s: TSecondId; const A: TAmpereId): TCoulombId;
 begin end;
 
-operator /(const C: TCoulombIdentifier; const A: TAmpereIdentifier): TSecondIdentifier;
+operator /(const C: TCoulombId; const A: TAmpereId): TSecondId;
 begin end;
 
-operator /(const V: TVoltIdentifier; const A: TAmpereIdentifier): TOhmIdentifier;
+operator /(const V: TVoltId; const A: TAmpereId): TOhmId;
 begin end;
 
-operator /(const s: TSecondIdentifier; const F: TFaradIdentifier): TOhmIdentifier;
+operator /(const s: TSecondId; const F: TFaradId): TOhmId;
 begin end;
 
-operator /(const s: TSecondIdentifier; const Ohm: TOhmIdentifier): TFaradIdentifier;
+operator /(const s: TSecondId; const Ohm: TOhmId): TFaradId;
 begin end;
 
-operator *(const F: TFaradIdentifier; const Ohm: TOhmIdentifier): TSecondIdentifier;
+operator *(const F: TFaradId; const Ohm: TOhmId): TSecondId;
 begin end;
 
-operator *(const Ohm: TOhmIdentifier; const F: TFaradIdentifier): TSecondIdentifier;
+operator *(const Ohm: TOhmId; const F: TFaradId): TSecondId;
 begin end;
 
-operator /(const A: TAmpereIdentifier; const V: TVoltIdentifier): TSiemensIdentifier;
+operator /(const A: TAmpereId; const V: TVoltId): TSiemensId;
 begin end;
 
-operator /(const AValue: double; const Ohm: TOhmIdentifier): TSiemensIdentifier;
+operator /(const AValue: double; const Ohm: TOhmId): TSiemensId;
 begin end;
 
-operator /(const AValue: double; const S: TSiemensIdentifier): TOhmIdentifier;
+operator /(const AValue: double; const S: TSiemensId): TOhmId;
 begin end;
 
-operator *(const V: TVoltIdentifier; const s: TSecondIdentifier): TWeberIdentifier;
+operator *(const V: TVoltId; const s: TSecondId): TWeberId;
 begin end;
 
-operator *(const s: TSecondIdentifier; const V: TVoltIdentifier): TWeberIdentifier;
+operator *(const s: TSecondId; const V: TVoltId): TWeberId;
 begin end;
 
-operator /(const Wb: TWeberIdentifier; const V: TVoltIdentifier): TSecondIdentifier;
+operator /(const Wb: TWeberId; const V: TVoltId): TSecondId;
 begin end;
 
-operator /(const Wb: TWeberIdentifier; const m2: TSquareMeterIdentifier): TTeslaIdentifier;
+operator /(const Wb: TWeberId; const m2: TSquareMeterId): TTeslaId;
 begin end;
 
-operator /(const Wb: TWeberIdentifier; const A: TAmpereIdentifier): THenryIdentifier;
+operator /(const Wb: TWeberId; const A: TAmpereId): THenryId;
 begin end;
 
-operator *(const cd: TCandelaIdentifier; const sr: TSteradianIdentifier): TLumenIdentifer;
+operator *(const cd: TCandelaId; const sr: TSteradianId): TLumenIdentifer;
 begin end;
 
-operator *(const sr: TSteradianIdentifier; const cd: TCandelaIdentifier): TLumenIdentifer;
+operator *(const sr: TSteradianId; const cd: TCandelaId): TLumenIdentifer;
 begin end;
 
-operator /(const lm: TLumenIdentifer; const cd: TCandelaIdentifier): TSteradianIdentifier;
+operator /(const lm: TLumenIdentifer; const cd: TCandelaId): TSteradianId;
 begin end;
 
-operator/(const lm: TLumenIdentifer; const m2: TSquareMeterIdentifier): TLuxIdentifier;
+operator/(const lm: TLumenIdentifer; const m2: TSquareMeterId): TLuxId;
 begin end;
 
-operator /(const J: TJouleIdentifier; const kg: TKilogramIdentifier): TGrayIdentifier;
+operator /(const J: TJouleId; const kg: TKilogramId): TGrayId;
 begin end;
 
-operator/(const m2: TSquareMeterIdentifier; const s2: TSquareSecondIdentifier): TSquareMeterPerSquareSecondIdentifier;
+operator/(const m2: TSquareMeterId; const s2: TSquareSecondId): TSquareMeterPerSquareSecondId;
 begin end;
 
-operator/(const mol: TMoleIdentifier; const s: TSecondIdentifier): TKatalIdentifier;
+operator/(const mol: TMoleId; const s: TSecondId): TKatalId;
 begin end;
 
-operator /(const g: TGramIdentifier; const m3: TCubicMeterIdentifier): TGramPerCubicMeterIdentifier;
+operator /(const g: TGramId; const m3: TCubicMeterId): TGramPerCubicMeterId;
 begin end;
 
-operator /(const g: TGramIdentifier; const mm3: TCubicMillimeterIdentifier): TGramPerCubicMillimeterIdentifier;
+operator /(const g: TGramId; const mm3: TCubicMillimeterId): TGramPerCubicMillimeterId;
 begin end;
 
-operator /(const kg: TKilogramIdentifier; const m3: TCubicMeterIdentifier): TKilogramPerCubicMeterIdentifier;
+operator /(const kg: TKilogramId; const m3: TCubicMeterId): TKilogramPerCubicMeterId;
 begin end;
 
-operator /(const kg: TKilogramIdentifier; const mm3: TCubicMillimeterIdentifier): TKilogramPerCubicMillimeterIdentifier;
+operator /(const kg: TKilogramId; const mm3: TCubicMillimeterId): TKilogramPerCubicMillimeterId;
 begin end;
 
-// combining dimensioned quantities
+// combining quantities
 operator/(const AValue: double; const ADuration: TSeconds): THertz;
 begin
   result.Value := AValue / ADuration.Value;
