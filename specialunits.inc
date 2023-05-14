@@ -1,5 +1,56 @@
 //////////////////////////////// SPECIAL UNITS /////////////////////////////////
 
+{$IFDEF INTF}
+const
+  SpecialUnits: array[0..19] of record Formula, Symbol, Recipee, Name: string end = (
+  (Formula: 's-1';     Symbol: 'Hz';  Recipee: 'reciprocal second';                 Name: 'Herz'),
+  (Formula: 'rad2';    Symbol: 'sr';  Recipee: 'square radian';                     Name: 'steradian'),
+  (Formula: 'kg.m/s2'; Symbol: 'N';   Recipee: 'kilogram-meter per second squared'; Name: 'newton'),
+  (Formula: 'N/m2';    Symbol: 'Pa';  Recipee: 'newton per square meter';           Name: 'pascal'),
+  (Formula: 'kN/m2';   Symbol: 'kPa'; Recipee: 'kilonewton per square meter';       Name: 'kilopascal'),
+  (Formula: 'N/mm2';   Symbol: 'MPa'; Recipee: 'newton per square millimeter';      Name: 'megapascal'),
+  (Formula: 'N.m';     Symbol: 'J';   Recipee: 'newton-meter';                      Name: 'joule'),
+  (Formula: 'J/s';     Symbol: 'W';   Recipee: 'joule per second';                  Name: 'watt'),
+  (Formula: 'A.s';     Symbol: 'C';   Recipee: 'ampere-second';                     Name: 'coulomb'),
+  (Formula: 'J/C';     Symbol: 'V';   Recipee: 'joule per coulomb';                 Name: 'volt'),
+  (Formula: 'V.s';     Symbol: 'Wb';  Recipee: 'volt-second';                       Name: 'weber'),
+  (Formula: 'Wb/m2';   Symbol: 'T';   Recipee: 'weber per square meter';            Name: 'tesla'),
+  (Formula: 'V/A';     Symbol: 'Ω';   Recipee: 'volt per ampere';                   Name: 'ohm'),
+  (Formula: 'A/V';     Symbol: 'S';   Recipee: 'ampere per volt';                   Name: 'siemens'),
+  (Formula: 'Wb/A';    Symbol: 'H';   Recipee: 'weber per ampere';                  Name: 'henry'),
+  (Formula: 'C/V';     Symbol: 'F';   Recipee: 'coulomb per volt';                  Name: 'farad'),
+  (Formula: 'cd.sr';   Symbol: 'lm';  Recipee: 'candela-steradian';                 Name: 'lumen'),
+  (Formula: 'lm/m2';   Symbol: 'lx';  Recipee: 'lumen per square meter';            Name: 'lux'),
+  (Formula: 'J/kg';    Symbol: 'Gy';  Recipee: 'joule per kilogram';                Name: 'gray'),
+  (Formula: 'mol/s';   Symbol: 'kat'; Recipee: 'mole per second';                   Name: 'katal')
+  );
+
+  // Equivalences that are not automatically translated
+  // --------------------------------------------------
+  // m/m = rad
+  // Bq  = s-1 = Hz
+  // Sv  = s2/m2
+{$ENDIF}
+
+function GetSpecialUnitSymbolFromFormula(AFormula: string): string;
+{$IFDEF IMPL}var i: integer;
+begin
+  for i := low(SpecialUnits) to high(SpecialUnits) do
+    if SpecialUnits[i].Formula = AFormula then
+      exit(SpecialUnits[i].Symbol);
+  result := AFormula;
+end;{$ENDIF}
+
+function GetSpecialUnitNameFromRecipee(ARecipee: string): string;
+{$IFDEF IMPL}var i: integer;
+begin
+  for i := low(SpecialUnits) to high(SpecialUnits) do
+    if SpecialUnits[i].Recipee = ARecipee then
+      exit(SpecialUnits[i].Name);
+  result := ARecipee;
+end;{$ENDIF}
+
+
 { Frequency units : Hz = 1 / s }
 {$IFDEF INTF}
 type

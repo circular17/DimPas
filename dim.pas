@@ -1489,24 +1489,7 @@ begin
   else
     result := ANumSymbol + '/' + ADenomSymbol;
 
-  case result of
-  'lm/m2': result := 'lx';
-  'mol/s': result := 'kat';
-  'N/m2': result := 'Pa';
-  'kN/m2': result := 'kPa';
-  'N/mm2': result := 'MPa';
-  'J/s': result := 'W';
-  'J/C': result := 'V';
-  'W/A': result := 'V';
-  'C2/J': result := 'F';
-  'C/V': result := 'F';
-  'V/A': result := 'Ω';
-  's/F': result := 'Ω';
-  'Wb/m2': result := 'T';
-  'Wb/A': result := 'H';
-  'A/V': result := 'S';
-  'J/kg': result := 'Gy';
-  end;
+  result := GetSpecialUnitSymbolFromFormula(result);
 end;
 
 function GetRatioName(ANumName, ADenomName: string): string;
@@ -1518,50 +1501,19 @@ begin
   else
     result := ANumName + ' per ' + ADenomName;
 
-  case result of
-  'lumen per square meter': result := 'lux';
-  'mole per second': result := 'katal';
-  'newton per square meter': result := 'pascal';
-  'kilonewton per square meter': result := 'kilopascal';
-  'newton per square millimeter': result := 'megapascal';
-  'joule per second': result := 'watt';
-  'joule per coulomb': result := 'volt';
-  'watt per ampere': result := 'volt';
-  'square coulomb per joule': result:= 'farad';
-  'coulomb per volt': result:= 'farad';
-  'volt per ampere': result:= 'ohm';
-  'second per farad': result:= 'ohm';
-  'weber per square meter': result:= 'tesla';
-  'weber per ampere': result:= 'henry';
-  'ampere per volt': result:= 'siemens';
-  'joule per kilogram': result := 'gray';
-  end;
+  result := GetSpecialUnitNameFromRecipee(result);
 end;
 
 function GetProductSymbol(ALeftSymbol, ARightSymbol: string): string;
 begin
   result := ALeftSymbol + '.' + ARightSymbol;
-
-  case result of
-  's.A', 'A.s': result := 'C';
-  'kg.m/s2': result := 'N';
-  'N.m': result := 'J';
-  'cd.sr': result := 'lm';
-  'V.s': result := 'Wb';
-  end;
+  result := GetSpecialUnitSymbolFromFormula(result);
 end;
 
 function GetProductName(ALeftName, ARightName: string): string;
 begin
   result := ALeftName + '-' + ARightName;
-
-  case result of
-  'ampere-second', 'second-ampere': result := 'coulomb';
-  'kilogram-meter per second squared': result := 'newton';
-  'newton-meter': result := 'joule';
-  'candela-steradian': result := 'lumen';
-  'volt-second': result := 'weber';
-  end;
+  result := GetSpecialUnitNameFromRecipee(result);
 end;
 
 {$DEFINE IMPL}
