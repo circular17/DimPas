@@ -357,7 +357,7 @@ var
 // alternate definitions
 {$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TSquareMeterPerSquareSecondId}{$DEFINE ProdId:=TJouleId}
 {$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TSquareMetersPerSquareSecond}{$DEFINE ProdQty:=TJoules}
-{$DEFINE ALT_PROD}{$i dim.pas} // J = kg * m2/s2
+{$DEFINE ALT_PROD}{$DEFINE NO_DIV_LEFT}{$i dim.pas} // J = kg * m2/s2
 
 { units of charge and electric pontential }
 {$IFDEF INTF}

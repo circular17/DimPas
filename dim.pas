@@ -606,8 +606,10 @@ operator *(const {%H-}ALeft: LeftId; const {%H-}ARight: RightId): ProdId; inline
 {$IFDEF IMPL}begin end;{$ENDIF}
 operator *(const {%H-}ARight: RightId; const {%H-}ALeft: LeftId): ProdId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
+{$IFDEF NO_DIV_LEFT}{$UNDEF NO_DIV_LEFT}{$ELSE}
 operator /(const {%H-}AProd: ProdId; const {%H-}ALeft: LeftId): RightId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
+{$ENDIF}
 {$IFNDEF DEF_PROD}
 operator /(const {%H-}AProd: ProdId; const {%H-}ARight: RightId): LeftId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
