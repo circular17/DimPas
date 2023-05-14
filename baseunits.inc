@@ -262,13 +262,14 @@ type
   TKilograms = specialize TFactoredQuantity<TGram, TKilogram>;
 
   TTon = specialize TMegaUnit<TGram>;
+  TTonId = specialize TFactoredUnitId<TGram, TTon>;
   TTons = specialize TFactoredQuantity<TGram, TTon>;
 
 var
   mg: specialize TFactoredUnitId<TGram, TMilligram>;
   g: TGramId;
   kg: TKilogramId;
-  ton: specialize TFactoredUnitId<TGram, TTon>;
+  ton: TTonId;
 {$ENDIF}{$IFDEF IMPL}
 class function TGram.Symbol: string; begin result := 'g'; end;
 class function TGram.Name: string;   begin result := 'gram'; end;

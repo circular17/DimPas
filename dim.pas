@@ -601,15 +601,17 @@ function GetProductSymbol(ALeftSymbol, ARightSymbol: string): string;
 function GetProductName(ALeftName, ARightName: string): string;
 
 {$UNDEF DIM}{$ENDIF}
-{$IFDEF ALT_PROD}
+{$IF defined(DEF_PROD) or defined(ALT_PROD)}
 operator *(const {%H-}ALeft: LeftId; const {%H-}ARight: RightId): ProdId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
 operator *(const {%H-}ARight: RightId; const {%H-}ALeft: LeftId): ProdId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const {%H-}AProd: ProdId; const {%H-}ALeft: LeftId): RightId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
+{$IFNDEF DEF_PROD}
 operator /(const {%H-}AProd: ProdId; const {%H-}ARight: RightId): LeftId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
+{$ENDIF}
 
 operator *(const {%H-}ALeft: LeftQty; const {%H-}ARight: RightQty): ProdQty; inline;
 {$IFDEF IMPL}begin result.Value := ALeft.Value * ARight.Value; end;{$ENDIF}
@@ -619,7 +621,7 @@ operator /(const {%H-}AProd: ProdQty; const {%H-}ALeft: LeftQty): RightQty; inli
 {$IFDEF IMPL}begin result.Value := AProd.Value / ALeft.Value; end;{$ENDIF}
 operator /(const {%H-}AProd: ProdQty; const {%H-}ARight: RightQty): LeftQty; inline;
 {$IFDEF IMPL}begin result.Value := AProd.Value / ARight.Value; end;{$ENDIF}
-{$UNDEF ALT_PROD}{$ENDIF}
+{$UNDEF ALT_PROD}{$UNDEF DEF_PROD}{$ENDIF}
 {$IFNDEF DIM}{$DEFINE DIM}
 
 {$DEFINE INTF}

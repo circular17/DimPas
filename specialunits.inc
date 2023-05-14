@@ -18,15 +18,13 @@ var
   THz: specialize TFactoredReciprocalUnitId<TSecond, specialize TPicoUnit<TSecond>>;
 {$ENDIF}
 
-// combining units
 operator /(const {%H-}AValue: double; const {%H-}s: TSecondId): THertzId; inline;
 {$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-operator /(const {%H-}AValue: double; const {%H-}s: THertzId): TSecondId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-
-// combining quantities
 operator /(const AValue: double; const ADuration: TSeconds): THertz; inline;
 {$IFDEF IMPL}begin result.Value := AValue / ADuration.Value; end;{$ENDIF}
+
+operator /(const {%H-}AValue: double; const {%H-}s: THertzId): TSecondId; inline;
+{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
 operator /(const AValue: double; const AFrequency: THertz): TSeconds; inline;
 {$IFDEF IMPL}begin result.Value := AValue / AFrequency.Value; end;{$ENDIF}
 
@@ -122,34 +120,22 @@ end;
 { TRadiansHelper }
 
 function TRadiansHelper.Cos: double;
-begin
-  result := System.Cos(Value);
-end;
+begin result := System.Cos(Value); end;
 
 function TRadiansHelper.Sin: double;
-begin
-  result := System.Sin(Value);
-end;
+begin result := System.Sin(Value); end;
 
 function TRadiansHelper.Tan: double;
-begin
-  result := Math.Tan(Value);
-end;
+begin result := Math.Tan(Value); end;
 
 function TRadiansHelper.Cotan: double;
-begin
-  result := Math.Cotan(Value);
-end;
+begin result := Math.Cotan(Value); end;
 
 function TRadiansHelper.Secant: double;
-begin
-  result := Math.Secant(Value);
-end;
+begin result := Math.Secant(Value); end;
 
 function TRadiansHelper.Cosecant: double;
-begin
-  result := Math.Cosecant(Value);
-end;
+begin result := Math.Cosecant(Value); end;
 
 class function TDegree.Factor: double; begin result := Pi/180; end;
 class function TDegree.Symbol: string; begin result := 'º'; end;
@@ -180,34 +166,22 @@ end;
 { TDegreesHelper }
 
 function TDegreesHelper.Cos: double;
-begin
-  result := ToBase.Cos;
-end;
+begin result := ToBase.Cos; end;
 
 function TDegreesHelper.Sin: double;
-begin
-  result := ToBase.Sin;
-end;
+begin result := ToBase.Sin; end;
 
 function TDegreesHelper.Tan: double;
-begin
-  result := ToBase.Tan;
-end;
+begin result := ToBase.Tan; end;
 
 function TDegreesHelper.Cotan: double;
-begin
-  result := ToBase.Cotan;
-end;
+begin result := ToBase.Cotan; end;
 
 function TDegreesHelper.Secant: double;
-begin
-  result := ToBase.Secant;
-end;
+begin result := ToBase.Secant; end;
 
 function TDegreesHelper.Cosecant: double;
-begin
-  result := ToBase.Cosecant;
-end;
+begin result := ToBase.Cosecant; end;
 {$ENDIF}
 
 // dimension equivalence
@@ -252,41 +226,24 @@ type
   TKilonewtonId = specialize TFactoredUnitId<TNewton, TKilonewton>;
   TKilonewtons = specialize TFactoredQuantity<TNewton, TKilonewton>;
 var
+  milliN: TMillinewtonId;
   N: TNewtonId;
   kN: TKilonewtonId;
 {$ENDIF}
 
-// combining units
-operator *(const {%H-}g: TGramId; const {%H-}m_s2: TMeterPerSecondSquaredId): TMillinewtonId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m_s2: TMeterPerSecondSquaredId; const {%H-}g: TGramId): TMillinewtonId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}mN: TMillinewtonId; const {%H-}g: TGramMeterId): TMeterPerSecondSquaredId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-operator *(const {%H-}kg: TKilogramId; const {%H-}m_s2: TMeterPerSecondSquaredId): TNewtonId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m_s2: TMeterPerSecondSquaredId; const {%H-}kg: TKilogramId): TNewtonId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N: TNewtonId; const {%H-}kg: TKilogramId): TMeterPerSecondSquaredId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
-operator *(const AWeight: TKilograms; const AAcceleration: TMetersPerSecondSquared): TNewtons; inline;
-{$IFDEF IMPL}begin result.Value := AWeight.Value * AAcceleration.Value; end;{$ENDIF}
-operator *(const AAcceleration: TMetersPerSecondSquared; const AWeight: TKilograms): TNewtons; inline;
-{$IFDEF IMPL}begin result.Value := AWeight.Value * AAcceleration.Value; end;{$ENDIF}
-operator /(const AForce: TNewtons; const AWeight: TKilograms): TMetersPerSecondSquared; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / AWeight.Value; end;{$ENDIF}
-
-operator*(const AWeight: TGrams; const AAcceleration: TMetersPerSecondSquared ): TMillinewtons; inline;
-{$IFDEF IMPL}begin result.Value := AWeight.Value * AAcceleration.Value; end;{$ENDIF}
-operator*(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): TMillinewtons;inline;
-{$IFDEF IMPL}begin result.Value := AWeight.Value * AAcceleration.Value; end;{$ENDIF}
-operator /(const AForce: TMillinewtons; const AWeight: TGrams): TMetersPerSecondSquared; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / AWeight.Value; end;{$ENDIF}
+{$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TMeterPerSecondSquaredId}{$DEFINE ProdId:=TNewtonId}
+{$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TMetersPerSecondSquared}{$DEFINE ProdQty:=TNewtons}
+{$DEFINE DEF_PROD}{$i dim.pas} // N = kg * m/s2
 
 // alternate definitions
+{$DEFINE LeftId:=TGramId}{$DEFINE RightId:=TMeterPerSecondSquaredId}{$DEFINE ProdId:=TMillinewtonId}
+{$DEFINE LeftQty:=TGrams}{$DEFINE RightQty:=TMetersPerSecondSquared}{$DEFINE ProdQty:=TMillinewtons}
+{$DEFINE ALT_PROD}{$i dim.pas} // mN = g * m/s2
+
+{$DEFINE LeftId:=TTonId}{$DEFINE RightId:=TMeterPerSecondSquaredId}{$DEFINE ProdId:=TKilonewtonId}
+{$DEFINE LeftQty:=TTons}{$DEFINE RightQty:=TMetersPerSecondSquared}{$DEFINE ProdQty:=TKilonewtons}
+{$DEFINE ALT_PROD}{$i dim.pas} // kN = t * m/s2
+
 {$DEFINE LeftId:=TKilogramPerSecondId}{$DEFINE RightId:=TMeterPerSecondId}{$DEFINE ProdId:=TNewtonId}
 {$DEFINE LeftQty:=TKilogramsPerSecond}{$DEFINE RightQty:=TMetersPerSecond}{$DEFINE ProdQty:=TNewtons}
 {$DEFINE ALT_PROD}{$i dim.pas} // N = kg/s * m/s
@@ -311,23 +268,22 @@ var
   MPa: TMegapascalId;
 {$ENDIF}
 
-// combining units
 operator /(const {%H-}N: TNewtonId; const {%H-}m2: TSquareMeterId): TPascalId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N: TNewtonId; const {%H-}mm2: TSquareMillimeterId): TMegapascalId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}kN: TKilonewtonId; const {%H-}m2: TSquareMeterId): TKilopascalId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
 operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals; inline;
 {$IFDEF IMPL}begin result.Value := AForce.Value / AArea.Value; end;{$ENDIF}
+
+operator /(const {%H-}N: TNewtonId; const {%H-}mm2: TSquareMillimeterId): TMegapascalId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AForce: TNewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / AArea.Value; end;{$ENDIF}
-operator/(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals; inline;
 {$IFDEF IMPL}begin result.Value := AForce.Value / AArea.Value; end;{$ENDIF}
 operator/(const AForce: TKilonewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
 {$IFDEF IMPL}begin result := AForce.ToBase / AArea; end;{$ENDIF}
+
+operator /(const {%H-}kN: TKilonewtonId; const {%H-}m2: TSquareMeterId): TKilopascalId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator/(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals; inline;
+{$IFDEF IMPL}begin result.Value := AForce.Value / AArea.Value; end;{$ENDIF}
 
 { units of energy and power }
 {$IFDEF INTF}
@@ -344,23 +300,14 @@ var
   W: TWattId;
 {$ENDIF}
 
-// combining units
-operator *(const {%H-}N: TNewtonId; const {%H-}m: TMeterId): TJouleId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m: TMeterId; const {%H-}N: TNewtonId): TJouleId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}J: TJouleId; const {%H-}N: TNewtonId): TMeterId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-operator /(const {%H-}J: TJouleId; const {%H-}s: TSecondId): TWattId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
-operator *(const AForce: TNewtons; const ALength: TMeters): TJoules; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value * ALength.Value; end;{$ENDIF}
-operator *(const ALength: TMeters; const AForce: TNewtons): TJoules; inline;
-{$IFDEF IMPL}begin result.Value := ALength.Value * AForce.Value; end;{$ENDIF}
-operator /(const AWork: TJoules; const AForce: TNewtons): TMeters; inline;
-{$IFDEF IMPL}begin result.Value := AWork.Value / AForce.Value; end;{$ENDIF}
-
+operator /(const {%H-}J: TJouleId; const {%H-}s: TSecondId): TWattId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts; inline;
 {$IFDEF IMPL}begin result.Value := AWork.Value / ATime.Value; end;{$ENDIF}
+
+{$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TJouleId}
+{$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TJoules}
+{$DEFINE DEF_PROD}{$i dim.pas} // J = N * m
 
 // alternate definitions
 {$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TSquareMeterPerSquareSecondId}{$DEFINE ProdId:=TJouleId}
@@ -395,6 +342,14 @@ var
   V2: TSquareVoltId;
 {$ENDIF}
 
+{$DEFINE LeftId:=TAmpereId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:=TCoulombId}
+{$DEFINE LeftQty:=TAmperes}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TCoulombs}
+{$DEFINE DEF_PROD}{$i dim.pas} // C = A * s
+
+operator /(const {%H-}J: TJouleId; const {%H-}C: TCoulombId): TVoltId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts; inline;
+{$IFDEF IMPL}begin result.Value := AWork.Value / ACharge.Value; end;{$ENDIF}
+
 // dimension equivalence
 operator:=(const {%H-}C2: TSquareCoulombId): TSquareCoulombFactorId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
@@ -402,24 +357,6 @@ operator:=(const ASquareCharge: TSquareCoulombs): TSquareCoulombsFactor; inline;
 {$IFDEF IMPL}begin result.Value := ASquareCharge.Value; end;{$ENDIF}
 operator:=(const ASquareCharge: TSquareCoulombsFactor): TSquareCoulombs; inline;
 {$IFDEF IMPL}begin result.Value := ASquareCharge.Value; end;{$ENDIF}
-
-// combining units
-operator *(const {%H-}A: TAmpereId; const {%H-}s: TSecondId): TCoulombId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}s: TSecondId; const {%H-}A: TAmpereId): TCoulombId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}C: TCoulombId; const {%H-}A: TAmpereId): TSecondId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-operator /(const {%H-}J: TJouleId; const {%H-}C: TCoulombId): TVoltId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
-operator*(const ACurrent: TAmperes; const ADuration: TSeconds): TCoulombs; inline;
-{$IFDEF IMPL}begin result.Value := ACurrent.Value * ADuration.Value; end;{$ENDIF}
-operator *(const ADuration: TSeconds; const ACurrent: TAmperes): TCoulombs; inline;
-{$IFDEF IMPL}begin result.Value := ADuration.Value * ACurrent.Value; end;{$ENDIF}
-operator /(const ACharge: TCoulombs; const ACurrent: TAmperes): TSeconds; inline;
-{$IFDEF IMPL}begin result.Value := ACharge.Value / ACurrent.Value; end;{$ENDIF}
-
-operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts; inline;
-{$IFDEF IMPL}begin result.Value := AWork.Value / ACharge.Value; end;{$ENDIF}
 
 // alternate definitions
 {$DEFINE LeftId:=TVoltId}{$DEFINE RightId:=TAmpereId}{$DEFINE ProdId:=TWattId}
@@ -441,21 +378,12 @@ var
   T: TTeslaId;
 {$ENDIF}
 
-// combining units
-operator *(const {%H-}V: TVoltId; const {%H-}s: TSecondId): TWeberId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}s: TSecondId; const {%H-}V: TVoltId): TWeberId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}Wb: TWeberId; const {%H-}V: TVoltId): TSecondId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
+{$DEFINE LeftId:=TVoltId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:=TWeberId}
+{$DEFINE LeftQty:=TVolts}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TWebers}
+{$DEFINE DEF_PROD}{$i dim.pas} // Wb = V * s
 
-operator /(const {%H-}Wb: TWeberId; const {%H-}m2: TSquareMeterId): TTeslaId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
-operator *(const AVoltage: TVolts; const ATime: TSeconds): TWebers; inline;
-{$IFDEF IMPL}begin result.Value := AVoltage.Value * ATime.Value; end;{$ENDIF}
-operator *(const ATime: TSeconds; const AVoltage: TVolts): TWebers; inline;
-{$IFDEF IMPL}begin result.Value := ATime.Value * AVoltage.Value; end;{$ENDIF}
-operator /(const AMagneticFlux: TWebers; const AVoltage: TVolts): TSeconds; inline;
-{$IFDEF IMPL}begin result.Value := AMagneticFlux.Value / AVoltage.Value; end;{$ENDIF}
-
+operator /(const {%H-}Wb: TWeberId; const {%H-}m2: TSquareMeterId): TTeslaId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AMagneticFlux: TWebers; const AArea: TSquareMeters): TTeslas; inline;
 {$IFDEF IMPL}begin result.Value := AMagneticFlux.Value / AArea.Value; end;{$ENDIF}
 
@@ -478,20 +406,18 @@ var
   henry: THenryId;
 {$ENDIF}
 
-// combining units
-operator /(const {%H-}V: TVoltId; const {%H-}A: TAmpereId): TOhmId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-operator /(const {%H-}A: TAmpereId; const {%H-}V: TVoltId): TSiemensId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-operator /(const {%H-}Wb: TWeberId; const {%H-}A: TAmpereId): THenryId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
+operator /(const {%H-}V: TVoltId; const {%H-}A: TAmpereId): TOhmId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AVoltage: TVolts; const ACurrent: TAmperes): TOhms; inline;
 {$IFDEF IMPL}begin result.Value := AVoltage.Value / ACurrent.Value; end;{$ENDIF}
 
+operator /(const {%H-}A: TAmpereId; const {%H-}V: TVoltId): TSiemensId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const ACurrent: TAmperes; const AVoltage: TVolts): TSiemens; inline;
 {$IFDEF IMPL}begin result.Value := ACurrent.Value / AVoltage.Value; end;{$ENDIF}
 
+operator /(const {%H-}Wb: TWeberId; const {%H-}A: TAmpereId): THenryId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AMagneticFlux: TWebers; const ACurrent: TAmperes): THenrys; inline;
 {$IFDEF IMPL}begin result.Value := AMagneticFlux.Value / ACurrent.Value; end;{$ENDIF}
 
@@ -506,7 +432,6 @@ operator /(const AValue: double; const AResistance: TOhms): TSiemens; inline;
 operator /(const AValue: double; const AElectricalConductance: TSiemens): TOhms; inline;
 {$IFDEF IMPL}begin result.Value := AValue / AElectricalConductance.Value; end;{$ENDIF}
 
-// alternate definitions
 {$DEFINE LeftId:=TOhmId}{$DEFINE RightId:=TSquareAmpereId}{$DEFINE ProdId:=TWattId}
 {$DEFINE LeftQty:=TOhms}{$DEFINE RightQty:=TSquareAmperes}{$DEFINE ProdQty:=TWatts}
 {$DEFINE ALT_PROD}{$i dim.pas} // W = Ω * A2
@@ -534,10 +459,8 @@ var
   pF: specialize TFactoredUnitId<TFarad, specialize TPicoUnit<TFarad>>;
 {$ENDIF}
 
-// combining units
-operator /(const {%H-}C: TCoulombId; const {%H-}V: TVoltId): TFaradId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
+operator /(const {%H-}C: TCoulombId; const {%H-}V: TVoltId): TFaradId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads; inline;
 {$IFDEF IMPL}begin result.Value := ACharge.Value / AVoltage.Value; end;{$ENDIF}
 
@@ -554,34 +477,22 @@ operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads; inline;
 {$IFDEF INTF}
 type
   TLumen = specialize TUnitProduct<TCandela, TSteradian>;
-  TLumenIdentifer = specialize TUnitProductId<TCandela, TSteradian>;
+  TLumenId = specialize TUnitProductId<TCandela, TSteradian>;
   TLumens = specialize TQuantityProduct<TCandela, TSteradian>;
 
   TLuxId = specialize TRatioUnitId<TLumen, TSquareMeter>;
   TLuxQuantity = specialize TRatioQuantity<TLumen, TSquareMeter>;
 var
-  lm: TLumenIdentifer;
+  lm: TLumenId;
   lx: TLuxId;
 {$ENDIF}
 
-// combining units
-operator *(const {%H-}cd: TCandelaId; const {%H-}sr: TSteradianId): TLumenIdentifer; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}sr: TSteradianId; const {%H-}cd: TCandelaId): TLumenIdentifer; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}lm: TLumenIdentifer; const {%H-}cd: TCandelaId): TSteradianId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
+{$DEFINE LeftId:=TCandelaId}{$DEFINE RightId:=TSteradianId}{$DEFINE ProdId:=TLumenId}
+{$DEFINE LeftQty:=TCandelas}{$DEFINE RightQty:=TSteradians}{$DEFINE ProdQty:=TLumens}
+{$DEFINE DEF_PROD}{$i dim.pas} // Wb = V * s
 
-operator /(const {%H-}lm: TLumenIdentifer; const {%H-}m2: TSquareMeterId): TLuxId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
-operator *(const ALuminousIntensity: TCandelas; const ASolidAngle: TSteradians): TLumens; inline;
-{$IFDEF IMPL}begin result.Value := ALuminousIntensity.Value * ASolidAngle.Value; end;{$ENDIF}
-operator *(const ASolidAngle: TSteradians; const ALuminousIntensity: TCandelas): TLumens; inline;
-{$IFDEF IMPL}begin result.Value := ASolidAngle.Value * ALuminousIntensity.Value; end;{$ENDIF}
-operator /(const ALuminousFlux: TLumens; const ALuminousIntensity: TCandelas): TSteradians; inline;
-{$IFDEF IMPL}begin result.Value := ALuminousFlux.Value / ALuminousIntensity.Value; end;{$ENDIF}
-
+operator /(const {%H-}lm: TLumenId; const {%H-}m2: TSquareMeterId): TLuxId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator/(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity; inline;
 {$IFDEF IMPL}begin result.Value := ALuminousFlux.Value / AArea.Value; end;{$ENDIF}
 
@@ -632,17 +543,17 @@ function TBecquerelHelper.Inverse: TSecond;
 begin end;
 {$ENDIF}
 
-// dimension equivalence
-operator:=(const ARadioactivity: TBecquerels): THertz; inline;
-{$IFDEF IMPL}begin result.Value := ARadioactivity.Value; end;{$ENDIF}
-
-// combining quantities
+// definition
 operator/(const AValue: double; const ARadioactivity: TBecquerels): TSeconds; //inline;
 {$IFDEF IMPL}begin result := AValue / ARadioactivity; end;{$ENDIF}
 operator*(const ARadioactivity: TBecquerels; const ATime: TSeconds): double; inline;
 {$IFDEF IMPL}begin result := ARadioactivity * ATime; end;{$ENDIF}
 operator*(const ATime: TSeconds; const ARadioactivity: TBecquerels): double; inline;
 {$IFDEF IMPL}begin result := ATime * ARadioactivity; end;{$ENDIF}
+
+// dimension equivalence
+operator:=(const ARadioactivity: TBecquerels): THertz; inline;
+{$IFDEF IMPL}begin result.Value := ARadioactivity.Value; end;{$ENDIF}
 
 // units of ionizing radiation dose
 {$IFDEF INTF}
@@ -683,10 +594,9 @@ function TSievertHelper.From(const ASquareSpeed: TSquareMetersPerSquareSecond): 
 begin result.Value := ASquareSpeed.Value; end;
 {$ENDIF}
 
-// combining units
-operator /(const {%H-}J: TJouleId; const {%H-}kg: TKilogramId): TGrayId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
+// definition
+operator /(const {%H-}J: TJouleId; const {%H-}kg: TKilogramId): TGrayId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AEnergy: TJoules; const AMass: TKilograms): TGrays; inline;
 {$IFDEF IMPL}begin result.Value := AEnergy.Value / AMass.Value; end;{$ENDIF}
 
@@ -706,9 +616,7 @@ var
   kat: TKatalId;
 {$ENDIF}
 
-// combining units
-operator /(const {%H-}mol: TMoleId; const {%H-}s: TSecondId): TKatalId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
+operator /(const {%H-}mol: TMoleId; const {%H-}s: TSecondId): TKatalId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator/(const AAmountOfSustance: TMoles; const ATime: TSeconds): TKatals;
 {$IFDEF IMPL}begin result.Value := AAmountOfSustance.Value / ATime.Value; end;{$ENDIF}

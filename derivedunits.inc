@@ -16,19 +16,18 @@ type
   TKilometersPerHour = specialize TFactoredRatioQuantity<TMeter, TSecond, TKilometer, THour>;
 {$ENDIF}
 
-// combining units
 operator /(const {%H-}m: TMeterId; const {%H-}s: TSecondId): TMeterPerSecondId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}mm: TMillimeterId; const {%H-}s: TSecondId): TMillimeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}km: TKilometerId; const {%H-}h: THourId): TKilometerPerHourId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
 operator /(const ALength: TMeters; const ADuration: TSeconds): TMetersPerSecond; inline;
 {$IFDEF IMPL}begin result.Value:= ALength.Value / ADuration.Value; end;{$ENDIF}
+
+operator /(const {%H-}mm: TMillimeterId; const {%H-}s: TSecondId): TMillimeterPerSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const ALength: TMillimeters; const ADuration: TSeconds): TMillimetersPerSecond; inline;
 {$IFDEF IMPL}begin result.Value:= ALength.Value / ADuration.Value; end;{$ENDIF}
+
+operator /(const {%H-}km: TKilometerId; const {%H-}h: THourId): TKilometerPerHourId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const ALength: TKilometers; const ADuration: THours): TKilometersPerHour; inline;
 {$IFDEF IMPL}begin result.Value:= ALength.Value / ADuration.Value; end;{$ENDIF}
 
@@ -49,33 +48,33 @@ type
   TSquareMetersPerSquareSecond = specialize TRatioQuantity<TSquareMeter, TSquareSecond>;
 {$ENDIF}
 
-// combining units
 operator /(const {%H-}m_s: TMeterPerSecondId; const {%H-}s: TSecondId): TMeterPerSecondSquaredId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}m: TMeterId; const {%H-}s2: TSquareSecondId): TMeterPerSecondSquaredId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}km_h: TKilometerPerHourId; const {%H-}s: TSecondId): TKilometerPerHourPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-operator /(const {%H-}m2: TSquareMeterId; const {%H-}s2: TSquareSecondId): TSquareMeterPerSquareSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m_s: TMeterPerSecondId; const {%H-}m_s_: TMeterPerSecondId): TSquareMeterPerSquareSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}m2_s2: TSquareMeterPerSquareSecondId; const {%H-}m_s: TMeterPerSecondId): TMeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
 operator /(const ASpeed: TMetersPerSecond; const ATime: TSeconds): TMetersPerSecondSquared; inline;
 {$IFDEF IMPL}begin result.Value := ASpeed.Value / ATime.Value; end;{$ENDIF}
-operator /(const ALength: TMeters; const ASquareTime: TSquareSeconds): TMetersPerSecondSquared; inline;
-{$IFDEF IMPL}begin result.Value := ALength.Value / ASquareTime.Value; end;{$ENDIF}
+
+operator /(const {%H-}km_h: TKilometerPerHourId; const {%H-}s: TSecondId): TKilometerPerHourPerSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const ASpeed: TKilometersPerHour; const ATime: TSeconds): TKilometersPerHourPerSecond; inline;
 {$IFDEF IMPL}begin result.Value := ASpeed.Value / ATime.Value; end;{$ENDIF}
 
+operator /(const {%H-}m2: TSquareMeterId; const {%H-}s2: TSquareSecondId): TSquareMeterPerSquareSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSquareMetersPerSquareSecond; inline;
 {$IFDEF IMPL}begin result.Value := AArea.Value / ASquareTime.Value; end;{$ENDIF}
+
+// alternate definitions
+{$DEFINE LeftId:=TMeterPerSecondSquaredId}{$DEFINE RightId:=TSquareSecondId}{$DEFINE ProdId:=TMeterId}
+{$DEFINE LeftQty:=TMetersPerSecondSquared}{$DEFINE RightQty:=TSquareSeconds}{$DEFINE ProdQty:=TMeters}
+{$DEFINE ALT_PROD}{$i dim.pas} // m = m/s2 * s2
+
+// m2/s2 = m/s * m/s
+operator *(const {%H-}m_s: TMeterPerSecondId; const {%H-}m_s_: TMeterPerSecondId): TSquareMeterPerSquareSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator *(const ASpeed1: TMetersPerSecond; const ASpeed2: TMetersPerSecond): TSquareMetersPerSquareSecond; inline;
 {$IFDEF IMPL}begin result.Value := ASpeed1.Value * ASpeed2.Value; end;{$ENDIF}
+operator /(const {%H-}m2_s2: TSquareMeterPerSquareSecondId; const {%H-}m_s: TMeterPerSecondId): TMeterPerSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const ASquareSpeed: TSquareMetersPerSquareSecond; const ASpeed: TMetersPerSecond): TMetersPerSecond; inline;
 {$IFDEF IMPL}begin result.Value := ASquareSpeed.Value / ASpeed.Value; end;{$ENDIF}
 
@@ -107,25 +106,23 @@ type
                                             <TGram, TCubicMeter, TKilogram, TCubicMillimeter>;
 {$ENDIF}
 
-// combining units
 operator /(const {%H-}g: TGramId; const {%H-}m3: TCubicMeterId): TGramPerCubicMeterId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}g: TGramId; const {%H-}mm3: TCubicMillimeterId): TGramPerCubicMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-operator /(const {%H-}kg: TKilogramId; const {%H-}m3: TCubicMeterId): TKilogramPerCubicMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}kg: TKilogramId; const {%H-}mm3: TCubicMillimeterId): TKilogramPerCubicMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
 operator /(const AMass: TGrams; const AVolume: TCubicMeters): TGramsPerCubicMeter; inline;
 {$IFDEF IMPL}begin result.Value := AMass.Value / AVolume.Value; end;{$ENDIF}
+
+operator /(const {%H-}g: TGramId; const {%H-}mm3: TCubicMillimeterId): TGramPerCubicMillimeterId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AMass: TGrams; const AVolume: TCubicMillimeters): TGramsPerCubicMillimeter; inline;
 {$IFDEF IMPL}begin result.Value := AMass.Value / AVolume.Value; end;{$ENDIF}
 
+operator /(const {%H-}kg: TKilogramId; const {%H-}m3: TCubicMeterId): TKilogramPerCubicMeterId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AMass: TKilograms; const AVolume: TCubicMeters): TKilogramsPerCubicMeter; inline;
 {$IFDEF IMPL}begin result.Value := AMass.Value / AVolume.Value; end;{$ENDIF}
+
+operator /(const {%H-}kg: TKilogramId; const {%H-}mm3: TCubicMillimeterId): TKilogramPerCubicMillimeterId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AMass: TKilograms; const AVolume: TCubicMillimeters): TKilogramsPerCubicMillimeter; inline;
 {$IFDEF IMPL}begin result.Value := AMass.Value / AVolume.Value; end;{$ENDIF}
 
@@ -138,19 +135,13 @@ type
   TKilogramMeters = specialize TLeftFactoredQuantityProduct<TGram, TMeter, TKilogram>;
 {$ENDIF}
 
-// combining units
-operator *(const {%H-}g: TGramId; const {%H-}m: TMeterId): TGramMeterId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m: TMeterId; const {%H-}g: TGramId): TGramMeterId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}kg: TGramMeterId; const {%H-}m: TGramId): TMeterId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}kg: TKilogramId; const {%H-}m: TMeterId): TKilogramMeterId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m: TMeterId; const {%H-}kg: TKilogramId): TKilogramMeterId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}kg: TKilogramMeterId; const {%H-}m: TKilogramId): TMeterId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
+{$DEFINE LeftId:=TGramId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TGramMeterId}
+{$DEFINE LeftQty:=TGrams}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TGramMeters}
+{$DEFINE DEF_PROD}{$i dim.pas} // g*m = g * m
 
-// combining quantities
-operator *(const AWeight: TGrams; const ALength: TMeters): TGramMeters; inline;
-{$IFDEF IMPL}begin result.Value := AWeight.Value * ALength.Value; end;{$ENDIF}
-operator *(const AWeight: TKilograms; const ALength: TMeters): TKilogramMeters; inline;
-{$IFDEF IMPL}begin result.Value := AWeight.Value * ALength.Value; end;{$ENDIF}
+{$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TKilogramMeterId}
+{$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TKilogramMeters}
+{$DEFINE DEF_PROD}{$i dim.pas} // kg*m = kg * m
 
 { units of mass flux }
 {$IFDEF INTF}
@@ -163,14 +154,12 @@ type
   TKilogramsPerSecond = specialize TFactoredNumeratorQuantity<TGram, TSecond, TKilogram>;
 {$ENDIF}
 
-// combining units
 operator /(const {%H-}g: TKilogramId; const {%H-}s: TSecondId): TGramPerSecondId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}g: TKilogramId; const {%H-}s: TSecondId): TKilogramPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
 operator /(const AMass: TGrams; const ATime: TSeconds): TGramsPerSecond; inline;
 {$IFDEF IMPL}begin result.Value := AMass.Value / ATime.Value; end;{$ENDIF}
+
+operator /(const {%H-}g: TKilogramId; const {%H-}s: TSecondId): TKilogramPerSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const AMass: TKilograms; const ATime: TSeconds): TKilogramsPerSecond; inline;
 {$IFDEF IMPL}begin result.Value := AMass.Value / ATime.Value; end;{$ENDIF}
