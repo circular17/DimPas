@@ -97,7 +97,7 @@ begin
 
   writeln('3 t = ', kg.From(3*ton).ToString);
   writeln('1 lux = ', (1*lx).ToVerboseString);
-  writeln('1 / 0.01 s = ', (1 / (0.01*s)).ToString);
+  writeln('1 / 0.01 s = ', kHz.From(1 / (0.01*s)).ToString);
   writeln('100 Hz * 10 s = ', FormatValue(100*Hz*(10*s)));
   writeln('180 º = ', rad.From(180*deg).ToString);
   writeln('sin 30 º = ', FormatValue((30*deg).Sin));

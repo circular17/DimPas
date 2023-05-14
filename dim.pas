@@ -652,7 +652,10 @@ end;
 class function TCustomUnit.GetPowerName(AExponent: integer): string;
 begin
   if AExponent < 0 then
-    result := 'reciprocal '
+  begin
+    result := 'reciprocal ';
+    AExponent := -AExponent;
+  end
   else
     result := '';
 
@@ -667,6 +670,10 @@ begin
 
   case result of
   'reciprocal second': result := 'hertz';
+  'reciprocal millisecond': result := 'kilohertz';
+  'reciprocal microsecond': result := 'megahertz';
+  'reciprocal nanosecond': result := 'gigahertz';
+  'reciprocal picosecond': result := 'terahertz';
   'square radian': result := 'steradian';
   end;
 end;
@@ -897,6 +904,7 @@ end;
 
     case result of
     'Mg': result := 't';
+    'Gg': result := 'kt';
     end;
   end;
 
@@ -906,6 +914,7 @@ end;
 
     case result of
     'megagram': result := 'ton';
+    'gigagram': result := 'kiloton';
     end;
   end;
 {$ENDIF}{$UNDEF FACTORED_UNIT_IMPL}
