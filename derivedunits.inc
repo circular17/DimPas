@@ -174,5 +174,3 @@ operator /(const AMass: TGrams; const ATime: TSeconds): TGramsPerSecond; inline;
 {$IFDEF IMPL}begin result.Value := AMass.Value / ATime.Value; end;{$ENDIF}
 operator /(const AMass: TKilograms; const ATime: TSeconds): TKilogramsPerSecond; inline;
 {$IFDEF IMPL}begin result.Value := AMass.Value / ATime.Value; end;{$ENDIF}
-
-

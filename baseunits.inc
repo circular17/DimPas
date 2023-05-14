@@ -57,10 +57,11 @@ class function TDay.Name: string;   begin result := 'day'; end;
 {$ENDIF}
 
 // dimension equivalence
-operator:=(const {%H-}s2: TSquareSecondId): TSquareSecondFactorId; {$IFDEF IMPL}begin end;{$ENDIF}
-operator:=(const ASquareTime: TSquareSeconds): TSquareSecondsFactor;
+operator:=(const {%H-}s2: TSquareSecondId): TSquareSecondFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const ASquareTime: TSquareSeconds): TSquareSecondsFactor; inline;
 {$IFDEF IMPL}begin result.Value := ASquareTime.Value; end;{$ENDIF}
-operator:=(const ASquareTime: TSquareSecondsFactor): TSquareSeconds;
+operator:=(const ASquareTime: TSquareSecondsFactor): TSquareSeconds; inline;
 {$IFDEF IMPL}begin result.Value := ASquareTime.Value; end;{$ENDIF}
 
 { Units of length }
@@ -208,37 +209,42 @@ operator /(const AMomentOfArea: TQuarticMeters; const AArea: TSquareMeters): TSq
 {$IFDEF IMPL}begin result.Value := AMomentOfArea.Value / AArea.Value; end;{$ENDIF}
 
 // dimension equivalence
-operator:=(const AVolume: TLitres): TCubicMeters;
+operator:=(const AVolume: TLitres): TCubicMeters; inline;
 {$IFDEF IMPL}begin result.Value := AVolume.Value * 0.001; end;{$ENDIF}
-operator:=(const AVolume: TLitres): TCubicDecimeters;
+operator:=(const AVolume: TLitres): TCubicDecimeters; inline;
 {$IFDEF IMPL}begin result.Value := AVolume.Value; end;{$ENDIF}
 
-operator:=(const {%H-}m2: TSquareMeterId): TSquareMeterFactorId; {$IFDEF IMPL}begin end;{$ENDIF}
-operator:=(const ASurface: TSquareMeters): TSquareMetersFactor;
+operator:=(const {%H-}m2: TSquareMeterId): TSquareMeterFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const ASurface: TSquareMeters): TSquareMetersFactor; inline;
 {$IFDEF IMPL}begin result.Value := ASurface.Value; end;{$ENDIF}
-operator:=(const ASurface: TSquareMetersFactor): TSquareMeters;
+operator:=(const ASurface: TSquareMetersFactor): TSquareMeters; inline;
 {$IFDEF IMPL}begin result.Value := ASurface.Value; end;{$ENDIF}
-operator:=(const {%H-}mm2: TSquareMillimeterId): TSquareMillimeterFactorId; {$IFDEF IMPL}begin end;{$ENDIF}
-operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor;
+operator:=(const {%H-}mm2: TSquareMillimeterId): TSquareMillimeterFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const ASurface: TSquareMillimeters): TSquareMillimetersFactor; inline;
 {$IFDEF IMPL}begin result.Value := ASurface.Value; end;{$ENDIF}
-operator:=(const ASurface: TSquareMillimetersFactor): TSquareMillimeters;
+operator:=(const ASurface: TSquareMillimetersFactor): TSquareMillimeters; inline;
 {$IFDEF IMPL}begin result.Value := ASurface.Value; end;{$ENDIF}
 
-operator:=(const {%H-}m3: TCubicMeterId): TCubicMeterFactorId; {$IFDEF IMPL}begin end;{$ENDIF}
-operator:=(const AVolume: TCubicMeters): TCubicMetersFactor;
+operator:=(const {%H-}m3: TCubicMeterId): TCubicMeterFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const AVolume: TCubicMeters): TCubicMetersFactor; inline;
 {$IFDEF IMPL}begin result.Value := AVolume.Value; end;{$ENDIF}
-operator:=(const AVolume: TCubicMetersFactor): TCubicMeters;
+operator:=(const AVolume: TCubicMetersFactor): TCubicMeters; inline;
 {$IFDEF IMPL}begin result.Value := AVolume.Value; end;{$ENDIF}
-operator:=(const {%H-}mm3: TCubicMillimeterId): TCubicMillimeterFactorId; {$IFDEF IMPL}begin end;{$ENDIF}
-operator:=(const AVolume: TCubicMillimeters): TCubicMillimetersFactor;
+operator:=(const {%H-}mm3: TCubicMillimeterId): TCubicMillimeterFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const AVolume: TCubicMillimeters): TCubicMillimetersFactor; inline;
 {$IFDEF IMPL}begin result.Value := AVolume.Value; end;{$ENDIF}
-operator:=(const AVolume: TCubicMillimetersFactor): TCubicMillimeters;
+operator:=(const AVolume: TCubicMillimetersFactor): TCubicMillimeters; inline;
 {$IFDEF IMPL}begin result.Value := AVolume.Value; end;{$ENDIF}
 
-operator:=(const {%H-}m4: TQuarticMeterId): TQuarticMeterFactorId; {$IFDEF IMPL}begin end;{$ENDIF}
-operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor;
+operator:=(const {%H-}m4: TQuarticMeterId): TQuarticMeterFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const AHyperVolume: TQuarticMeters): TQuarticMetersFactor; inline;
 {$IFDEF IMPL}begin result.Value := AHyperVolume.Value; end;{$ENDIF}
-operator:=(const AHyperVolume: TQuarticMetersFactor): TQuarticMeters;
+operator:=(const AHyperVolume: TQuarticMetersFactor): TQuarticMeters; inline;
 {$IFDEF IMPL}begin result.Value := AHyperVolume.Value; end;{$ENDIF}
 
 { Units of mass }
@@ -357,17 +363,17 @@ begin
 end;
 {$ENDIF}
 
-operator :=(const ATemperature: TDegreesCelsius): TKelvins;
+operator :=(const ATemperature: TDegreesCelsius): TKelvins; inline;
 {$IFDEF IMPL}begin result.Value := ATemperature.Value + 273.15; end;{$ENDIF}
-operator :=(const ATemperature: TDegreesFahrenheit): TDegreesCelsius;
+operator :=(const ATemperature: TDegreesFahrenheit): TDegreesCelsius; inline;
 {$IFDEF IMPL}begin result.Value := (ATemperature.Value - 32)/1.8; end;{$ENDIF}
-operator :=(const ATemperature: TDegreesFahrenheit): TKelvins;
+operator :=(const ATemperature: TDegreesFahrenheit): TKelvins; inline;
 {$IFDEF IMPL}begin result := TDegreesCelsius(ATemperature); end;{$ENDIF}
-operator -(const ATemperature1, ATemperature2: TDegreesCelsius): TKelvins;
+operator -(const ATemperature1, ATemperature2: TDegreesCelsius): TKelvins; inline;
 {$IFDEF IMPL}begin result.Value := ATemperature1.Value - ATemperature2.Value; end;{$ENDIF}
-operator +(const ATemperature: TDegreesCelsius; const ADifference: TKelvins): TDegreesCelsius;
+operator +(const ATemperature: TDegreesCelsius; const ADifference: TKelvins): TDegreesCelsius; inline;
 {$IFDEF IMPL}begin result.Value := ATemperature.Value + ADifference.Value; end;{$ENDIF}
-operator +(const ADifference: TKelvins; const ATemperature: TDegreesCelsius): TDegreesCelsius;
+operator +(const ADifference: TKelvins; const ATemperature: TDegreesCelsius): TDegreesCelsius; inline;
 {$IFDEF IMPL}begin result.Value := ATemperature.Value + ADifference.Value; end;{$ENDIF}
 
 { Units of luminous energy }

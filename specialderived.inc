@@ -13,7 +13,7 @@ operator /(const {%H-}rad: TRadianId; const {%H-}s: TSecondId): TRadianPerSecond
 {$IFDEF IMPL}begin end;{$ENDIF}
 
 // combining quantities
-operator/(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond;
+operator/(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
 {$IFDEF IMPL}begin result.Value:= AAngle.Value / ADuration.Value; end;{$ENDIF}
 
 { Units of acceleration }
@@ -30,9 +30,9 @@ operator /(const {%H-}rad: TRadianId; const {%H-}s2: TSquareSecondId): TRadianPe
 {$IFDEF IMPL}begin end;{$ENDIF}
 
 // combining quantities
-operator/(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared;
+operator/(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared; inline;
 {$IFDEF IMPL}begin result.Value := ASpeed.Value / ATime.Value; end;{$ENDIF}
-operator/(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared;
+operator/(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared; inline;
 {$IFDEF IMPL}begin result.Value := AAngle.Value / ASquareTime.Value; end;{$ENDIF}
 
 { Mechanical derived units }
@@ -72,19 +72,19 @@ operator /(const {%H-}Pas: TPascalSecondId; const {%H-}Pa: TPascalId): TSecondId
 {$IFDEF IMPL}begin end;{$ENDIF}
 
 // combining quantities
-operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter;
+operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
 {$IFDEF IMPL}begin result.Value := AForce.Value / ALength.Value; end;{$ENDIF}
-operator /(const AForce: TNewtons; const ALength: TMillimeters): TNewtonsPerMillimeter;
+operator /(const AForce: TNewtons; const ALength: TMillimeters): TNewtonsPerMillimeter; inline;
 {$IFDEF IMPL}begin result.Value := AForce.Value / ALength.Value; end;{$ENDIF}
 
-operator /(const AForce: TNewtons; const AVolume: TCubicMeters): TNewtonsPerCubicMeter;
+operator /(const AForce: TNewtons; const AVolume: TCubicMeters): TNewtonsPerCubicMeter; inline;
 {$IFDEF IMPL}begin result.Value := AForce.Value / AVolume.Value; end;{$ENDIF}
 
-operator *(const APressure: TPascals; const ATime: TSeconds): TPascalsSecond;
+operator *(const APressure: TPascals; const ATime: TSeconds): TPascalsSecond; inline;
 {$IFDEF IMPL}begin result.Value := APressure.Value * ATime.Value; end;{$ENDIF}
-operator *(const ATime: TSeconds; const APressure: TPascals): TPascalsSecond;
+operator *(const ATime: TSeconds; const APressure: TPascals): TPascalsSecond; inline;
 {$IFDEF IMPL}begin result.Value := ATime.Value * APressure.Value; end;{$ENDIF}
-operator /(const ADynViscosity: TPascalsSecond; const APressure: TPascals): TSeconds;
+operator /(const ADynViscosity: TPascalsSecond; const APressure: TPascals): TSeconds; inline;
 {$IFDEF IMPL}begin result.Value := ADynViscosity.Value / APressure.Value; end;{$ENDIF}
 
 // alternate definitions
