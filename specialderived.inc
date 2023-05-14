@@ -47,7 +47,7 @@ type
 
   TPascalSecond = specialize TUnitProduct<TPascal, TSecond>;
   TPascalSecondId = specialize TUnitProductId<TPascal, TSecond>;
-  TPascalsSecond = specialize TQuantityProduct<TPascal, TSecond>;
+  TPascalSeconds = specialize TQuantityProduct<TPascal, TSecond>;
 {$ENDIF}
 
 operator /(const {%H-}N: TNewtonId; const {%H-}m: TMeterId): TNewtonPerMeterId; inline;
@@ -66,7 +66,7 @@ operator /(const AForce: TNewtons; const AVolume: TCubicMeters): TNewtonsPerCubi
 {$IFDEF IMPL}begin result.Value := AForce.Value / AVolume.Value; end;{$ENDIF}
 
 {$DEFINE LeftId:=TPascalId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:=TPascalSecondId}
-{$DEFINE LeftQty:=TPascals}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TPascalsSecond}
+{$DEFINE LeftQty:=TPascals}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TPascalSeconds}
 {$DEFINE DEF_PROD}{$i dim.pas} // Pa*s = Pa * s
 
 // alternate definitions
@@ -83,5 +83,5 @@ operator /(const AForce: TNewtons; const AVolume: TCubicMeters): TNewtonsPerCubi
 {$DEFINE ALT_PROD}{$i dim.pas} // N/m3 = kg/m3 * m/s2
 
 {$DEFINE LeftId:=TPascalSecondId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TKilogramPerSecondId}
-{$DEFINE LeftQty:=TPascalsSecond}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TKilogramsPerSecond}
+{$DEFINE LeftQty:=TPascalSeconds}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TKilogramsPerSecond}
 {$DEFINE ALT_PROD}{$i dim.pas} // kg/s = Pa*s * m
