@@ -87,74 +87,19 @@ operator *(const ATime: TSeconds; const APressure: TPascals): TPascalsSecond;
 operator /(const ADynViscosity: TPascalsSecond; const APressure: TPascals): TSeconds;
 {$IFDEF IMPL}begin result.Value := ADynViscosity.Value / APressure.Value; end;{$ENDIF}
 
-// alternate definition N/m = Pa * m
-operator *(const {%H-}Pa: TPascalId; const {%H-}m: TMeterId): TNewtonPerMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m: TMeterId; const {%H-}Pa: TPascalId): TNewtonPerMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N_m: TNewtonPerMeterId; const {%H-}Pa: TPascalId): TMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N_m: TNewtonPerMeterId; const {%H-}m: TMeterId): TPascalId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
+// alternate definitions
+{$DEFINE LeftId:=TPascalId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TNewtonPerMeterId}
+{$DEFINE LeftQty:=TPascals}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TNewtonsPerMeter}
+{$DEFINE ALT_PROD}{$i dim.pas} // N/m = Pa * m
 
-operator *(const APressure: TPascals; const ALength: TMeters): TNewtonsPerMeter;
-{$IFDEF IMPL}begin result.Value := APressure.Value * ALength.Value; end;{$ENDIF}
-operator *(const ALength: TMeters; const APressure: TPascals): TNewtonsPerMeter;
-{$IFDEF IMPL}begin result.Value := ALength.Value * APressure.Value; end;{$ENDIF}
-operator /(const ASurfaceTension: TNewtonsPerMeter; const APressure: TPascals): TMeters;
-{$IFDEF IMPL}begin result.Value := ASurfaceTension.Value / APressure.Value; end;{$ENDIF}
-operator /(const ASurfaceTension: TNewtonsPerMeter; const ALength: TMeters): TPascals;
-{$IFDEF IMPL}begin result.Value := ASurfaceTension.Value / ALength.Value; end;{$ENDIF}
+{$DEFINE LeftId:=TMegapascalId}{$DEFINE RightId:=TMillimeterId}{$DEFINE ProdId:=TNewtonPerMillimeterId}
+{$DEFINE LeftQty:=TMegapascals}{$DEFINE RightQty:=TMillimeters}{$DEFINE ProdQty:=TNewtonsPerMillimeter}
+{$DEFINE ALT_PROD}{$i dim.pas} // N/mm = MPa * mm
 
-// alternate definition N/mm = MPa * mm
-operator *(const {%H-}MPa: TMegapascalId; const {%H-}mm: TMillimeterId): TNewtonPerMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}mm: TMillimeterId; const {%H-}MPa: TMegapascalId): TNewtonPerMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N_mm: TNewtonPerMillimeterId; const {%H-}Pa: TMegapascalId): TMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N_mm: TNewtonPerMillimeterId; const {%H-}mm: TMillimeterId): TMegapascalId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
+{$DEFINE LeftId:=TKilogramPerCubicMeterId}{$DEFINE RightId:=TMeterPerSecondSquaredId}{$DEFINE ProdId:=TNewtonPerCubicMeterId}
+{$DEFINE LeftQty:=TKilogramsPerCubicMeter}{$DEFINE RightQty:=TMetersPerSecondSquared}{$DEFINE ProdQty:=TNewtonsPerCubicMeter}
+{$DEFINE ALT_PROD}{$i dim.pas} // N/m3 = kg/m3 * m/s2
 
-operator *(const APressure: TMegapascals; const ALength: TMillimeters): TNewtonsPerMillimeter;
-{$IFDEF IMPL}begin result.Value := APressure.Value * ALength.Value; end;{$ENDIF}
-operator *(const ALength: TMillimeters; const APressure: TMegapascals): TNewtonsPerMillimeter;
-{$IFDEF IMPL}begin result.Value := ALength.Value * APressure.Value; end;{$ENDIF}
-operator /(const ASurfaceTension: TNewtonsPerMillimeter; const APressure: TMegapascals): TMillimeters;
-{$IFDEF IMPL}begin result.Value := ASurfaceTension.Value / APressure.Value; end;{$ENDIF}
-operator /(const ASurfaceTension: TNewtonsPerMillimeter; const ALength: TMillimeters): TMegapascals;
-{$IFDEF IMPL}begin result.Value := ASurfaceTension.Value / ALength.Value; end;{$ENDIF}
-
-// alternative definition N/m3 = kg/m3 * m/s2
-operator *(const {%H-}kg_m3: TKilogramPerCubicMeterId; const {%H-}m_s2: TMeterPerSecondSquaredId): TNewtonPerCubicMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m_s2: TMeterPerSecondSquaredId; const {%H-}kg_m3: TKilogramPerCubicMeterId): TNewtonPerCubicMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N_m3: TNewtonPerCubicMeterId; const {%H-}kg_m3: TKilogramPerCubicMeterId): TMeterPerSecondSquaredId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N_m3: TNewtonPerCubicMeterId; const {%H-}m_s2: TMeterPerSecondSquaredId): TKilogramPerCubicMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-operator *(const ADensity: TKilogramsPerCubicMeter; const AAcceleration: TMetersPerSecondSquared): TNewtonsPerCubicMeter;
-{$IFDEF IMPL}begin result.Value := ADensity.Value * AAcceleration.Value; end;{$ENDIF}
-operator *(const AAcceleration: TMetersPerSecondSquared; const ADensity: TKilogramsPerCubicMeter): TNewtonsPerCubicMeter;
-{$IFDEF IMPL}begin result.Value := AAcceleration.Value * ADensity.Value; end;{$ENDIF}
-operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const ADensity: TKilogramsPerCubicMeter): TMetersPerSecondSquared;
-{$IFDEF IMPL}begin result.Value := ASpecificWeight.Value / ADensity.Value; end;{$ENDIF}
-operator /(const ASpecificWeight: TNewtonsPerCubicMeter; const AAcceleration: TMetersPerSecondSquared): TKilogramsPerCubicMeter;
-{$IFDEF IMPL}begin result.Value := ASpecificWeight.Value / AAcceleration.Value; end;{$ENDIF}
-
-// alternative definition kg/s = Pa*s * m
-operator *(const {%H-}Pas: TPascalSecondId; const {%H-}m: TMeterId): TKilogramPerSecondId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m: TMeterId; const {%H-}Pas: TPascalSecondId): TKilogramPerSecondId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}kg_s: TKilogramPerSecondId; const {%H-}Pas: TPascalSecondId): TMeterId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}kg_s: TKilogramPerSecondId; const {%H-}m: TMeterId): TPascalSecondId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-operator *(const ADynViscosity: TPascalsSecond; const ALength: TMeters): TKilogramsPerSecond;
-{$IFDEF IMPL}begin result.Value := ADynViscosity.Value * ALength.Value; end;{$ENDIF}
-operator *(const ALength: TMeters; const ADynViscosity: TPascalsSecond): TKilogramsPerSecond;
-{$IFDEF IMPL}begin result.Value := ALength.Value * ADynViscosity.Value; end;{$ENDIF}
-operator /(const AMassFlux: TKilogramsPerSecond; const ADynViscosity: TPascalsSecond): TMeters;
-{$IFDEF IMPL}begin result.Value := AMassFlux.Value / ADynViscosity.Value; end;{$ENDIF}
-operator /(const AMassFlux: TKilogramsPerSecond; const ALength: TMeters): TPascalsSecond;
-{$IFDEF IMPL}begin result.Value := AMassFlux.Value / ALength.Value; end;{$ENDIF}
+{$DEFINE LeftId:=TPascalSecondId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TKilogramPerSecondId}
+{$DEFINE LeftQty:=TPascalsSecond}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TKilogramsPerSecond}
+{$DEFINE ALT_PROD}{$i dim.pas} // kg/s = Pa*s * m

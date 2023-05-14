@@ -322,14 +322,14 @@ type
   TDegreeCelsiusId = specialize TBasicUnitId<TDegreeCelsius>;
   TDegreesCelsius = specialize TBasicQuantity<TDegreeCelsius>;
   TDegreeCelsiusIdHelper = record helper for TDegreeCelsiusId
-    class function From(const ATemperature: TKelvins): TDegreesCelsius; inline; static; overload;
+    class function From(const ATemperature: TKelvins): TDegreesCelsius; static; overload;
   end;
 
   TDegreeFahrenheit = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   TDegreeFahrenheitId = specialize TBasicUnitId<TDegreeFahrenheit>;
   TDegreesFahrenheit = specialize TBasicQuantity<TDegreeFahrenheit>;
   TDegreeFahrenheitIdHelper = record helper for TDegreeFahrenheitId
-    class function From(const ATemperature: TKelvins): TDegreesFahrenheit; inline; static; overload;
+    class function From(const ATemperature: TKelvins): TDegreesFahrenheit; static; overload;
   end;
 
 var

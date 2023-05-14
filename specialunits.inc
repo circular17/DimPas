@@ -24,33 +24,20 @@ operator /(const {%H-}AValue: double; const {%H-}s: TSecondId): THertzId; inline
 operator /(const {%H-}AValue: double; const {%H-}s: THertzId): TSecondId; inline;
 {$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
 
-// alternate definition of m/s = m * Hz
-operator *(const {%H-}m: TMeterId; const {%H-}Hz: THertzId): TMeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}Hz: THertzId; const {%H-}m: TMeterId): TMeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}m_s: TMeterPerSecondId; const {%H-}m: TMeterId): THertzId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}m_s: TMeterPerSecondId; const {%H-}Hz: THertzId): TMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-// alternate definition of mm/s = mm * Hz
-operator *(const {%H-}mm: TMillimeterId; const {%H-}Hz: THertzId): TMillimeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}Hz: THertzId; const {%H-}m: TMillimeterId): TMillimeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}mm_s: TMillimeterPerSecondId; const {%H-}mm: TMillimeterId): THertzId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}mm_s: TMillimeterPerSecondId; const {%H-}Hz: THertzId): TMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
 // combining quantities
 operator /(const AValue: double; const ADuration: TSeconds): THertz; inline;
 {$IFDEF IMPL}begin result.Value := AValue / ADuration.Value; end;{$ENDIF}
-operator /(const ASpeed: TMetersPerSecond; const ALength: TMeters): THertz; inline;
-{$IFDEF IMPL}begin result.Value := ASpeed.Value / ALength.Value; end;{$ENDIF}
-operator /(const ASpeed: TMillimetersPerSecond; const ALength: TMillimeters): THertz; inline;
-{$IFDEF IMPL}begin result.Value := ASpeed.Value / ALength.Value; end;{$ENDIF}
+operator /(const AValue: double; const AFrequency: THertz): TSeconds; inline;
+{$IFDEF IMPL}begin result.Value := AValue / AFrequency.Value; end;{$ENDIF}
+
+// alternate definitions
+{$DEFINE LeftId:=TMeterId}{$DEFINE RightId:=THertzId}{$DEFINE ProdId:=TMeterPerSecondId}
+{$DEFINE LeftQty:=TMeters}{$DEFINE RightQty:=THertz}{$DEFINE ProdQty:=TMetersPerSecond}
+{$DEFINE ALT_PROD}{$i dim.pas} // m/s = m * Hz
+
+{$DEFINE LeftId:=TMillimeterId}{$DEFINE RightId:=THertzId}{$DEFINE ProdId:=TMillimeterPerSecondId}
+{$DEFINE LeftQty:=TMillimeters}{$DEFINE RightQty:=THertz}{$DEFINE ProdQty:=TMillimetersPerSecond}
+{$DEFINE ALT_PROD}{$i dim.pas} // mm/s = mm * Hz
 
 { angle units }
 {$IFDEF INTF}
@@ -299,24 +286,10 @@ operator*(const AAcceleration: TMetersPerSecondSquared; const AWeight: TGrams): 
 operator /(const AForce: TMillinewtons; const AWeight: TGrams): TMetersPerSecondSquared;
 {$IFDEF IMPL}begin result.Value := AForce.Value / AWeight.Value; end;{$ENDIF}
 
-// alternative definition N = kg/s * m/s
-operator *(const {%H-}kg_s: TKilogramPerSecondId; const {%H-}m_s: TMeterPerSecondId): TNewtonId;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m_s: TMeterPerSecondId; const {%H-}kg_s: TKilogramPerSecondId): TNewtonId;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N: TNewtonId; const {%H-}m_s: TMeterPerSecondId): TKilogramPerSecondId;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}N: TNewtonId; const {%H-}kg_s: TKilogramPerSecondId): TMeterPerSecondId;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-operator *(const ASpeed: TMetersPerSecond; const AMassFlux: TKilogramsPerSecond): TNewtons; inline;
-{$IFDEF IMPL}begin result.Value := ASpeed.Value * AMassFlux.Value; end;{$ENDIF}
-operator *(const AMassFlux: TKilogramsPerSecond; const ASpeed: TMetersPerSecond): TNewtons; inline;
-{$IFDEF IMPL}begin result.Value := ASpeed.Value * AMassFlux.Value; end;{$ENDIF}
-operator /(const AForce: TNewtons; const ASpeed: TMetersPerSecond): TKilogramsPerSecond; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / ASpeed.Value; end;{$ENDIF}
-operator /(const AForce: TNewtons; const AMassFlux: TKilogramsPerSecond): TMetersPerSecond; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / AMassFlux.Value; end;{$ENDIF}
+// alternate definitions
+{$DEFINE LeftId:=TKilogramPerSecondId}{$DEFINE RightId:=TMeterPerSecondId}{$DEFINE ProdId:=TNewtonId}
+{$DEFINE LeftQty:=TKilogramsPerSecond}{$DEFINE RightQty:=TMetersPerSecond}{$DEFINE ProdQty:=TNewtons}
+{$DEFINE ALT_PROD}{$i dim.pas} // N = kg/s * m/s
 
 { units of pressure }
 {$IFDEF INTF}
@@ -389,24 +362,10 @@ operator /(const AWork: TJoules; const AForce: TNewtons): TMeters;
 operator /(const AWork: TJoules; const ATime: TSeconds): TWatts;
 {$IFDEF IMPL}begin result.Value := AWork.Value / ATime.Value; end;{$ENDIF}
 
-// alternate definition of J = kg * m2/s2
-operator *(const {%H-}kg: TKilogramId; const {%H-}m2_s2: TSquareMeterPerSquareSecondId): TJouleId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}m2_s2: TSquareMeterPerSquareSecondId; const {%H-}kg: TKilogramId): TJouleId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}J: TJouleId; const {%H-}m2_s2: TSquareMeterPerSquareSecondId): TKilogramId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}J: TJouleId; const {%H-}kg: TKilogramId): TSquareMeterPerSquareSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-operator *(const AMass: TKilograms; const ASquareSpeed: TSquareMetersPerSquareSecond): TJoules;
-{$IFDEF IMPL}begin result.Value := AMass.Value * ASquareSpeed.Value; end;{$ENDIF}
-operator *(const ASquareSpeed: TSquareMetersPerSquareSecond; const AMass: TKilograms): TJoules;
-{$IFDEF IMPL}begin result.Value := ASquareSpeed.Value * AMass.Value; end;{$ENDIF}
-operator /(const AWork: TJoules; const ASquareSpeed: TSquareMetersPerSquareSecond): TKilograms;
-{$IFDEF IMPL}begin result.Value := AWork.Value / ASquareSpeed.Value; end;{$ENDIF}
-operator /(const AWork: TJoules; const AMass: TKilograms): TSquareMetersPerSquareSecond;
-{$IFDEF IMPL}begin result.Value := AWork.Value / AMass.Value; end;{$ENDIF}
+// alternate definitions
+{$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TSquareMeterPerSquareSecondId}{$DEFINE ProdId:=TJouleId}
+{$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TSquareMetersPerSquareSecond}{$DEFINE ProdQty:=TJoules}
+{$DEFINE ALT_PROD}{$i dim.pas} // J = kg * m2/s2
 
 { units of charge and electric pontential }
 {$IFDEF INTF}
@@ -462,20 +421,10 @@ operator /(const ACharge: TCoulombs; const ACurrent: TAmperes): TSeconds; inline
 operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts;
 {$IFDEF IMPL}begin result.Value := AWork.Value / ACharge.Value; end;{$ENDIF}
 
-// alternative definition of W = V * A
-operator *(const {%H-}V: TVoltId; const {%H-}A: TAmpereId): TWattId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}A: TAmpereId; const {%H-}V: TVoltId): TWattId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}W: TWattId; const {%H-}V: TVoltId): TAmpereId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}W: TWattId; const {%H-}A: TAmpereId): TVoltId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-operator *(const AVoltage: TVolts; const ACurrent: TAmperes): TWatts;
-{$IFDEF IMPL}begin result.Value := ACurrent.Value * AVoltage.Value; end;{$ENDIF}
-operator *(const ACurrent: TAmperes; const AVoltage: TVolts): TWatts;
-{$IFDEF IMPL}begin result.Value := ACurrent.Value * AVoltage.Value; end;{$ENDIF}
-operator /(const APower: TWatts; const AVoltage: TVolts): TAmperes;
-{$IFDEF IMPL}begin result.Value := APower.Value / AVoltage.Value; end;{$ENDIF}
-operator /(const APower: TWatts; const ACurrent: TAmperes): TVolts;
-{$IFDEF IMPL}begin result.Value := APower.Value / ACurrent.Value; end;{$ENDIF}
+// alternate definitions
+{$DEFINE LeftId:=TVoltId}{$DEFINE RightId:=TAmpereId}{$DEFINE ProdId:=TWattId}
+{$DEFINE LeftQty:=TVolts}{$DEFINE RightQty:=TAmperes}{$DEFINE ProdQty:=TWatts}
+{$DEFINE ALT_PROD}{$i dim.pas} // W = V * A
 
 { units of magnetic flux and flux density }
 {$IFDEF INTF}
@@ -557,35 +506,14 @@ operator /(const AValue: double; const AResistance: TOhms): TSiemens;
 operator /(const AValue: double; const AElectricalConductance: TSiemens): TOhms;
 {$IFDEF IMPL}begin result.Value := AValue / AElectricalConductance.Value; end;{$ENDIF}
 
-// alternate definition W = Ω * A2
-operator *(const {%H-}A2: TSquareAmpereId; const {%H-}Ohm: TOhmId): TWattId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}Ohm: TOhmId; const {%H-}A2: TSquareAmpereId): TWattId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}W: TWattId; const {%H-}Ohm: TOhmId): TSquareAmpereId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}W: TWattId; const {%H-}A2: TSquareAmpereId): TOhmId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
+// alternate definitions
+{$DEFINE LeftId:=TOhmId}{$DEFINE RightId:=TSquareAmpereId}{$DEFINE ProdId:=TWattId}
+{$DEFINE LeftQty:=TOhms}{$DEFINE RightQty:=TSquareAmperes}{$DEFINE ProdQty:=TWatts}
+{$DEFINE ALT_PROD}{$i dim.pas} // W = Ω * A2
 
-operator *(const ASquareCurrent: TSquareAmperes; const AResistance: TOhms): TWatts; inline;
-{$IFDEF IMPL}begin result.Value := ASquareCurrent.Value * AResistance.Value; end;{$ENDIF}
-operator *(const AResistance: TOhms; const ASquareCurrent: TSquareAmperes): TWatts;
-{$IFDEF IMPL}begin result.Value := AResistance.Value * ASquareCurrent.Value; end;{$ENDIF}
-operator /(const APower: TWatts; const AResistance: TOhms): TSquareAmperes;
-{$IFDEF IMPL}begin result.Value := APower.Value / AResistance.Value; end;{$ENDIF}
-operator /(const APower: TWatts; const ASquareCurrent: TSquareAmperes): TOhms;
-{$IFDEF IMPL}begin result.Value := APower.Value / ASquareCurrent.Value; end;{$ENDIF}
-
-// definition of V2 = W * Ω
-operator *(const {%H-}W: TWattId; const {%H-}Ohm: TOhmId): TSquareVoltId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}Ohm: TOhmId; const {%H-}W: TWattId): TSquareVoltId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}V2: TSquareVoltId; const {%H-}W: TWattId): TOhmId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}V2: TSquareVoltId; const {%H-}Ohm: TOhmId): TWattId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-operator *(const APower: TWatts; const AResistance: TOhms): TSquareVolts;
-{$IFDEF IMPL}begin result.Value := APower.Value * AResistance.Value; end;{$ENDIF}
-operator *(const AResistance: TOhms; const APower: TWatts): TSquareVolts;
-{$IFDEF IMPL}begin result.Value := AResistance.Value * APower.Value; end;{$ENDIF}
-operator /(const ASquareVoltage: TSquareVolts; const APower: TWatts): TOhms;
-{$IFDEF IMPL}begin result.Value := ASquareVoltage.Value / APower.Value; end;{$ENDIF}
-operator /(const ASquareVoltage: TSquareVolts; const AResistance: TOhms): TWatts;
-{$IFDEF IMPL}begin result.Value := ASquareVoltage.Value / AResistance.Value; end;{$ENDIF}
+{$DEFINE LeftId:=TWattId}{$DEFINE RightId:=TOhmId}{$DEFINE ProdId:=TSquareVoltId}
+{$DEFINE LeftQty:=TWatts}{$DEFINE RightQty:=TOhms}{$DEFINE ProdQty:=TSquareVolts}
+{$DEFINE ALT_PROD}{$i dim.pas} // V2 = W * Ω
 
 { units of electrical capacitance }
 {$IFDEF INTF}
@@ -613,39 +541,14 @@ operator /(const {%H-}C: TCoulombId; const {%H-}V: TVoltId): TFaradId; inline; {
 operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads;
 {$IFDEF IMPL}begin result.Value := ACharge.Value / AVoltage.Value; end;{$ENDIF}
 
-// alternative definition of C2 = J * F
-operator *(const {%H-}J: TJouleId; const {%H-}F: TFaradId): TSquareCoulombId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}F: TFaradId; const {%H-}J: TJouleId): TSquareCoulombId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}C2: TSquareCoulombId; const {%H-}J: TJouleId): TFaradId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}C2: TSquareCoulombId; const {%H-}F: TFaradId): TJouleId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
+// alternate definitions
+{$DEFINE LeftId:=TJouleId}{$DEFINE RightId:=TFaradId}{$DEFINE ProdId:=TSquareCoulombId}
+{$DEFINE LeftQty:=TJoules}{$DEFINE RightQty:=TFarads}{$DEFINE ProdQty:=TSquareCoulombs}
+{$DEFINE ALT_PROD}{$i dim.pas} // C2 = J * F
 
-operator *(const AWork: TJoules; const ACapacitance: TFarads): TSquareCoulombs;
-{$IFDEF IMPL}begin result.Value := AWork.Value * ACapacitance.Value; end;{$ENDIF}
-operator *(const ACapacitance: TFarads; const AWork: TJoules): TSquareCoulombs;
-{$IFDEF IMPL}begin result.Value := ACapacitance.Value * AWork.Value; end;{$ENDIF}
-operator /(const ASquareCharge: TSquareCoulombs; const AWork: TJoules): TFarads;
-{$IFDEF IMPL}begin result.Value := ASquareCharge.Value / AWork.Value; end;{$ENDIF}
-operator /(const ASquareCharge: TSquareCoulombs; const ACapacitance: TFarads): TJoules;
-{$IFDEF IMPL}begin result.Value := ASquareCharge.Value / ACapacitance.Value; end;{$ENDIF}
-
-// alternate definition of s = F * Ω
-operator *(const {%H-}F: TFaradId; const {%H-}Ohm: TOhmId): TSecondId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}Ohm: TOhmId; const {%H-}F: TFaradId): TSecondId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}s: TSecondId; const {%H-}F: TFaradId): TOhmId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}s: TSecondId; const {%H-}Ohm: TOhmId): TFaradId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-
-operator *(const ACapacitance: TFarads; const AImpedance: TOhms): TSeconds;
-{$IFDEF IMPL}begin result.Value := ACapacitance.Value * AImpedance.Value; end;{$ENDIF}
-operator *(const AImpedance: TOhms; const ACapacitance: TFarads): TSeconds;
-{$IFDEF IMPL}begin result.Value := AImpedance.Value * ACapacitance.Value; end;{$ENDIF}
-operator /(const ATime: TSeconds; const ACapacitance: TFarads): TOhms;
-{$IFDEF IMPL}begin result.Value := ATime.Value / ACapacitance.Value; end;{$ENDIF}
-operator /(const ATime: TSeconds; const AImpedance: TOhms): TFarads;
-{$IFDEF IMPL}begin result.Value := ATime.Value / AImpedance.Value; end;{$ENDIF}
+{$DEFINE LeftId:=TFaradId}{$DEFINE RightId:=TOhmId}{$DEFINE ProdId:=TSecondId}
+{$DEFINE LeftQty:=TFarads}{$DEFINE RightQty:=TOhms}{$DEFINE ProdQty:=TSeconds}
+{$DEFINE ALT_PROD}{$i dim.pas} // s = F * Ω
 
 { units of luminous flux and illuminance }
 {$IFDEF INTF}

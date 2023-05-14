@@ -351,7 +351,7 @@ type
     class operator =(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): boolean;
     class function Name: string; inline; static;
     class function Symbol: string; inline; static;
-    class function From(const AQuantity: TQuantity): TQuantity; static;
+    class function From(const AQuantity: TQuantity): TQuantity; inline; static;
   {$ENDIF}{$UNDEF UNIT_ID_INTF}
   {$IFDEF SQUARABLE_UNIT_ID_INTF}
     class operator *(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): TSquareId;
@@ -599,6 +599,28 @@ function GetRatioSymbol(ANumSymbol, ADenomSymbol: string): string;
 function GetRatioName(ANumName, ADenomName: string): string;
 function GetProductSymbol(ALeftSymbol, ARightSymbol: string): string;
 function GetProductName(ALeftName, ARightName: string): string;
+
+{$UNDEF DIM}{$ENDIF}
+{$IFDEF ALT_PROD}
+operator *(const {%H-}ALeft: LeftId; const {%H-}ARight: RightId): ProdId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator *(const {%H-}ARight: RightId; const {%H-}ALeft: LeftId): ProdId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const {%H-}AProd: ProdId; const {%H-}ALeft: LeftId): RightId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const {%H-}AProd: ProdId; const {%H-}ARight: RightId): LeftId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+
+operator *(const {%H-}ALeft: LeftQty; const {%H-}ARight: RightQty): ProdQty; inline;
+{$IFDEF IMPL}begin result.Value := ALeft.Value * ARight.Value; end;{$ENDIF}
+operator *(const {%H-}ARight: RightQty; const {%H-}ALeft: LeftQty): ProdQty; inline;
+{$IFDEF IMPL}begin result.Value := ARight.Value * ALeft.Value; end;{$ENDIF}
+operator /(const {%H-}AProd: ProdQty; const {%H-}ALeft: LeftQty): RightQty; inline;
+{$IFDEF IMPL}begin result.Value := AProd.Value / ALeft.Value; end;{$ENDIF}
+operator /(const {%H-}AProd: ProdQty; const {%H-}ARight: RightQty): LeftQty; inline;
+{$IFDEF IMPL}begin result.Value := AProd.Value / ARight.Value; end;{$ENDIF}
+{$UNDEF ALT_PROD}{$ENDIF}
+{$IFNDEF DIM}{$DEFINE DIM}
 
 {$DEFINE INTF}
 {$i baseunits.inc}
