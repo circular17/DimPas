@@ -16,20 +16,17 @@ type
   TKilometersPerHour = specialize TFactoredRatioQuantity<TMeter, TSecond, TKilometer, THour>;
 {$ENDIF}
 
-operator /(const {%H-}m: TMeterId; const {%H-}s: TSecondId): TMeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ALength: TMeters; const ADuration: TSeconds): TMetersPerSecond; inline;
-{$IFDEF IMPL}begin result.Value:= ALength.Value / ADuration.Value; end;{$ENDIF}
+{$DEFINE NumId:=TMeterId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TMeterPerSecondId}
+{$DEFINE NumQty:=TMeters}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TMetersPerSecond}
+{$DEFINE DEF_RATIO}{$i dim.pas} // m/s = m / s
 
-operator /(const {%H-}mm: TMillimeterId; const {%H-}s: TSecondId): TMillimeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ALength: TMillimeters; const ADuration: TSeconds): TMillimetersPerSecond; inline;
-{$IFDEF IMPL}begin result.Value:= ALength.Value / ADuration.Value; end;{$ENDIF}
+{$DEFINE NumId:=TMillimeterId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TMillimeterPerSecondId}
+{$DEFINE NumQty:=TMillimeters}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TMillimetersPerSecond}
+{$DEFINE DEF_RATIO}{$i dim.pas} // mm/s = mm / s
 
-operator /(const {%H-}km: TKilometerId; const {%H-}h: THourId): TKilometerPerHourId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ALength: TKilometers; const ADuration: THours): TKilometersPerHour; inline;
-{$IFDEF IMPL}begin result.Value:= ALength.Value / ADuration.Value; end;{$ENDIF}
+{$DEFINE NumId:=TKilometerId}{$DEFINE DenomId:=THourId}{$DEFINE RatioId:=TKilometerPerHourId}
+{$DEFINE NumQty:=TKilometers}{$DEFINE DenomQty:=THours}{$DEFINE RatioQty:=TKilometersPerHour}
+{$DEFINE DEF_RATIO}{$i dim.pas} // km/h = km / h
 
 { Units of acceleration }
 {$IFDEF INTF}
@@ -48,20 +45,13 @@ type
   TSquareMetersPerSquareSecond = specialize TRatioQuantity<TSquareMeter, TSquareSecond>;
 {$ENDIF}
 
-operator /(const {%H-}m_s: TMeterPerSecondId; const {%H-}s: TSecondId): TMeterPerSecondSquaredId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ASpeed: TMetersPerSecond; const ATime: TSeconds): TMetersPerSecondSquared; inline;
-{$IFDEF IMPL}begin result.Value := ASpeed.Value / ATime.Value; end;{$ENDIF}
+{$DEFINE NumId:=TMeterPerSecondId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TMeterPerSecondSquaredId}
+{$DEFINE NumQty:=TMetersPerSecond}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TMetersPerSecondSquared}
+{$DEFINE DEF_RATIO}{$i dim.pas} // m/s2 = (m/s) / s
 
-operator /(const {%H-}km_h: TKilometerPerHourId; const {%H-}s: TSecondId): TKilometerPerHourPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ASpeed: TKilometersPerHour; const ATime: TSeconds): TKilometersPerHourPerSecond; inline;
-{$IFDEF IMPL}begin result.Value := ASpeed.Value / ATime.Value; end;{$ENDIF}
-
-operator /(const {%H-}m2: TSquareMeterId; const {%H-}s2: TSquareSecondId): TSquareMeterPerSquareSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AArea: TSquareMeters; const ASquareTime: TSquareSeconds): TSquareMetersPerSquareSecond; inline;
-{$IFDEF IMPL}begin result.Value := AArea.Value / ASquareTime.Value; end;{$ENDIF}
+{$DEFINE NumId:=TKilometerPerHourId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TKilometerPerHourPerSecondId}
+{$DEFINE NumQty:=TKilometersPerHour}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TKilometersPerHourPerSecond}
+{$DEFINE DEF_RATIO}{$i dim.pas} // km/h/s = (km/h) / s
 
 // alternate definitions
 {$DEFINE LeftId:=TMeterPerSecondSquaredId}{$DEFINE RightId:=TSquareSecondId}{$DEFINE ProdId:=TMeterId}
@@ -106,25 +96,21 @@ type
                                             <TGram, TCubicMeter, TKilogram, TCubicMillimeter>;
 {$ENDIF}
 
-operator /(const {%H-}g: TGramId; const {%H-}m3: TCubicMeterId): TGramPerCubicMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AMass: TGrams; const AVolume: TCubicMeters): TGramsPerCubicMeter; inline;
-{$IFDEF IMPL}begin result.Value := AMass.Value / AVolume.Value; end;{$ENDIF}
+{$DEFINE NumId:=TGramId}{$DEFINE DenomId:=TCubicMeterId}{$DEFINE RatioId:=TGramPerCubicMeterId}
+{$DEFINE NumQty:=TGrams}{$DEFINE DenomQty:=TCubicMeters}{$DEFINE RatioQty:=TGramsPerCubicMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas} // g/m3 = g / m3
 
-operator /(const {%H-}g: TGramId; const {%H-}mm3: TCubicMillimeterId): TGramPerCubicMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AMass: TGrams; const AVolume: TCubicMillimeters): TGramsPerCubicMillimeter; inline;
-{$IFDEF IMPL}begin result.Value := AMass.Value / AVolume.Value; end;{$ENDIF}
+{$DEFINE NumId:=TGramId}{$DEFINE DenomId:=TCubicMillimeterId}{$DEFINE RatioId:=TGramPerCubicMillimeterId}
+{$DEFINE NumQty:=TGrams}{$DEFINE DenomQty:=TCubicMillimeters}{$DEFINE RatioQty:=TGramsPerCubicMillimeter}
+{$DEFINE DEF_RATIO}{$i dim.pas} // g/mm3 = g / mm3
 
-operator /(const {%H-}kg: TKilogramId; const {%H-}m3: TCubicMeterId): TKilogramPerCubicMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AMass: TKilograms; const AVolume: TCubicMeters): TKilogramsPerCubicMeter; inline;
-{$IFDEF IMPL}begin result.Value := AMass.Value / AVolume.Value; end;{$ENDIF}
+{$DEFINE NumId:=TKilogramId}{$DEFINE DenomId:=TCubicMeterId}{$DEFINE RatioId:=TKilogramPerCubicMeterId}
+{$DEFINE NumQty:=TKilograms}{$DEFINE DenomQty:=TCubicMeters}{$DEFINE RatioQty:=TKilogramsPerCubicMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas} // kg/m3 = kg / m3
 
-operator /(const {%H-}kg: TKilogramId; const {%H-}mm3: TCubicMillimeterId): TKilogramPerCubicMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AMass: TKilograms; const AVolume: TCubicMillimeters): TKilogramsPerCubicMillimeter; inline;
-{$IFDEF IMPL}begin result.Value := AMass.Value / AVolume.Value; end;{$ENDIF}
+{$DEFINE NumId:=TKilogramId}{$DEFINE DenomId:=TCubicMillimeterId}{$DEFINE RatioId:=TKilogramPerCubicMillimeterId}
+{$DEFINE NumQty:=TKilograms}{$DEFINE DenomQty:=TCubicMillimeters}{$DEFINE RatioQty:=TKilogramsPerCubicMillimeter}
+{$DEFINE DEF_RATIO}{$i dim.pas} // kg/mm3 = kg / mm3
 
 { units of gravitaional work }
 {$IFDEF INTF}
@@ -154,12 +140,10 @@ type
   TKilogramsPerSecond = specialize TFactoredNumeratorQuantity<TGram, TSecond, TKilogram>;
 {$ENDIF}
 
-operator /(const {%H-}g: TKilogramId; const {%H-}s: TSecondId): TGramPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AMass: TGrams; const ATime: TSeconds): TGramsPerSecond; inline;
-{$IFDEF IMPL}begin result.Value := AMass.Value / ATime.Value; end;{$ENDIF}
+{$DEFINE NumId:=TGramId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TGramPerSecondId}
+{$DEFINE NumQty:=TGrams}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TGramsPerSecond}
+{$DEFINE DEF_RATIO}{$i dim.pas} // g/s = g / s
 
-operator /(const {%H-}g: TKilogramId; const {%H-}s: TSecondId): TKilogramPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AMass: TKilograms; const ATime: TSeconds): TKilogramsPerSecond; inline;
-{$IFDEF IMPL}begin result.Value := AMass.Value / ATime.Value; end;{$ENDIF}
+{$DEFINE NumId:=TKilogramId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TKilogramPerSecondId}
+{$DEFINE NumQty:=TKilograms}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TKilogramsPerSecond}
+{$DEFINE DEF_RATIO}{$i dim.pas} // kg/s = kg / s

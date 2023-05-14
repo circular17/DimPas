@@ -319,22 +319,17 @@ var
   MPa: TMegapascalId;
 {$ENDIF}
 
-operator /(const {%H-}N: TNewtonId; const {%H-}m2: TSquareMeterId): TPascalId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AForce: TNewtons; const AArea: TSquareMeters): TPascals; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / AArea.Value; end;{$ENDIF}
+{$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TPascalId}
+{$DEFINE NumQty:=TNewtons}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TPascals}
+{$DEFINE DEF_RATIO}{$i dim.pas} // Pa = N / m2
 
-operator /(const {%H-}N: TNewtonId; const {%H-}mm2: TSquareMillimeterId): TMegapascalId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AForce: TNewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / AArea.Value; end;{$ENDIF}
-operator/(const AForce: TKilonewtons; const AArea: TSquareMillimeters): TMegapascals; inline;
-{$IFDEF IMPL}begin result := AForce.ToBase / AArea; end;{$ENDIF}
+{$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TSquareMillimeterId}{$DEFINE RatioId:=TMegapascalId}
+{$DEFINE NumQty:=TNewtons}{$DEFINE DenomQty:=TSquareMillimeters}{$DEFINE RatioQty:=TMegapascals}
+{$DEFINE DEF_RATIO}{$i dim.pas} // MPa = N / mm2
 
-operator /(const {%H-}kN: TKilonewtonId; const {%H-}m2: TSquareMeterId): TKilopascalId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator/(const AForce: TKilonewtons; const AArea: TSquareMeters): TKilopascals; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / AArea.Value; end;{$ENDIF}
+{$DEFINE NumId:=TKilonewtonId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TKilopascalId}
+{$DEFINE NumQty:=TKilonewtons}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TKilopascals}
+{$DEFINE DEF_RATIO}{$i dim.pas} // kPa = kN / m2
 
 { units of energy and power }
 {$IFDEF INTF}
@@ -351,10 +346,9 @@ var
   W: TWattId;
 {$ENDIF}
 
-operator /(const {%H-}J: TJouleId; const {%H-}s: TSecondId): TWattId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AWork: TJoules; const ATime: TSeconds): TWatts; inline;
-{$IFDEF IMPL}begin result.Value := AWork.Value / ATime.Value; end;{$ENDIF}
+{$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TWattId}
+{$DEFINE NumQty:=TJoules}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TWatts}
+{$DEFINE DEF_RATIO}{$i dim.pas} // W = J * s
 
 {$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TJouleId}
 {$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TJoules}
@@ -397,9 +391,9 @@ var
 {$DEFINE LeftQty:=TAmperes}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TCoulombs}
 {$DEFINE DEF_PROD}{$i dim.pas} // C = A * s
 
-operator /(const {%H-}J: TJouleId; const {%H-}C: TCoulombId): TVoltId; inline; {$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AWork: TJoules; const ACharge: TCoulombs): TVolts; inline;
-{$IFDEF IMPL}begin result.Value := AWork.Value / ACharge.Value; end;{$ENDIF}
+{$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TCoulombId}{$DEFINE RatioId:=TVoltId}
+{$DEFINE NumQty:=TJoules}{$DEFINE DenomQty:=TCoulombs}{$DEFINE RatioQty:=TVolts}
+{$DEFINE DEF_RATIO}{$i dim.pas} // V = J / C
 
 // dimension equivalence
 operator:=(const {%H-}C2: TSquareCoulombId): TSquareCoulombFactorId; inline;
@@ -433,10 +427,9 @@ var
 {$DEFINE LeftQty:=TVolts}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TWebers}
 {$DEFINE DEF_PROD}{$i dim.pas} // Wb = V * s
 
-operator /(const {%H-}Wb: TWeberId; const {%H-}m2: TSquareMeterId): TTeslaId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AMagneticFlux: TWebers; const AArea: TSquareMeters): TTeslas; inline;
-{$IFDEF IMPL}begin result.Value := AMagneticFlux.Value / AArea.Value; end;{$ENDIF}
+{$DEFINE NumId:=TWeberId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TTeslaId}
+{$DEFINE NumQty:=TWebers}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TTeslas}
+{$DEFINE DEF_RATIO}{$i dim.pas} // T = Wb / m2
 
 { units of electrical resistance, conductance and inductance }
 {$IFDEF INTF}
@@ -457,20 +450,17 @@ var
   henry: THenryId;
 {$ENDIF}
 
-operator /(const {%H-}V: TVoltId; const {%H-}A: TAmpereId): TOhmId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AVoltage: TVolts; const ACurrent: TAmperes): TOhms; inline;
-{$IFDEF IMPL}begin result.Value := AVoltage.Value / ACurrent.Value; end;{$ENDIF}
+{$DEFINE NumId:=TVoltId}{$DEFINE DenomId:=TAmpereId}{$DEFINE RatioId:=TOhmId}
+{$DEFINE NumQty:=TVolts}{$DEFINE DenomQty:=TAmperes}{$DEFINE RatioQty:=TOhms}
+{$DEFINE DEF_RATIO}{$i dim.pas} // Ω = V / A
 
-operator /(const {%H-}A: TAmpereId; const {%H-}V: TVoltId): TSiemensId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ACurrent: TAmperes; const AVoltage: TVolts): TSiemens; inline;
-{$IFDEF IMPL}begin result.Value := ACurrent.Value / AVoltage.Value; end;{$ENDIF}
+{$DEFINE NumId:=TAmpereId}{$DEFINE DenomId:=TVoltId}{$DEFINE RatioId:=TSiemensId}
+{$DEFINE NumQty:=TAmperes}{$DEFINE DenomQty:=TVolts}{$DEFINE RatioQty:=TSiemens}
+{$DEFINE DEF_RATIO}{$i dim.pas} // S = A / V
 
-operator /(const {%H-}Wb: TWeberId; const {%H-}A: TAmpereId): THenryId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AMagneticFlux: TWebers; const ACurrent: TAmperes): THenrys; inline;
-{$IFDEF IMPL}begin result.Value := AMagneticFlux.Value / ACurrent.Value; end;{$ENDIF}
+{$DEFINE NumId:=TWeberId}{$DEFINE DenomId:=TAmpereId}{$DEFINE RatioId:=THenryId}
+{$DEFINE NumQty:=TWebers}{$DEFINE DenomQty:=TAmperes}{$DEFINE RatioQty:=THenrys}
+{$DEFINE DEF_RATIO}{$i dim.pas} // H = Wb / A
 
 // alternate definition of S = 1 / Ω
 operator /(const {%H-}AValue: double; const {%H-}ohm: TOhmId): TSiemensId; inline;
@@ -510,10 +500,9 @@ var
   pF: specialize TFactoredUnitId<TFarad, specialize TPicoUnit<TFarad>>;
 {$ENDIF}
 
-operator /(const {%H-}C: TCoulombId; const {%H-}V: TVoltId): TFaradId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ACharge: TCoulombs; const AVoltage: TVolts): TFarads; inline;
-{$IFDEF IMPL}begin result.Value := ACharge.Value / AVoltage.Value; end;{$ENDIF}
+{$DEFINE NumId:=TCoulombId}{$DEFINE DenomId:=TVoltId}{$DEFINE RatioId:=TFaradId}
+{$DEFINE NumQty:=TCoulombs}{$DEFINE DenomQty:=TVolts}{$DEFINE RatioQty:=TFarads}
+{$DEFINE DEF_RATIO}{$i dim.pas} // F = C / V
 
 // alternate definitions
 {$DEFINE LeftId:=TJouleId}{$DEFINE RightId:=TFaradId}{$DEFINE ProdId:=TSquareCoulombId}
@@ -542,10 +531,9 @@ var
 {$DEFINE LeftQty:=TCandelas}{$DEFINE RightQty:=TSteradians}{$DEFINE ProdQty:=TLumens}
 {$DEFINE DEF_PROD}{$i dim.pas} // Wb = V * s
 
-operator /(const {%H-}lm: TLumenId; const {%H-}m2: TSquareMeterId): TLuxId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator/(const ALuminousFlux: TLumens; const AArea: TSquareMeters): TLuxQuantity; inline;
-{$IFDEF IMPL}begin result.Value := ALuminousFlux.Value / AArea.Value; end;{$ENDIF}
+{$DEFINE NumId:=TLumenId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TLuxId}
+{$DEFINE NumQty:=TLumens}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TLuxQuantity}
+{$DEFINE DEF_RATIO}{$i dim.pas} // lx = lm / m2
 
 { units of radioactivity : Bq = 1 / s }
 {$IFDEF INTF}
@@ -645,11 +633,9 @@ function TSievertHelper.From(const ASquareSpeed: TSquareMetersPerSquareSecond): 
 begin result.Value := ASquareSpeed.Value; end;
 {$ENDIF}
 
-// definition
-operator /(const {%H-}J: TJouleId; const {%H-}kg: TKilogramId): TGrayId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AEnergy: TJoules; const AMass: TKilograms): TGrays; inline;
-{$IFDEF IMPL}begin result.Value := AEnergy.Value / AMass.Value; end;{$ENDIF}
+{$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TKilogramId}{$DEFINE RatioId:=TGrayId}
+{$DEFINE NumQty:=TJoules}{$DEFINE DenomQty:=TKilograms}{$DEFINE RatioQty:=TGrays}
+{$DEFINE DEF_RATIO}{$i dim.pas} // Gy = J / kg
 
 // dimension equivalence
 operator:=(const AEquivalentDose: TSieverts): TSquareMetersPerSquareSecond; inline;
@@ -667,7 +653,6 @@ var
   kat: TKatalId;
 {$ENDIF}
 
-operator /(const {%H-}mol: TMoleId; const {%H-}s: TSecondId): TKatalId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator/(const AAmountOfSustance: TMoles; const ATime: TSeconds): TKatals;
-{$IFDEF IMPL}begin result.Value := AAmountOfSustance.Value / ATime.Value; end;{$ENDIF}
+{$DEFINE NumId:=TMoleId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TKatalId}
+{$DEFINE NumQty:=TMoles}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TKatals}
+{$DEFINE DEF_RATIO}{$i dim.pas} // kat = mol / s

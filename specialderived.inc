@@ -8,10 +8,9 @@ type
   TRadiansPerSecond = specialize TRatioQuantity<TRadian, TSecond>;
 {$ENDIF}
 
-operator /(const {%H-}rad: TRadianId; const {%H-}s: TSecondId): TRadianPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator/(const AAngle: TRadians; const ADuration: TSeconds): TRadiansPerSecond; inline;
-{$IFDEF IMPL}begin result.Value:= AAngle.Value / ADuration.Value; end;{$ENDIF}
+{$DEFINE NumId:=TRadianId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TRadianPerSecondId}
+{$DEFINE NumQty:=TRadians}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TRadiansPerSecond}
+{$DEFINE DEF_RATIO}{$i dim.pas} // rad/s = rad / s
 
 { Units of acceleration }
 {$IFDEF INTF}
@@ -20,15 +19,14 @@ type
   TRadiansPerSecondSquared = specialize TRatioQuantity<TRadianPerSecond, TSecond>;
 {$ENDIF}
 
-operator /(const {%H-}rad_s: TRadianPerSecondId; const {%H-}s: TSecondId): TRadianPerSecondSquaredId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator/(const ASpeed: TRadiansPerSecond; const ATime: TSeconds): TRadiansPerSecondSquared; inline;
-{$IFDEF IMPL}begin result.Value := ASpeed.Value / ATime.Value; end;{$ENDIF}
+{$DEFINE NumId:=TRadianPerSecondId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TRadianPerSecondSquaredId}
+{$DEFINE NumQty:=TRadiansPerSecond}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TRadiansPerSecondSquared}
+{$DEFINE DEF_RATIO}{$i dim.pas} // rad/s2 = rad/s / s
 
-operator /(const {%H-}rad: TRadianId; const {%H-}s2: TSquareSecondId): TRadianPerSecondSquaredId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator/(const AAngle: TRadians; const ASquareTime: TSquareSeconds): TRadiansPerSecondSquared; inline;
-{$IFDEF IMPL}begin result.Value := AAngle.Value / ASquareTime.Value; end;{$ENDIF}
+// alternate definitions
+{$DEFINE LeftId:=TRadianPerSecondSquaredId}{$DEFINE RightId:=TSquareSecondId}{$DEFINE ProdId:=TRadianId}
+{$DEFINE LeftQty:=TRadiansPerSecondSquared}{$DEFINE RightQty:=TSquareSeconds}{$DEFINE ProdQty:=TRadians}
+{$DEFINE ALT_PROD}{$i dim.pas} // rad = rad/s2 * s2
 
 { Mechanical derived units }
 {$IFDEF INTF}
@@ -50,20 +48,17 @@ type
   TPascalSeconds = specialize TQuantityProduct<TPascal, TSecond>;
 {$ENDIF}
 
-operator /(const {%H-}N: TNewtonId; const {%H-}m: TMeterId): TNewtonPerMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AForce: TNewtons; const ALength: TMeters): TNewtonsPerMeter; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / ALength.Value; end;{$ENDIF}
+{$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TNewtonPerMeterId}
+{$DEFINE NumQty:=TNewtons}{$DEFINE DenomQty:=TMeters}{$DEFINE RatioQty:=TNewtonsPerMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas} // N/m = N / m
 
-operator /(const {%H-}N: TNewtonId; const {%H-}mm: TMillimeterId): TNewtonPerMillimeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AForce: TNewtons; const ALength: TMillimeters): TNewtonsPerMillimeter; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / ALength.Value; end;{$ENDIF}
+{$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TMillimeterId}{$DEFINE RatioId:=TNewtonPerMillimeterId}
+{$DEFINE NumQty:=TNewtons}{$DEFINE DenomQty:=TMillimeters}{$DEFINE RatioQty:=TNewtonsPerMillimeter}
+{$DEFINE DEF_RATIO}{$i dim.pas} // N/mm = N / mm
 
-operator /(const {%H-}N: TNewtonId; const {%H-}m3: TCubicMeterId): TNewtonPerCubicMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AForce: TNewtons; const AVolume: TCubicMeters): TNewtonsPerCubicMeter; inline;
-{$IFDEF IMPL}begin result.Value := AForce.Value / AVolume.Value; end;{$ENDIF}
+{$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TCubicMeterId}{$DEFINE RatioId:=TNewtonPerCubicMeterId}
+{$DEFINE NumQty:=TNewtons}{$DEFINE DenomQty:=TCubicMeters}{$DEFINE RatioQty:=TNewtonsPerCubicMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas} // N/m3 = N / m3
 
 {$DEFINE LeftId:=TPascalId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:=TPascalSecondId}
 {$DEFINE LeftQty:=TPascals}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TPascalSeconds}

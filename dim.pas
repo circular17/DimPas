@@ -622,6 +622,13 @@ operator /(const {%H-}AProd: ProdQty; const {%H-}ALeft: LeftQty): RightQty; inli
 operator /(const {%H-}AProd: ProdQty; const {%H-}ARight: RightQty): LeftQty; inline;
 {$IFDEF IMPL}begin result.Value := AProd.Value / ARight.Value; end;{$ENDIF}
 {$UNDEF ALT_PROD}{$UNDEF DEF_PROD}{$ENDIF}
+
+{$IFDEF DEF_RATIO}
+operator /(const {%H-}ANum: NumId; const {%H-}ADenom: DenomId): RatioId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const ANum: NumQty; const ADenom: DenomQty): RatioQty; inline;
+{$IFDEF IMPL}begin result.Value:= ANum.Value / ADenom.Value; end;{$ENDIF}
+{$UNDEF DEF_RATIO}{$ENDIF}
 {$IFNDEF DIM}{$DEFINE DIM}
 
 {$DEFINE INTF}
