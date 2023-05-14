@@ -53,6 +53,10 @@ type
 {$DEFINE NumQty:=TKilometersPerHour}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TKilometersPerHourPerSecond}
 {$DEFINE DEF_RATIO}{$i dim.pas} // km/h/s = (km/h) / s
 
+{$DEFINE NumId:=TSquareMeterId}{$DEFINE DenomId:=TSquareSecondId}{$DEFINE RatioId:=TSquareMeterPerSquareSecondId}
+{$DEFINE NumQty:=TSquareMeters}{$DEFINE DenomQty:=TSquareSeconds}{$DEFINE RatioQty:=TSquareMetersPerSquareSecond}
+{$DEFINE DEF_RATIO}{$i dim.pas} // m2/s2 = m2 / s2
+
 // alternate definitions
 {$DEFINE LeftId:=TMeterPerSecondSquaredId}{$DEFINE RightId:=TSquareSecondId}{$DEFINE ProdId:=TMeterId}
 {$DEFINE LeftQty:=TMetersPerSecondSquared}{$DEFINE RightQty:=TSquareSeconds}{$DEFINE ProdQty:=TMeters}
