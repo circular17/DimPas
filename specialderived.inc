@@ -78,6 +78,10 @@ type
 {$DEFINE LeftQty:=TMegapascals}{$DEFINE RightQty:=TMillimeters}{$DEFINE ProdQty:=TNewtonsPerMillimeter}
 {$DEFINE ALT_PROD}{$i dim.pas} // N/mm = MPa * mm
 
+{$DEFINE LeftId:=TNewtonPerCubicMeterId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TPascalId}
+{$DEFINE LeftQty:=TNewtonsPerCubicMeter}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TPascals}
+{$DEFINE ALT_PROD}{$i dim.pas} // [ N/m3 ] * [ m ] = [ Pa ]
+
 {$DEFINE LeftId:=TKilogramPerCubicMeterId}{$DEFINE RightId:=TMeterPerSecondSquaredId}{$DEFINE ProdId:=TNewtonPerCubicMeterId}
 {$DEFINE LeftQty:=TKilogramsPerCubicMeter}{$DEFINE RightQty:=TMetersPerSecondSquared}{$DEFINE ProdQty:=TNewtonsPerCubicMeter}
 {$DEFINE ALT_PROD}{$i dim.pas} // N/m3 = kg/m3 * m/s2

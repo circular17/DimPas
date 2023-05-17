@@ -322,6 +322,11 @@ var
 {$DEFINE NumQty:=TKilonewtons}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TKilopascals}
 {$DEFINE DEF_RATIO}{$i dim.pas} // kPa = kN / m2
 
+// alternative definition
+{$DEFINE LeftId:=TKilogramPerCubicMeterId}{$DEFINE RightId:=TSquareMeterPerSquareSecondId}{$DEFINE ProdId:=TPascalId}
+{$DEFINE LeftQty:=TKilogramsPerCubicMeter}{$DEFINE RightQty:=TSquareMetersPerSquareSecond}{$DEFINE ProdQty:=TPascals}
+{$DEFINE ALT_PROD}{$i dim.pas} // [ Pa ] = [ kg/m3 ] * [ m2/s2 ]
+
 { units of energy and power }
 {$IFDEF INTF}
 type
