@@ -79,15 +79,6 @@ operator /(const {%H-}AValue: double; const {%H-}s: THertzId): TSecondId; inline
 operator /(const AValue: double; const AFrequency: THertz): TSeconds; inline;
 {$IFDEF IMPL}begin result.Value := AValue / AFrequency.Value; end;{$ENDIF}
 
-// alternate definitions
-{$DEFINE LeftId:=TMeterId}{$DEFINE RightId:=THertzId}{$DEFINE ProdId:=TMeterPerSecondId}
-{$DEFINE LeftQty:=TMeters}{$DEFINE RightQty:=THertz}{$DEFINE ProdQty:=TMetersPerSecond}
-{$DEFINE ALT_PROD}{$i dim.pas} // m/s = m * Hz
-
-{$DEFINE LeftId:=TMillimeterId}{$DEFINE RightId:=THertzId}{$DEFINE ProdId:=TMillimeterPerSecondId}
-{$DEFINE LeftQty:=TMillimeters}{$DEFINE RightQty:=THertz}{$DEFINE ProdQty:=TMillimetersPerSecond}
-{$DEFINE ALT_PROD}{$i dim.pas} // mm/s = mm * Hz
-
 { angle units }
 {$IFDEF INTF}
 type

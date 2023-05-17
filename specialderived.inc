@@ -12,6 +12,11 @@ type
 {$DEFINE NumQty:=TRadians}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TRadiansPerSecond}
 {$DEFINE DEF_RATIO}{$i dim.pas} // rad/s = rad / s
 
+// alternative definition
+{$DEFINE LeftId:=TRadianPerSecondId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TMeterPerSecondId}
+{$DEFINE LeftQty:=TRadiansPerSecond}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TMetersPerSecond}
+{$DEFINE ALT_PROD}{$i dim.pas} // rad/s * m = m/s
+
 { Units of acceleration }
 {$IFDEF INTF}
 type
