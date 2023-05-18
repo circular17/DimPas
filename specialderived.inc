@@ -93,6 +93,8 @@ type
 { Heat and Thermodynamics }
 {$IFDEF INTF}
 type
+  // HEAT CAPACITY
+
   TJoulePerKelvin = specialize TRatioUnit<TJoule, TKelvin>;
   TJoulePerKelvinId = specialize TRatioUnitId<TJoule, TKelvin>;
   TJoulesPerKelvin = specialize TRatioQuantity<TJoule, TKelvin>;
@@ -104,7 +106,46 @@ type
   TJoulePerKilogramPerKelvin = specialize TRatioUnit<TJoule, TKilogramKelvin>;
   TJoulePerKilogramPerKelvinId = specialize TRatioUnitId<TJoule, TKilogramKelvin>;
   TJoulesPerKilogramPerKelvin = specialize TRatioQuantity<TJoule, TKilogramKelvin>;
+
+  // HEAT CONDUCTION
+
+  TKelvinPerMeter = specialize TRatioUnit<TKelvin, TMeter>;
+  TKelvinPerMeterId = specialize TRatioUnitId<TKelvin, TMeter>;
+  TKelvinsPerMeter = specialize TRatioQuantity<TKelvin, TMeter>;
+
+  TMeterKelvin = specialize TUnitProduct<TMeter, TKelvin>;
+  TMeterKelvinId = specialize TUnitProductId<TMeter, TKelvin>;
+  TMeterKelvins = specialize TQuantityProduct<TMeter, TKelvin>;
+
+  TWattPerKelvin = specialize TRatioUnit<TWatt, TKelvin>;
+  TWattPerKelvinId = specialize TRatioUnitId<TWatt, TKelvin>;
+  TWattsPerKelvin = specialize TRatioQuantity<TWatt, TKelvin>;
+
+  TWattPerMeter = specialize TRatioUnit<TWatt, TMeter>;
+  TWattPerMeterId = specialize TRatioUnitId<TWatt, TMeter>;
+  TWattsPerMeter = specialize TRatioQuantity<TWatt, TMeter>;
+
+  TWattPerSquareMeter = specialize TRatioUnit<TWatt, TSquareMeter>;
+  TWattPerSquareMeterId = specialize TRatioUnitId<TWatt, TSquareMeter>;
+  TWattsPerSquareMeter = specialize TRatioQuantity<TWatt, TSquareMeter>;
+
+  TWattPerMeterPerKelvin = specialize TRatioUnit<TWatt, TMeterKelvin>;
+  TWattPerMeterPerKelvinId = specialize TRatioUnitId<TWatt, TMeterKelvin>;
+  TWattsPerMeterPerKelvin = specialize TRatioQuantity<TWatt, TMeterKelvin>;
+
+  // HEAT CONVECTION
+
+  TSquareMeterKelvin = specialize TUnitProduct<TSquareMeter, TKelvin>;
+  TSquareMeterKelvinId = specialize TUnitProductId<TSquareMeter, TKelvin>;
+  TSquareMeterKelvins = specialize TQuantityProduct<TSquareMeter, TKelvin>;
+
+  TWattPerSquareMeterPerKelvin = specialize TRatioUnit<TWatt, TSquareMeterKelvin>;
+  TWattPerSquareMeterPerKelvinId = specialize TRatioUnitId<TWatt, TSquareMeterKelvin>;
+  TWattsPerSquareMeterPerKelvin = specialize TRatioQuantity<TWatt, TSquareMeterKelvin>;
+
 {$ENDIF}
+
+// HEAT CAPACITY
 
 { main definition [ J/K ] = [ J ] / [ K ] }
 {$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TKelvinId}{$DEFINE RatioId:=TJoulePerKelvinId}
@@ -130,4 +171,73 @@ type
 {$DEFINE LeftId:=TJoulePerKilogramPerKelvinId}{$DEFINE RightId:=TKilogramId}{$DEFINE ProdId:=TJoulePerKelvinId}
 {$DEFINE LeftQty:=TJoulesPerKilogramPerKelvin}{$DEFINE RightQty:=TKilograms}{$DEFINE ProdQty:=TJoulesPerKelvin}
 {$DEFINE ALT_PROD}{$i dim.pas}
+
+// HEAT CONDUCTION
+
+{ main definition [ K/m ] = [ K ] / [ m ] }
+{$DEFINE NumId:=TKelvinId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TKelvinPerMeterId}
+{$DEFINE NumQty:=TKelvins}{$DEFINE DenomQty:=TMeters}{$DEFINE RatioQty:=TKelvinsPerMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ main definition [ m*K ] = [ m ] * [ K ] }
+{$DEFINE LeftId:=TMeterId}{$DEFINE RightId:=TKelvinId}{$DEFINE ProdId:=TMeterKelvinId}
+{$DEFINE LeftQty:=TMeters}{$DEFINE RightQty:=TKelvins}{$DEFINE ProdQty:=TMeterKelvins}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ main definition [ W/K ] = [ W ] / [ K ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TKelvinId}{$DEFINE RatioId:=TWattPerKelvinId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TKelvins}{$DEFINE RatioQty:=TWattsPerKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ main definition [ W/m ] = [ W ] / [ m ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TWattPerMeterId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TMeters}{$DEFINE RatioQty:=TWattsPerMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ main definition [ W/m2 ] = [ W ] / [ m2 ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TWattPerSquareMeterId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TWattsPerSquareMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ main definition [ W/m/K ] = [ W ] / [ m*K ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TMeterKelvinId}{$DEFINE RatioId:=TWattPerMeterPerKelvinId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TMeterKelvins}{$DEFINE RatioQty:=TWattsPerMeterPerKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m/K ] = [ W/m ] / [ K ] }
+{$DEFINE NumId:=TWattPerMeterId}{$DEFINE DenomId:=TKelvinId}{$DEFINE RatioId:=TWattPerMeterPerKelvinId}
+{$DEFINE NumQty:=TWattsPerMeter}{$DEFINE DenomQty:=TKelvins}{$DEFINE RatioQty:=TWattsPerMeterPerKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m/K ] = [ W/K ] / [ m ] }
+{$DEFINE NumId:=TWattPerKelvinId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TWattPerMeterPerKelvinId}
+{$DEFINE NumQty:=TWattsPerKelvin}{$DEFINE DenomQty:=TMeters}{$DEFINE RatioQty:=TWattsPerMeterPerKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m/K ] = [ W/m2 ] / [ K/m ] }
+{$DEFINE NumId:=TWattPerSquareMeterId}{$DEFINE DenomId:=TKelvinPerMeterId}{$DEFINE RatioId:=TWattPerMeterPerKelvinId}
+{$DEFINE NumQty:=TWattsPerSquareMeter}{$DEFINE DenomQty:=TKelvinsPerMeter}{$DEFINE RatioQty:=TWattsPerMeterPerKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+// HEAT CONVECTION
+
+{ main definition [ m2*K ] = [ m2 ] * [ K ] }
+{$DEFINE LeftId:=TSquareMeterId}{$DEFINE RightId:=TKelvinId}{$DEFINE ProdId:=TSquareMeterKelvinId}
+{$DEFINE LeftQty:=TSquareMeters}{$DEFINE RightQty:=TKelvins}{$DEFINE ProdQty:=TSquareMeterKelvins}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ main definition [ W/m2/K ] = [ W ] / [ m2*K ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TSquareMeterKelvinId}{$DEFINE RatioId:=TWattPerSquareMeterPerKelvinId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TSquareMeterKelvins}{$DEFINE RatioQty:=TWattsPerSquareMeterPerKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m2/K ] = [ W/m2 ] / [ K ] }
+{$DEFINE NumId:=TWattPerSquareMeterId}{$DEFINE DenomId:=TKelvinId}{$DEFINE RatioId:=TWattPerSquareMeterPerKelvinId}
+{$DEFINE NumQty:=TWattsPerSquareMeter}{$DEFINE DenomQty:=TKelvins}{$DEFINE RatioQty:=TWattsPerSquareMeterPerKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m2/K ] = [ W/K ] / [ m2 ] }
+{$DEFINE NumId:=TWattPerKelvinId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TWattPerSquareMeterPerKelvinId}
+{$DEFINE NumQty:=TWattsPerKelvin}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TWattsPerSquareMeterPerKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
 
