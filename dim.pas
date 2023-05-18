@@ -625,12 +625,26 @@ operator /(const {%H-}AProd: ProdQty; const {%H-}ARight: RightQty): LeftQty; inl
 {$IFDEF IMPL}begin result.Value := AProd.Value / ARight.Value; end;{$ENDIF}
 {$UNDEF ALT_PROD}{$UNDEF DEF_PROD}{$ENDIF}
 
-{$IFDEF DEF_RATIO}
+{$IF defined(DEF_RATIO) or defined(ALT_RATIO)}
 operator /(const {%H-}ANum: NumId; const {%H-}ADenom: DenomId): RatioId; inline;
 {$IFDEF IMPL}begin end;{$ENDIF}
 operator /(const ANum: NumQty; const ADenom: DenomQty): RatioQty; inline;
 {$IFDEF IMPL}begin result.Value:= ANum.Value / ADenom.Value; end;{$ENDIF}
-{$UNDEF DEF_RATIO}{$ENDIF}
+{$IFNDEF DEF_RATIO}
+operator *(const {%H-}ARatio: RatioId; const {%H-}ADenom: DenomId): NumId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator *(const ARatio: RatioQty; const ADenom: DenomQty): NumQty; inline;
+{$IFDEF IMPL}begin result.Value:= ARatio.Value * ADenom.Value; end;{$ENDIF}
+operator *(const {%H-}ADenom: DenomId; const {%H-}ARatio: RatioId): NumId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator *(const ADenom: DenomQty; const ARatio: RatioQty): NumQty; inline;
+{$IFDEF IMPL}begin result.Value:= ADenom.Value * ARatio.Value; end;{$ENDIF}
+operator /(const {%H-}ANum: NumId; const {%H-}ARatio: RatioId): DenomId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const ANum: NumQty; const ARatio: RatioQty): DenomQty; inline;
+{$IFDEF IMPL}begin result.Value:= ANum.Value / ARatio.Value; end;{$ENDIF}
+{$ENDIF}
+{$UNDEF ALT_RATIO}{$UNDEF DEF_RATIO}{$ENDIF}
 {$IFNDEF DIM}{$DEFINE DIM}
 
 {$DEFINE INTF}
