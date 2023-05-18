@@ -89,3 +89,45 @@ type
 {$DEFINE LeftId:=TPascalSecondId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TKilogramPerSecondId}
 {$DEFINE LeftQty:=TPascalSeconds}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TKilogramsPerSecond}
 {$DEFINE ALT_PROD}{$i dim.pas} // kg/s = Pa*s * m
+
+{ Heat and Thermodynamics }
+{$IFDEF INTF}
+type
+  TJoulePerKelvin = specialize TRatioUnit<TJoule, TKelvin>;
+  TJoulePerKelvinId = specialize TRatioUnitId<TJoule, TKelvin>;
+  TJoulesPerKelvin = specialize TRatioQuantity<TJoule, TKelvin>;
+
+  TKilogramKelvin = specialize TUnitProduct<TBaseKilogram, TKelvin>;
+  TKilogramKelvinId = specialize TUnitProductId<TBaseKilogram, TKelvin>;
+  TKilogramKelvins = specialize TQuantityProduct<TBaseKilogram, TKelvin>;
+
+  TJoulePerKilogramPerKelvin = specialize TRatioUnit<TJoule, TKilogramKelvin>;
+  TJoulePerKilogramPerKelvinId = specialize TRatioUnitId<TJoule, TKilogramKelvin>;
+  TJoulesPerKilogramPerKelvin = specialize TRatioQuantity<TJoule, TKilogramKelvin>;
+{$ENDIF}
+
+{ main definition [ J/K ] = [ J ] / [ K ] }
+{$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TKelvinId}{$DEFINE RatioId:=TJoulePerKelvinId}
+{$DEFINE NumQty:=TJoules}{$DEFINE DenomQty:=TKelvins}{$DEFINE RatioQty:=TJoulesPerKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ main definition [ kg*K ] = [ kg ] * [ K ] }
+{$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TKelvinId}{$DEFINE ProdId:=TKilogramKelvinId}
+{$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TKelvins}{$DEFINE ProdQty:=TKilogramKelvins}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ main definition [ J/kg/K ] = [ J ] / [ kg*K ] }
+{$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TKilogramKelvinId}{$DEFINE RatioId:=TJoulePerKilogramPerKelvinId}
+{$DEFINE NumQty:=TJoules}{$DEFINE DenomQty:=TKilogramKelvins}{$DEFINE RatioQty:=TJoulesPerKilogramPerKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ alternative definition [ J/kg/K ] = [ J/kg ] / [ K ] = [ m2/s2 ] / [ K ] }
+{$DEFINE NumId:=TSquareMeterPerSquareSecondId}{$DEFINE DenomId:=TKelvinId}{$DEFINE RatioId:=TJoulePerKilogramPerKelvinId}
+{$DEFINE NumQty:=TSquareMetersPerSquareSecond}{$DEFINE DenomQty:=TKelvins}{$DEFINE RatioQty:=TJoulesPerKilogramPerKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ J/kg/K ] = [ J/K ] / [ kg ] }
+{$DEFINE LeftId:=TJoulePerKilogramPerKelvinId}{$DEFINE RightId:=TKilogramId}{$DEFINE ProdId:=TJoulePerKelvinId}
+{$DEFINE LeftQty:=TJoulesPerKilogramPerKelvin}{$DEFINE RightQty:=TKilograms}{$DEFINE ProdQty:=TJoulesPerKelvin}
+{$DEFINE ALT_PROD}{$i dim.pas}
+

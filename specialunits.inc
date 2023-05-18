@@ -634,9 +634,13 @@ begin result.Value := ASquareSpeed.Value; end;
 {$DEFINE DEF_RATIO}{$i dim.pas} // Gy = J / kg
 
 // dimension equivalence
+operator:=(const {%H-}Sv: TSievertId): TSquareMeterPerSquareSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator:=(const AEquivalentDose: TSieverts): TSquareMetersPerSquareSecond; inline;
 {$IFDEF IMPL}begin result.Value := AEquivalentDose.Value; end;{$ENDIF}
 
+operator:=(const {%H-}Gy: TGrayId): TSquareMeterPerSquareSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator:=(const AAbsorbedDose: TGrays): TSquareMetersPerSquareSecond; inline;
 {$IFDEF IMPL}begin result.Value := AAbsorbedDose.Value; end;{$ENDIF}
 
