@@ -79,15 +79,6 @@ operator /(const {%H-}AValue: double; const {%H-}s: THertzId): TSecondId; inline
 operator /(const AValue: double; const AFrequency: THertz): TSeconds; inline;
 {$IFDEF IMPL}begin result.Value := AValue / AFrequency.Value; end;{$ENDIF}
 
-// alternate definitions
-{$DEFINE LeftId:=TMeterId}{$DEFINE RightId:=THertzId}{$DEFINE ProdId:=TMeterPerSecondId}
-{$DEFINE LeftQty:=TMeters}{$DEFINE RightQty:=THertz}{$DEFINE ProdQty:=TMetersPerSecond}
-{$DEFINE ALT_PROD}{$i dim.pas} // m/s = m * Hz
-
-{$DEFINE LeftId:=TMillimeterId}{$DEFINE RightId:=THertzId}{$DEFINE ProdId:=TMillimeterPerSecondId}
-{$DEFINE LeftQty:=TMillimeters}{$DEFINE RightQty:=THertz}{$DEFINE ProdQty:=TMillimetersPerSecond}
-{$DEFINE ALT_PROD}{$i dim.pas} // mm/s = mm * Hz
-
 { angle units }
 {$IFDEF INTF}
 type
@@ -330,6 +321,11 @@ var
 {$DEFINE NumId:=TKilonewtonId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TKilopascalId}
 {$DEFINE NumQty:=TKilonewtons}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TKilopascals}
 {$DEFINE DEF_RATIO}{$i dim.pas} // kPa = kN / m2
+
+// alternative definition
+{$DEFINE LeftId:=TKilogramPerCubicMeterId}{$DEFINE RightId:=TSquareMeterPerSquareSecondId}{$DEFINE ProdId:=TPascalId}
+{$DEFINE LeftQty:=TKilogramsPerCubicMeter}{$DEFINE RightQty:=TSquareMetersPerSquareSecond}{$DEFINE ProdQty:=TPascals}
+{$DEFINE ALT_PROD}{$i dim.pas} // [ Pa ] = [ kg/m3 ] * [ m2/s2 ]
 
 { units of energy and power }
 {$IFDEF INTF}
@@ -638,9 +634,13 @@ begin result.Value := ASquareSpeed.Value; end;
 {$DEFINE DEF_RATIO}{$i dim.pas} // Gy = J / kg
 
 // dimension equivalence
+operator:=(const {%H-}Sv: TSievertId): TSquareMeterPerSquareSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator:=(const AEquivalentDose: TSieverts): TSquareMetersPerSquareSecond; inline;
 {$IFDEF IMPL}begin result.Value := AEquivalentDose.Value; end;{$ENDIF}
 
+operator:=(const {%H-}Gy: TGrayId): TSquareMeterPerSquareSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
 operator:=(const AAbsorbedDose: TGrays): TSquareMetersPerSquareSecond; inline;
 {$IFDEF IMPL}begin result.Value := AAbsorbedDose.Value; end;{$ENDIF}
 
