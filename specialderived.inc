@@ -51,6 +51,22 @@ type
   TPascalSecond = specialize TUnitProduct<TPascal, TSecond>;
   TPascalSecondId = specialize TUnitProductId<TPascal, TSecond>;
   TPascalSeconds = specialize TQuantityProduct<TPascal, TSecond>;
+
+  // MOMENTUM & IMPULSE
+
+  TKilogramMeterPerSecond = specialize TUnitProduct<TBaseKilogram, TMeterPerSecond>;
+  TKilogramMeterPerSecondId = specialize TUnitProductId<TBaseKilogram, TMeterPerSecond>;
+  TKilogramMetersPerSecond = specialize TQuantityProduct<TBaseKilogram, TMeterPerSecond>;
+
+  // ANGULAR MOMENTUM & ANGULAR IMPULSE
+
+  TKilogramSquareMeter = specialize TUnitProduct<TBaseKilogram, TSquareMeter>;
+  TKilogramSquareMeterId = specialize TUnitProductId<TBaseKilogram, TSquareMeter>;
+  TKilogramSquareMeters = specialize TQuantityProduct<TBaseKilogram, TSquareMeter>;
+
+  TKilogramSquareMeterPerSecond = specialize TUnitProduct<TKilogramSquareMeter, TRadianPerSecond>;
+  TKilogramSquareMeterPerSecondId = specialize TUnitProductId<TKilogramSquareMeter, TRadianPerSecond>;
+  TKilogramSquareMetersPerSecond = specialize TQuantityProduct<TKilogramSquareMeter, TRadianPerSecond>;
 {$ENDIF}
 
 {$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TNewtonPerMeterId}
@@ -89,6 +105,35 @@ type
 {$DEFINE LeftId:=TPascalSecondId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TKilogramPerSecondId}
 {$DEFINE LeftQty:=TPascalSeconds}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TKilogramsPerSecond}
 {$DEFINE ALT_PROD}{$i dim.pas} // kg/s = Pa*s * m
+
+// MOMENTUM & IMPULSE
+
+{ main definition [ kg*m/s ] = [kg ] * [ m/s ] }
+{$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TMeterPerSecondId}{$DEFINE ProdId:=TKilogramMeterPerSecondId}
+{$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TMetersPerSecond}{$DEFINE ProdQty:=TKilogramMetersPerSecond}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ alternative definition [ kg*m/s ] = [ N*s ] = [ N ] * [ s ] }
+{$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:= TKilogramMeterPerSecondId}
+{$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TKilogramMetersPerSecond}
+{$DEFINE ALT_PROD}{$i dim.pas}
+
+// ANGULAR MOMENTUM & ANGULAR IMPULSE
+
+{ main definition [ kg*m2 ] = [ kg ] * [ m2 ] }
+{$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TSquareMeterId}{$DEFINE ProdId:=TKilogramSquareMeterId}
+{$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TSquareMeters}{$DEFINE ProdQty:=TKilogramSquareMeters}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ main definition [ kg*m2/s ] = [ kg*m2 ] * [ rad/s ] }
+{$DEFINE LeftId:=TKilogramSquareMeterId}{$DEFINE RightId:=TRadianPerSecondId}{$DEFINE ProdId:=TKilogramSquareMeterPerSecondId}
+{$DEFINE LeftQty:=TKilogramSquareMeters}{$DEFINE RightQty:=TRadiansPerSecond}{$DEFINE ProdQty:=TKilogramSquareMetersPerSecond}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ alternative definition [ kg*m2/s ] = [ N*m ] * [s] = [ J ] * [ s ] }
+{$DEFINE LeftId:=TJouleId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:=TKilogramSquareMeterPerSecondId}
+{$DEFINE LeftQty:=TJoules}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TKilogramSquareMetersPerSecond}
+{$DEFINE ALT_PROD}{$i dim.pas}
 
 { Heat and Thermodynamics }
 {$IFDEF INTF}
@@ -143,6 +188,24 @@ type
   TWattPerSquareMeterPerKelvinId = specialize TRatioUnitId<TWatt, TSquareMeterKelvin>;
   TWattsPerSquareMeterPerKelvin = specialize TRatioQuantity<TWatt, TSquareMeterKelvin>;
 
+  // THERMAL RADIATION
+
+  TSquareMeterQuarticKelvin = specialize TUnitProduct<TSquareMeter, TQuarticKelvin>;
+  TSquareMeterQuarticKelvinId = specialize TUnitProductId<TSquareMeter, TQuarticKelvin>;
+  TSquareMeterQuarticKelvins = specialize TQuantityProduct<TSquareMeter, TQuarticKelvin>;
+
+  TWattPerQuarticKelvin = specialize TRatioUnit<TWatt, TQuarticKelvin>;
+  TWattPerQuarticKelvinId = specialize TRatioUnitId<TWatt, TQuarticKelvin>;
+  TWattsPerQuarticKelvin = specialize TRatioQuantity<TWatt, TQuarticKelvin>;
+
+  TWattPerSquareMeterPerQuarticKelvin = specialize TRatioUnit<TWatt, TSquareMeterQuarticKelvin>;
+  TWattPerSquareMeterPerQuarticKelvinId = specialize TRatioUnitId<TWatt, TSquareMeterQuarticKelvin>;
+  TWattsPerSquareMeterPerQuarticKelvin = specialize TRatioQuantity<TWatt, TSquareMeterQuarticKelvin>;
+
+  // LINEAR THERMAL EXPANSION
+
+  TReciprocalKelvinId = specialize TReciprocalUnitId<TKelvin>;
+  TReciprocalKelvins = specialize TReciprocalQuantity<TKelvin>;
 {$ENDIF}
 
 // HEAT CAPACITY
@@ -240,4 +303,43 @@ type
 {$DEFINE NumId:=TWattPerKelvinId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TWattPerSquareMeterPerKelvinId}
 {$DEFINE NumQty:=TWattsPerKelvin}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TWattsPerSquareMeterPerKelvin}
 {$DEFINE ALT_RATIO}{$i dim.pas}
+
+// THERMAL RADIATION
+
+{ main definition [ m2*K4 ] = [ m2 ] * [ K4 ] }
+{$DEFINE LeftId:=TSquareMeterId}{$DEFINE RightId:=TQuarticKelvinId}{$DEFINE ProdId:=TSquareMeterQuarticKelvinId}
+{$DEFINE LeftQty:=TSquareMeters}{$DEFINE RightQty:=TQuarticKelvins}{$DEFINE ProdQty:=TSquareMeterQuarticKelvins}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ main definition [ W/K4 ] = [ W ] / [ K4 ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TQuarticKelvinId}{$DEFINE RatioId:=TWattPerQuarticKelvinId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TQuarticKelvins}{$DEFINE RatioQty:=TWattsPerQuarticKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ main definition [ W/m2/K4 ] = [ W ] / [ m2*K4 ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TSquareMeterQuarticKelvinId}{$DEFINE RatioId:=TWattPerSquareMeterPerQuarticKelvinId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TSquareMeterQuarticKelvins}{$DEFINE RatioQty:=TWattsPerSquareMeterPerQuarticKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m2/K4 ] = [ W/m2 ] / [ K4 ] }
+{$DEFINE NumId:=TWattPerSquareMeterId}{$DEFINE DenomId:=TQuarticKelvinId}{$DEFINE RatioId:=TWattPerSquareMeterPerQuarticKelvinId}
+{$DEFINE NumQty:=TWattsPerSquareMeter}{$DEFINE DenomQty:=TQuarticKelvins}{$DEFINE RatioQty:=TWattsPerSquareMeterPerQuarticKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m2/K4 ] = [ W/K4 ] / [ m2 ] }
+{$DEFINE NumId:=TWattPerQuarticKelvinId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TWattPerSquareMeterPerQuarticKelvinId}
+{$DEFINE NumQty:=TWattsPerQuarticKelvin}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TWattsPerSquareMeterPerQuarticKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+// LINEAR THERMAL EXPANSION
+
+operator /(const {%H-}AValue: double; const {%H-}AQuantityId: TKelvinId): TReciprocalKelvinId; inline;
+{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
+operator /(const AValue: double; const AQuantity: TKelvins): TReciprocalKelvins; inline;
+{$IFDEF IMPL}begin result.Value := AValue / AQuantity.Value; end;{$ENDIF}
+
+operator /(const {%H-}AValue: double; const {%H-}AQuantityId: TReciprocalKelvinId): TKelvinId; inline;
+{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
+operator /(const AValue: double; const AQuantity: TReciprocalKelvins): TKelvins; inline;
+{$IFDEF IMPL}begin result.Value := AValue / AQuantity.Value; end;{$ENDIF}
 
