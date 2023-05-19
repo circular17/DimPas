@@ -157,6 +157,10 @@ type
   TWattPerSquareMeterPerQuarticKelvinId = specialize TRatioUnitId<TWatt, TSquareMeterQuarticKelvin>;
   TWattsPerSquareMeterPerQuarticKelvin = specialize TRatioQuantity<TWatt, TSquareMeterQuarticKelvin>;
 
+  // LINEAR THERMAL EXPANSION
+
+  TReciprocalKelvinId = specialize TReciprocalUnitId<TKelvin>;
+  TReciprocalKelvins = specialize TReciprocalQuantity<TKelvin>;
 {$ENDIF}
 
 // HEAT CAPACITY
@@ -281,4 +285,16 @@ type
 {$DEFINE NumId:=TWattPerQuarticKelvinId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TWattPerSquareMeterPerQuarticKelvinId}
 {$DEFINE NumQty:=TWattsPerQuarticKelvin}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TWattsPerSquareMeterPerQuarticKelvin}
 {$DEFINE ALT_RATIO}{$i dim.pas}
+
+// LINEAR THERMAL EXPANSION
+
+operator /(const {%H-}AValue: double; const {%H-}AQuantityId: TKelvinId): TReciprocalKelvinId; inline;
+{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
+operator /(const AValue: double; const AQuantity: TKelvins): TReciprocalKelvins; inline;
+{$IFDEF IMPL}begin result.Value := AValue / AQuantity.Value; end;{$ENDIF}
+
+operator /(const {%H-}AValue: double; const {%H-}AQuantityId: TReciprocalKelvinId): TKelvinId; inline;
+{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
+operator /(const AValue: double; const AQuantity: TReciprocalKelvins): TKelvins; inline;
+{$IFDEF IMPL}begin result.Value := AValue / AQuantity.Value; end;{$ENDIF}
 
