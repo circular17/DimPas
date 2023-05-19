@@ -658,6 +658,23 @@ operator /(const AValue: double; const ARecip: RecipQty): DenomQty; inline;
 {$IFDEF IMPL}begin result.Value := AValue / ARecip.Value; end;{$ENDIF}
 {$UNDEF ALT_RECIP}{$UNDEF DEF_RECIP}{$ENDIF}
 
+{$IFDEF DEF_POWER}
+operator /(const {%H-}ACube: Id3; const {%H-}ASquare: Id2): Id1; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const ACube: Qty3; const ASquare: Qty2): Qty1; inline;
+{$IFDEF IMPL}begin result.Value := ACube.Value / ASquare.Value; end;{$ENDIF}
+
+operator /(const {%H-}AHypercube: Id4; const {%H-}ACube: Id3): Id1; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const AHypercube: Qty4; const ACube: Qty3): Qty1; inline;
+{$IFDEF IMPL}begin result.Value := AHypercube.Value / ACube.Value; end;{$ENDIF}
+
+operator /(const {%H-}AHypercube: Id4; const {%H-}ASquare: Id2): Id2; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const AHypercube: Qty4; const ASquare: Qty2): Qty2; inline;
+{$IFDEF IMPL}begin result.Value := AHypercube.Value / ASquare.Value; end;{$ENDIF}
+{$UNDEF DEF_POWER}{$ENDIF}
+
 {$IFNDEF DIM}{$DEFINE DIM}
 
 {$DEFINE INTF}

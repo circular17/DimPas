@@ -30,12 +30,22 @@ type
   TSquareSeconds = specialize TSquareQuantity<TSecond>;
   TSquareSecondsFactor = specialize TQuantity<TSquareSecond>;
 
+  TCubicSecond = specialize TCubicUnit<TSecond>;
+  TCubicSecondId = specialize TCubicUnitId<TSecond>;
+  TCubicSeconds = specialize TCubicQuantity<TSecond>;
+
+  TQuarticSecond = specialize TQuarticUnit<TSecond>;
+  TQuarticSecondId = specialize TQuarticUnitId<TSecond>;
+  TQuarticSeconds = specialize TQuarticQuantity<TSecond>;
+
 var
   ns: specialize TFactoredUnitId<TSecond, specialize TNanoUnit<TSecond>>;
   us: specialize TFactoredUnitId<TSecond, specialize TMicroUnit<TSecond>>;
   ms: specialize TFactoredUnitId<TSecond, specialize TMilliUnit<TSecond>>;
   s: TSecondId;
   s2: TSquareSecondId;
+  s3: TCubicSecondId;
+  s4: TQuarticSecondId;
   mn: specialize TFactoredUnitId<TSecond, TMinute>;
   h: THourId;
   day: specialize TFactoredUnitId<TSecond, TDay>;
@@ -55,6 +65,10 @@ class function TDay.Factor: double; begin result := 60 * 60 * 24; end;
 class function TDay.Symbol: string; begin result := 'd'; end;
 class function TDay.Name: string;   begin result := 'day'; end;
 {$ENDIF}
+
+{$DEFINE Id1:=TSecondId}{$DEFINE Id2:=TSquareSecondId}{$DEFINE Id3:=TCubicSecondId}{$DEFINE Id4:=TQuarticSecondId}
+{$DEFINE Qty1:=TSeconds}{$DEFINE Qty2:=TSquareSeconds}{$DEFINE Qty3:=TCubicSeconds}{$DEFINE Qty4:=TQuarticSeconds}
+{$DEFINE DEF_POWER}{$i dim.pas} // s, s2, s3, s4
 
 // dimension equivalence
 operator:=(const {%H-}s2: TSquareSecondId): TSquareSecondFactorId; inline;
@@ -192,21 +206,9 @@ begin
 end;
 {$ENDIF}
 
-// combining units
-operator /(const {%H-}m3: TCubicMeterId; const {%H-}m2: TSquareMeterId): TMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}m4: TQuarticMeterId; const {%H-}m3: TCubicMeterId): TMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const {%H-}m4: TQuarticMeterId; const {%H-}m2: TSquareMeterId): TSquareMeterId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-
-// combining quantities
-operator /(const AVolume: TCubicMeters; const ASurface: TSquareMeters): TMeters; inline;
-{$IFDEF IMPL}begin result.Value := AVolume.Value / ASurface.Value; end;{$ENDIF}
-operator /(const AMomentOfArea: TQuarticMeters; const AVolume: TCubicMeters): TMeters; inline;
-{$IFDEF IMPL}begin result.Value := AMomentOfArea.Value / AVolume.Value; end;{$ENDIF}
-operator /(const AMomentOfArea: TQuarticMeters; const AArea: TSquareMeters): TSquareMeters; inline;
-{$IFDEF IMPL}begin result.Value := AMomentOfArea.Value / AArea.Value; end;{$ENDIF}
+{$DEFINE Id1:=TMeterId}{$DEFINE Id2:=TSquareMeterId}{$DEFINE Id3:=TCubicMeterId}{$DEFINE Id4:=TQuarticMeterId}
+{$DEFINE Qty1:=TMeters}{$DEFINE Qty2:=TSquareMeters}{$DEFINE Qty3:=TCubicMeters}{$DEFINE Qty4:=TQuarticMeters}
+{$DEFINE DEF_POWER}{$i dim.pas} // m, m2, m3, m4
 
 // dimension equivalence
 operator:=(const AVolume: TLitres): TCubicMeters; inline;
@@ -325,6 +327,14 @@ type
   TKelvinId = specialize TUnitId<TKelvin>;
   TKelvins = specialize TQuantity<TKelvin>;
 
+  TSquareKelvin = specialize TSquareUnit<TKelvin>;
+  TSquareKelvinId = specialize TSquareUnitId<TKelvin>;
+  TSquareKelvins = specialize TSquareQuantity<TKelvin>;
+
+  TCubicKelvin = specialize TCubicUnit<TKelvin>;
+  TCubicKelvinId = specialize TCubicUnitId<TKelvin>;
+  TCubicKelvins = specialize TCubicQuantity<TKelvin>;
+
   TQuarticKelvin = specialize TQuarticUnit<TKelvin>;
   TQuarticKelvinId = specialize TQuarticUnitId<TKelvin>;
   TQuarticKelvinFactorId = specialize TUnitId<TQuarticKelvin>;
@@ -347,10 +357,16 @@ type
 
 var
   K: TKelvinId;
+  K2: TSquareKelvinId;
+  K3: TCubicKelvinId;
   K4: TQuarticKelvinId;
   degC: TDegreeCelsiusId;
   degF: TDegreeFahrenheitId;
 {$ENDIF}{$IFDEF IMPL}
+
+{$DEFINE Id1:=TKelvinId}{$DEFINE Id2:=TSquareKelvinId}{$DEFINE Id3:=TCubicKelvinId}{$DEFINE Id4:=TQuarticKelvinId}
+{$DEFINE Qty1:=TKelvins}{$DEFINE Qty2:=TSquareKelvins}{$DEFINE Qty3:=TCubicKelvins}{$DEFINE Qty4:=TQuarticKelvins}
+{$DEFINE DEF_POWER}{$i dim.pas} // K, K2, K3, K4
 
 // dimension equivalence
 operator:=(const {%H-}K4: TQuarticKelvinId): TQuarticKelvinFactorId; inline;
