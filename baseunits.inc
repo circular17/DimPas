@@ -325,6 +325,12 @@ type
   TKelvinId = specialize TUnitId<TKelvin>;
   TKelvins = specialize TQuantity<TKelvin>;
 
+  TQuarticKelvin = specialize TQuarticUnit<TKelvin>;
+  TQuarticKelvinId = specialize TQuarticUnitId<TKelvin>;
+  TQuarticKelvinFactorId = specialize TUnitId<TQuarticKelvin>;
+  TQuarticKelvins = specialize TQuarticQuantity<TKelvin>;
+  TQuarticKelvinsFactor = specialize TQuantity<TQuarticKelvin>;
+
   TDegreeCelsius = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   TDegreeCelsiusId = specialize TBasicUnitId<TDegreeCelsius>;
   TDegreesCelsius = specialize TBasicQuantity<TDegreeCelsius>;
@@ -341,9 +347,19 @@ type
 
 var
   K: TKelvinId;
+  K4: TQuarticKelvinId;
   degC: TDegreeCelsiusId;
   degF: TDegreeFahrenheitId;
 {$ENDIF}{$IFDEF IMPL}
+
+// dimension equivalence
+operator:=(const {%H-}K4: TQuarticKelvinId): TQuarticKelvinFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const AQuarticTemp: TQuarticKelvins): TQuarticKelvinsFactor; inline;
+{$IFDEF IMPL}begin result.Value := AQuarticTemp.Value; end;{$ENDIF}
+operator:=(const AQuarticTemp: TQuarticKelvinsFactor): TQuarticKelvins; inline;
+{$IFDEF IMPL}begin result.Value := AQuarticTemp.Value; end;{$ENDIF}
+
 class function TKelvin.Symbol: string; begin result := 'K'; end;
 class function TKelvin.Name: string;   begin result := 'kelvin'; end;
 

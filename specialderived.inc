@@ -143,6 +143,20 @@ type
   TWattPerSquareMeterPerKelvinId = specialize TRatioUnitId<TWatt, TSquareMeterKelvin>;
   TWattsPerSquareMeterPerKelvin = specialize TRatioQuantity<TWatt, TSquareMeterKelvin>;
 
+  // THERMAL RADIATION
+
+  TSquareMeterQuarticKelvin = specialize TUnitProduct<TSquareMeter, TQuarticKelvin>;
+  TSquareMeterQuarticKelvinId = specialize TUnitProductId<TSquareMeter, TQuarticKelvin>;
+  TSquareMeterQuarticKelvins = specialize TQuantityProduct<TSquareMeter, TQuarticKelvin>;
+
+  TWattPerQuarticKelvin = specialize TRatioUnit<TWatt, TQuarticKelvin>;
+  TWattPerQuarticKelvinId = specialize TRatioUnitId<TWatt, TQuarticKelvin>;
+  TWattsPerQuarticKelvin = specialize TRatioQuantity<TWatt, TQuarticKelvin>;
+
+  TWattPerSquareMeterPerQuarticKelvin = specialize TRatioUnit<TWatt, TSquareMeterQuarticKelvin>;
+  TWattPerSquareMeterPerQuarticKelvinId = specialize TRatioUnitId<TWatt, TSquareMeterQuarticKelvin>;
+  TWattsPerSquareMeterPerQuarticKelvin = specialize TRatioQuantity<TWatt, TSquareMeterQuarticKelvin>;
+
 {$ENDIF}
 
 // HEAT CAPACITY
@@ -239,5 +253,32 @@ type
 { alternative definition [ W/m2/K ] = [ W/K ] / [ m2 ] }
 {$DEFINE NumId:=TWattPerKelvinId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TWattPerSquareMeterPerKelvinId}
 {$DEFINE NumQty:=TWattsPerKelvin}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TWattsPerSquareMeterPerKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+// THERMAL RADIATION
+
+{ main definition [ m2*K4 ] = [ m2 ] * [ K4 ] }
+{$DEFINE LeftId:=TSquareMeterId}{$DEFINE RightId:=TQuarticKelvinId}{$DEFINE ProdId:=TSquareMeterQuarticKelvinId}
+{$DEFINE LeftQty:=TSquareMeters}{$DEFINE RightQty:=TQuarticKelvins}{$DEFINE ProdQty:=TSquareMeterQuarticKelvins}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ main definition [ W/K4 ] = [ W ] / [ K4 ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TQuarticKelvinId}{$DEFINE RatioId:=TWattPerQuarticKelvinId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TQuarticKelvins}{$DEFINE RatioQty:=TWattsPerQuarticKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ main definition [ W/m2/K4 ] = [ W ] / [ m2*K4 ] }
+{$DEFINE NumId:=TWattId}{$DEFINE DenomId:=TSquareMeterQuarticKelvinId}{$DEFINE RatioId:=TWattPerSquareMeterPerQuarticKelvinId}
+{$DEFINE NumQty:=TWatts}{$DEFINE DenomQty:=TSquareMeterQuarticKelvins}{$DEFINE RatioQty:=TWattsPerSquareMeterPerQuarticKelvin}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m2/K4 ] = [ W/m2 ] / [ K4 ] }
+{$DEFINE NumId:=TWattPerSquareMeterId}{$DEFINE DenomId:=TQuarticKelvinId}{$DEFINE RatioId:=TWattPerSquareMeterPerQuarticKelvinId}
+{$DEFINE NumQty:=TWattsPerSquareMeter}{$DEFINE DenomQty:=TQuarticKelvins}{$DEFINE RatioQty:=TWattsPerSquareMeterPerQuarticKelvin}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ W/m2/K4 ] = [ W/K4 ] / [ m2 ] }
+{$DEFINE NumId:=TWattPerQuarticKelvinId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TWattPerSquareMeterPerQuarticKelvinId}
+{$DEFINE NumQty:=TWattsPerQuarticKelvin}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TWattsPerSquareMeterPerQuarticKelvin}
 {$DEFINE ALT_RATIO}{$i dim.pas}
 
