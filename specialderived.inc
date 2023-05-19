@@ -51,6 +51,22 @@ type
   TPascalSecond = specialize TUnitProduct<TPascal, TSecond>;
   TPascalSecondId = specialize TUnitProductId<TPascal, TSecond>;
   TPascalSeconds = specialize TQuantityProduct<TPascal, TSecond>;
+
+  // MOMENTUM & IMPULSE
+
+  TKilogramMeterPerSecond = specialize TUnitProduct<TBaseKilogram, TMeterPerSecond>;
+  TKilogramMeterPerSecondId = specialize TUnitProductId<TBaseKilogram, TMeterPerSecond>;
+  TKilogramMetersPerSecond = specialize TQuantityProduct<TBaseKilogram, TMeterPerSecond>;
+
+  // ANGULAR MOMENTUM & ANGULAR IMPULSE
+
+  TKilogramSquareMeter = specialize TUnitProduct<TBaseKilogram, TSquareMeter>;
+  TKilogramSquareMeterId = specialize TUnitProductId<TBaseKilogram, TSquareMeter>;
+  TKilogramSquareMeters = specialize TQuantityProduct<TBaseKilogram, TSquareMeter>;
+
+  TKilogramSquareMeterPerSecond = specialize TUnitProduct<TKilogramSquareMeter, TRadianPerSecond>;
+  TKilogramSquareMeterPerSecondId = specialize TUnitProductId<TKilogramSquareMeter, TRadianPerSecond>;
+  TKilogramSquareMetersPerSecond = specialize TQuantityProduct<TKilogramSquareMeter, TRadianPerSecond>;
 {$ENDIF}
 
 {$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TNewtonPerMeterId}
@@ -89,6 +105,35 @@ type
 {$DEFINE LeftId:=TPascalSecondId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TKilogramPerSecondId}
 {$DEFINE LeftQty:=TPascalSeconds}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TKilogramsPerSecond}
 {$DEFINE ALT_PROD}{$i dim.pas} // kg/s = Pa*s * m
+
+// MOMENTUM & IMPULSE
+
+{ main definition [ kg*m/s ] = [kg ] * [ m/s ] }
+{$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TMeterPerSecondId}{$DEFINE ProdId:=TKilogramMeterPerSecondId}
+{$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TMetersPerSecond}{$DEFINE ProdQty:=TKilogramMetersPerSecond}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ alternative definition [ kg*m/s ] = [ N*s ] = [ N ] * [ s ] }
+{$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:= TKilogramMeterPerSecondId}
+{$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TKilogramMetersPerSecond}
+{$DEFINE ALT_PROD}{$i dim.pas}
+
+// ANGULAR MOMENTUM & ANGULAR IMPULSE
+
+{ main definition [ kg*m2 ] = [ kg ] * [ m2 ] }
+{$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TSquareMeterId}{$DEFINE ProdId:=TKilogramSquareMeterId}
+{$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TSquareMeters}{$DEFINE ProdQty:=TKilogramSquareMeters}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ main definition [ kg*m2/s ] = [ kg*m2 ] * [ rad/s ] }
+{$DEFINE LeftId:=TKilogramSquareMeterId}{$DEFINE RightId:=TRadianPerSecondId}{$DEFINE ProdId:=TKilogramSquareMeterPerSecondId}
+{$DEFINE LeftQty:=TKilogramSquareMeters}{$DEFINE RightQty:=TRadiansPerSecond}{$DEFINE ProdQty:=TKilogramSquareMetersPerSecond}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ alternative definition [ kg*m2/s ] = [ N*m ] * [s] = [ J ] * [ s ] }
+{$DEFINE LeftId:=TJouleId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:=TKilogramSquareMeterPerSecondId}
+{$DEFINE LeftQty:=TJoules}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TKilogramSquareMetersPerSecond}
+{$DEFINE ALT_PROD}{$i dim.pas}
 
 { Heat and Thermodynamics }
 {$IFDEF INTF}
