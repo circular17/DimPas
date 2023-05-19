@@ -69,15 +69,9 @@ var
   THz: specialize TFactoredReciprocalUnitId<TSecond, specialize TPicoUnit<TSecond>>;
 {$ENDIF}
 
-operator /(const {%H-}AValue: double; const {%H-}s: TSecondId): THertzId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-operator /(const AValue: double; const ADuration: TSeconds): THertz; inline;
-{$IFDEF IMPL}begin result.Value := AValue / ADuration.Value; end;{$ENDIF}
-
-operator /(const {%H-}AValue: double; const {%H-}s: THertzId): TSecondId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-operator /(const AValue: double; const AFrequency: THertz): TSeconds; inline;
-{$IFDEF IMPL}begin result.Value := AValue / AFrequency.Value; end;{$ENDIF}
+{$DEFINE DenomId:=TSecondId}{$DEFINE RecipId:=THertzId}
+{$DEFINE DenomQty:=TSeconds}{$DEFINE RecipQty:=THertz}
+{$DEFINE DEF_RECIP}{$i dim.pas} // Hz = 1 / s
 
 { angle units }
 {$IFDEF INTF}
@@ -458,16 +452,9 @@ var
 {$DEFINE NumQty:=TWebers}{$DEFINE DenomQty:=TAmperes}{$DEFINE RatioQty:=THenrys}
 {$DEFINE DEF_RATIO}{$i dim.pas} // H = Wb / A
 
-// alternate definition of S = 1 / Ω
-operator /(const {%H-}AValue: double; const {%H-}ohm: TOhmId): TSiemensId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-operator /(const {%H-}AValue: double; const {%H-}S: TSiemensId): TOhmId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-
-operator /(const AValue: double; const AResistance: TOhms): TSiemens; inline;
-{$IFDEF IMPL}begin result.Value := AValue / AResistance.Value; end;{$ENDIF}
-operator /(const AValue: double; const AElectricalConductance: TSiemens): TOhms; inline;
-{$IFDEF IMPL}begin result.Value := AValue / AElectricalConductance.Value; end;{$ENDIF}
+{$DEFINE DenomId:=TOhmId}{$DEFINE RecipId:=TSiemensId}
+{$DEFINE DenomQty:=TOhms}{$DEFINE RecipQty:=TSiemens}
+{$DEFINE ALT_RECIP}{$i dim.pas} // S = 1 / Ω
 
 {$DEFINE LeftId:=TOhmId}{$DEFINE RightId:=TSquareAmpereId}{$DEFINE ProdId:=TWattId}
 {$DEFINE LeftQty:=TOhms}{$DEFINE RightQty:=TSquareAmperes}{$DEFINE ProdQty:=TWatts}

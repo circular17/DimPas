@@ -333,13 +333,7 @@ type
 
 // LINEAR THERMAL EXPANSION
 
-operator /(const {%H-}AValue: double; const {%H-}AQuantityId: TKelvinId): TReciprocalKelvinId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-operator /(const AValue: double; const AQuantity: TKelvins): TReciprocalKelvins; inline;
-{$IFDEF IMPL}begin result.Value := AValue / AQuantity.Value; end;{$ENDIF}
-
-operator /(const {%H-}AValue: double; const {%H-}AQuantityId: TReciprocalKelvinId): TKelvinId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-operator /(const AValue: double; const AQuantity: TReciprocalKelvins): TKelvins; inline;
-{$IFDEF IMPL}begin result.Value := AValue / AQuantity.Value; end;{$ENDIF}
+{$DEFINE DenomId:=TKelvinId}{$DEFINE RecipId:=TReciprocalKelvinId}
+{$DEFINE DenomQty:=TKelvins}{$DEFINE RecipQty:=TReciprocalKelvins}
+{$DEFINE DEF_RECIP}{$i dim.pas} // K-1 = 1 / K
 

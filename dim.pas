@@ -645,6 +645,19 @@ operator /(const ANum: NumQty; const ARatio: RatioQty): DenomQty; inline;
 {$IFDEF IMPL}begin result.Value:= ANum.Value / ARatio.Value; end;{$ENDIF}
 {$ENDIF}
 {$UNDEF ALT_RATIO}{$UNDEF DEF_RATIO}{$ENDIF}
+
+{$IF defined(DEF_RECIP) or defined(ALT_RECIP)}
+operator /(const {%H-}AValue: double; const {%H-}ADenom: DenomId): RecipId; inline;
+{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
+operator /(const {%H-}AValue: double; const {%H-}ARecip: RecipId): DenomId; inline;
+{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
+
+operator /(const AValue: double; const ADenom: DenomQty): RecipQty; inline;
+{$IFDEF IMPL}begin result.Value := AValue / ADenom.Value; end;{$ENDIF}
+operator /(const AValue: double; const ARecip: RecipQty): DenomQty; inline;
+{$IFDEF IMPL}begin result.Value := AValue / ARecip.Value; end;{$ENDIF}
+{$UNDEF ALT_RECIP}{$UNDEF DEF_RECIP}{$ENDIF}
+
 {$IFNDEF DIM}{$DEFINE DIM}
 
 {$DEFINE INTF}
