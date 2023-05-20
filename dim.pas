@@ -14,25 +14,39 @@ type
     class function Symbol: string; virtual; abstract;
     class function Name: string; virtual; abstract;
   private
-    class function GetPowerSymbol(AExponent: integer): string;
-    class function GetPowerName(AExponent: integer): string;
+    class function GetPowerSymbol(AExponent: integer): string; virtual;
+    class function GetPowerName(AExponent: integer): string; virtual;
   end;
 
   TUnit = class(TCustomUnit);
   TFactoredUnit = class(TCustomUnit)
     class function Factor: double; virtual; abstract;
   end;
-  generic TPowerUnit<BaseU: TUnit> = class(TUnit)
+
+  TCompoundUnit = class(TUnit)
     class function Symbol: string; override;
     class function Name: string; override;
-    class function Exponent: integer; virtual; abstract;
+  end;
+  TCompoundFactoredUnit = class(TFactoredUnit)
+    class function Symbol: string; override;
+    class function Name: string; override;
   end;
 
-  generic TFactoredPowerUnit<BaseU: TFactoredUnit> = class(TFactoredUnit)
-    class function Symbol: string; override;
-    class function Name: string; override;
+  { TPowerUnit }
+
+  generic TPowerUnit<BaseU: TUnit> = class(TCompoundUnit)
+    class function Exponent: integer; virtual; abstract;
+    class function GetPowerSymbol(AExponent: integer): string; override;
+    class function GetPowerName(AExponent: integer): string; override;
+  end;
+
+  { TFactoredPowerUnit }
+
+  generic TFactoredPowerUnit<BaseU: TFactoredUnit> = class(TCompoundFactoredUnit)
     class function Factor: double; override;
     class function Exponent: integer; virtual; abstract;
+    class function GetPowerSymbol(AExponent: integer): string; override;
+    class function GetPowerName(AExponent: integer): string; override;
   end;
 
   {$UNDEF DIM}{$ENDIF}
@@ -49,6 +63,19 @@ type
   end;
   {$ENDIF}{$UNDEF UNIT_OV_INTF}{$UNDEF FACTORED_UNIT_INTF}
 
+  // derive TCompoundUnit and TCompoundFactoredUnit classes
+  {$IF defined(COMPOUND_OV_INTF) or defined(COMPOUND_FACTORED_INTF)}
+  {$IFDEF COMPOUND_FACTORED_INTF}
+  class(TCompoundFactoredUnit)
+    class function Factor: double; override;
+  {$ELSE}
+  class(TCompoundUnit)
+  {$ENDIF}
+  class function GetPowerSymbol(AExponent: integer): string; override;
+  class function GetPowerName(AExponent: integer): string; override;
+  end;
+  {$ENDIF}{$UNDEF COMPOUND_OV_INTF}{$UNDEF COMPOUND_FACTORED_INTF}
+
   {$IFDEF POWER_UNIT_INTF}
   class(specialize TPowerUnit<BaseU>)
     class function Exponent: integer; override;
@@ -62,26 +89,25 @@ type
   {$ENDIF}{$UNDEF FACTORED_POWER_UNIT_INTF}
   {$IFNDEF DIM}{$DEFINE DIM}
 
-
   generic TSquareUnit<BaseU: TUnit> = {$DEFINE POWER_UNIT_INTF}{$i dim.pas}
   generic TCubicUnit<BaseU: TUnit> = {$DEFINE POWER_UNIT_INTF}{$i dim.pas}
   generic TQuarticUnit<BaseU: TUnit> = {$DEFINE POWER_UNIT_INTF}{$i dim.pas}
   generic TReciprocalUnit<BaseU: TUnit> = {$DEFINE POWER_UNIT_INTF}{$i dim.pas}
 
-  generic TRatioUnit<NumeratorU, DenomU: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
-  generic TUnitProduct<U1, U2: TUnit> = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
+  generic TRatioUnit<NumeratorU, DenomU: TUnit> = {$DEFINE COMPOUND_OV_INTF}{$i dim.pas}
+  generic TUnitProduct<U1, U2: TUnit> = {$DEFINE COMPOUND_OV_INTF}{$i dim.pas}
 
   generic TFactoredSquareUnit<BaseU: TFactoredUnit> = {$DEFINE FACTORED_POWER_UNIT_INTF}{$i dim.pas}
   generic TFactoredCubicUnit<BaseU: TFactoredUnit> = {$DEFINE FACTORED_POWER_UNIT_INTF}{$i dim.pas}
   generic TFactoredQuarticUnit<BaseU: TFactoredUnit> = {$DEFINE FACTORED_POWER_UNIT_INTF}{$i dim.pas}
   generic TFactoredReciprocalUnit<BaseU: TFactoredUnit> = {$DEFINE FACTORED_POWER_UNIT_INTF}{$i dim.pas}
 
-  generic TFactoredRatioUnit<NumeratorU, DenomU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  generic TFactoredNumeratorUnit<NumeratorU: TFactoredUnit; DenomU: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  generic TFactoredDenominatorUnit<NumeratorU: TUnit; DenomU: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  generic TFactoredUnitProduct<U1, U2: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  generic TLeftFactoredUnitProduct<U1: TFactoredUnit; U2: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
-  generic TRightFactoredUnitProduct<U1: TUnit; U2: TFactoredUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
+  generic TFactoredRatioUnit<NumeratorU, DenomU: TFactoredUnit> = {$DEFINE COMPOUND_FACTORED_INTF}{$i dim.pas}
+  generic TFactoredNumeratorUnit<NumeratorU: TFactoredUnit; DenomU: TUnit> = {$DEFINE COMPOUND_FACTORED_INTF}{$i dim.pas}
+  generic TFactoredDenominatorUnit<NumeratorU: TUnit; DenomU: TFactoredUnit> = {$DEFINE COMPOUND_FACTORED_INTF}{$i dim.pas}
+  generic TFactoredUnitProduct<U1, U2: TFactoredUnit> = {$DEFINE COMPOUND_FACTORED_INTF}{$i dim.pas}
+  generic TLeftFactoredUnitProduct<U1: TFactoredUnit; U2: TUnit> = {$DEFINE COMPOUND_FACTORED_INTF}{$i dim.pas}
+  generic TRightFactoredUnitProduct<U1: TUnit; U2: TFactoredUnit> = {$DEFINE COMPOUND_FACTORED_INTF}{$i dim.pas}
 
   generic TTeraUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
   generic TGigaUnit<U: TUnit> = {$DEFINE FACTORED_UNIT_INTF}{$i dim.pas}
@@ -122,7 +148,7 @@ type
     class operator >(const AQuantity1, AQuantity2: TSelf): boolean;
     class operator >=(const AQuantity1, AQuantity2: TSelf): boolean;
   {$ENDIF}{$UNDEF QTY_INTF}
-  {$IFDEF SQUARABLE_QTY_INTF}
+  {$IFDEF POWERABLE_QTY_INTF}
     class operator *(const AQuantity1, AQuantity2: TSelf): TSquareQuantity;
     class operator /(const ASquareQuantity: TSquareQuantity; const AQuantity: TSelf): TSelf;
 
@@ -136,7 +162,7 @@ type
     function Quarted: TQuarticQuantity;
     function Squared: TSquareQuantity;
     function Cubed: TCubicQuantity;
-  {$ENDIF}{$UNDEF SQUARABLE_QTY_INTF}
+  {$ENDIF}{$UNDEF POWERABLE_QTY_INTF}
   {$IFDEF RATIO_QTY_INTF}
     class operator /(const ANumerator: TNumeratorQuantity; const ASelf: TSelf): TDenomQuantity;
     class operator *(const ASelf: TSelf; const ADenominator: TDenomQuantity): TNumeratorQuantity;
@@ -189,7 +215,7 @@ type
     type TSquareQuantity = specialize TSquareQuantity<U>;
     type TCubicQuantity = specialize TCubicQuantity<U>;
     type TQuarticQuantity = specialize TQuarticQuantity<U>;
-    {$DEFINE QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
+    {$DEFINE QTY_INTF}{$DEFINE POWERABLE_QTY_INTF}{$i dim.pas}
   end;
 
   generic TBasicQuantity<U: TUnit> = record
@@ -222,6 +248,30 @@ type
     {$DEFINE QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
+  generic TPowerableRatioQuantity<NumeratorU, DenomU: TUnit> = record
+    type U = specialize TRatioUnit<NumeratorU, DenomU>;
+    type TSelf = specialize TPowerableRatioQuantity<NumeratorU, DenomU>;
+    type TNumeratorQuantity = specialize TQuantity<NumeratorU>;
+    type TDenomQuantity = specialize TQuantity<DenomU>;
+    type TRatio = specialize TQuantity<U>;
+    type TSquareQuantity = specialize TSquareQuantity<U>;
+    type TCubicQuantity = specialize TCubicQuantity<U>;
+    type TQuarticQuantity = specialize TQuarticQuantity<U>;
+    {$DEFINE QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$DEFINE POWERABLE_QTY_INTF}{$i dim.pas}
+  end;
+
+  generic TPowerableQuantityProduct<U1, U2: TUnit> = record
+    type U = specialize TUnitProduct<U1, U2>;
+    type TSelf = specialize TPowerableQuantityProduct<U1, U2>;
+    type TQuantity1 = specialize TQuantity<U1>;
+    type TQuantity2 = specialize TQuantity<U2>;
+    type TProduct = specialize TQuantity<U>;
+    type TSquareQuantity = specialize TSquareQuantity<U>;
+    type TCubicQuantity = specialize TCubicQuantity<U>;
+    type TQuarticQuantity = specialize TQuarticQuantity<U>;
+    {$DEFINE QTY_INTF}{$DEFINE QTY_PROD_INTF}{$DEFINE POWERABLE_QTY_INTF}{$i dim.pas}
+  end;
+
   generic TFactoredQuarticQuantity<BaseU: TUnit; U1: TFactoredUnit> = record
     type TSelf = specialize TFactoredQuarticQuantity<BaseU, U1>;
     type U = specialize TFactoredQuarticUnit<U1>;
@@ -249,7 +299,7 @@ type
     type TSquareQuantity = specialize TFactoredSquareQuantity<BaseU, U>;
     type TCubicQuantity = specialize TFactoredCubicQuantity<BaseU, U>;
     type TQuarticQuantity = specialize TFactoredQuarticQuantity<BaseU, U>;
-    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE SQUARABLE_QTY_INTF}{$i dim.pas}
+    {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE POWERABLE_QTY_INTF}{$i dim.pas}
   end;
 
   generic TFactoredReciprocalQuantity<BaseDenomU: TUnit; DenomU: TFactoredUnit> = record
@@ -353,7 +403,7 @@ type
     class function Symbol: string; inline; static;
     class function From(const AQuantity: TQuantity): TQuantity; inline; static;
   {$ENDIF}{$UNDEF UNIT_ID_INTF}
-  {$IFDEF SQUARABLE_UNIT_ID_INTF}
+  {$IFDEF POWERABLE_UNIT_ID_INTF}
     class operator *(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): TSquareId;
     class operator /(const {%H-}TheSquareUnit: TSquareId; const {%H-}TheUnit: TSelf): TSelf;
 
@@ -369,7 +419,7 @@ type
     function Quarted: TQuarticId;
     function SquareRoot(const ASquareQuantity: TSquareQuantity): TQuantity;
     function CubicRoot(const ACubicQuantity: TCubicQuantity): TQuantity;
-  {$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_INTF}
+  {$ENDIF}{$UNDEF POWERABLE_UNIT_ID_INTF}
   {$IFDEF FACTORED_UNIT_ID_INTF}
     class function From(const AQuantity: TBaseQuantity): TQuantity; inline; static;
     class function BaseUnit: TBaseUnitId; inline; static;
@@ -423,7 +473,7 @@ type
     type TCubicId = specialize TCubicUnitId<U>;
     type TCubicQuantity = specialize TCubicQuantity<U>;
     type TQuarticId = specialize TQuarticUnitId<U>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
+    {$DEFINE UNIT_ID_INTF}{$DEFINE POWERABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
   generic TFactoredQuarticUnitId<BaseU: TUnit; U: TFactoredUnit> = record
@@ -460,7 +510,7 @@ type
     type TCubicId = specialize TFactoredCubicUnitId<BaseU, U>;
     type TCubicQuantity = specialize TFactoredCubicQuantity<BaseU, U>;
     type TQuarticId = specialize TFactoredQuarticUnitId<BaseU, U>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
+    {$DEFINE UNIT_ID_INTF}{$DEFINE FACTORED_UNIT_ID_INTF}{$DEFINE POWERABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
   generic TReciprocalUnitId<DenomU: TUnit> = record
@@ -488,16 +538,34 @@ type
     type TQuantity = specialize TRatioQuantity<NumeratorU, DenomU>;
     type TNumeratorId = specialize TUnitId<NumeratorU>;
     type TDenomId = specialize TUnitId<DenomU>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TUnitProductId<U1, U2: TUnit> = record
+    type TSelf = specialize TUnitProductId<U1, U2>;
+    type U = specialize TUnitProduct<U1, U2>;
+    type TQuantity = specialize TQuantityProduct<U1, U2>;
+    type TId1 = specialize TUnitId<U1>;
+    type TId2 = specialize TUnitId<U2>;
+    {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
+  end;
+
+  generic TPowerableRatioUnitId<NumeratorU, DenomU: TUnit> = record
+    type U = specialize TRatioUnit<NumeratorU, DenomU>;
+    type TSelf = specialize TPowerableRatioUnitId<NumeratorU, DenomU>;
+    type TQuantity = specialize TRatioQuantity<NumeratorU, DenomU>;
+    type TNumeratorId = specialize TUnitId<NumeratorU>;
+    type TDenomId = specialize TUnitId<DenomU>;
     type TSquareId = specialize TSquareUnitId<U>;
     type TSquareQuantity = specialize TSquareQuantity<U>;
     type TCubicId = specialize TCubicUnitId<U>;
     type TCubicQuantity = specialize TCubicQuantity<U>;
     type TQuarticId = specialize TQuarticUnitId<U>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
+    {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$DEFINE POWERABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TUnitProductId<U1, U2: TUnit> = record
-    type TSelf = specialize TUnitProductId<U1, U2>;
+  generic TPowerableUnitProductId<U1, U2: TUnit> = record
+    type TSelf = specialize TPowerableUnitProductId<U1, U2>;
     type U = specialize TUnitProduct<U1, U2>;
     type TQuantity = specialize TQuantityProduct<U1, U2>;
     type TId1 = specialize TUnitId<U1>;
@@ -507,7 +575,7 @@ type
     type TCubicId = specialize TCubicUnitId<U>;
     type TCubicQuantity = specialize TCubicQuantity<U>;
     type TQuarticId = specialize TQuarticUnitId<U>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$DEFINE SQUARABLE_UNIT_ID_INTF}{$i dim.pas}
+    {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$DEFINE POWERABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
   generic TFactoredUnitProductId<BaseU1, BaseU2: TUnit; U1, U2: TFactoredUnit> = record
@@ -694,6 +762,8 @@ implementation uses Math;
 
 class function TCustomUnit.GetPowerSymbol(AExponent: integer): string;
 begin
+  if AExponent = 1 then exit(Symbol);
+
   result := Symbol + IntToStr(AExponent);
 
   case result of
@@ -708,6 +778,8 @@ end;
 
 class function TCustomUnit.GetPowerName(AExponent: integer): string;
 begin
+  if AExponent = 1 then exit(Name);
+
   if AExponent < 0 then
   begin
     result := 'reciprocal ';
@@ -735,33 +807,57 @@ begin
   end;
 end;
 
-{ TPowerUnit }
+{ TCompoundUnit }
 
-class function TPowerUnit.Symbol: string;
+class function TCompoundUnit.Symbol: string;
 begin
-  result := BaseU.GetPowerSymbol(Exponent);
+  result := GetPowerSymbol(1);
 end;
 
-class function TPowerUnit.Name: string;
+class function TCompoundUnit.Name: string;
 begin
-  result := BaseU.GetPowerName(Exponent);
+  result := GetPowerName(1);
+end;
+
+{ TCompoundFactoredUnit }
+
+class function TCompoundFactoredUnit.Symbol: string;
+begin
+  result := GetPowerSymbol(1);
+end;
+
+class function TCompoundFactoredUnit.Name: string;
+begin
+  result := GetPowerName(1);
+end;
+
+{ TPowerUnit }
+
+class function TPowerUnit.GetPowerSymbol(AExponent: integer): string;
+begin
+  Result:= BaseU.GetPowerSymbol(AExponent * Exponent);
+end;
+
+class function TPowerUnit.GetPowerName(AExponent: integer): string;
+begin
+  Result:= BaseU.GetPowerName(AExponent * Exponent);
 end;
 
 { TFactoredPowerUnit }
 
-class function TFactoredPowerUnit.Symbol: string;
-begin
-  result := BaseU.GetPowerSymbol(Exponent);
-end;
-
-class function TFactoredPowerUnit.Name: string;
-begin
-  result := BaseU.GetPowerName(Exponent);
-end;
-
 class function TFactoredPowerUnit.Factor: double;
 begin
   result := IntPower(BaseU.Factor, Exponent);
+end;
+
+class function TFactoredPowerUnit.GetPowerSymbol(AExponent: integer): string;
+begin
+  result := BaseU.GetPowerSymbol(Exponent * AExponent);
+end;
+
+class function TFactoredPowerUnit.GetPowerName(AExponent: integer): string;
+begin
+  result := BaseU.GetPowerName(Exponent * AExponent);
 end;
 
 { TSquareUnit }
@@ -787,26 +883,26 @@ end;
 
 { TRatioUnit }
 
-class function TRatioUnit.Symbol: string;
+class function TRatioUnit.GetPowerSymbol(AExponent: integer): string;
 begin
-  result := GetRatioSymbol(NumeratorU.Symbol, DenomU.Symbol);
+  result := GetRatioSymbol(NumeratorU.GetPowerSymbol(AExponent), DenomU.GetPowerSymbol(AExponent));
 end;
 
-class function TRatioUnit.Name: string;
+class function TRatioUnit.GetPowerName(AExponent: integer): string;
 begin
-  result := GetRatioName(NumeratorU.Name, DenomU.Name);
+  result := GetRatioName(NumeratorU.GetPowerName(AExponent), DenomU.GetPowerName(AExponent));
 end;
 
 { TUnitProduct }
 
-class function TUnitProduct.Symbol: string;
+class function TUnitProduct.GetPowerSymbol(AExponent: integer): string;
 begin
-  result := GetProductSymbol(U1.Symbol, U2.Symbol);
+  result := GetProductSymbol(U1.GetPowerSymbol(AExponent), U2.GetPowerSymbol(AExponent));
 end;
 
-class function TUnitProduct.Name: string;
+class function TUnitProduct.GetPowerName(AExponent: integer): string;
 begin
-  result := GetProductName(U1.Name, U2.Name);
+  result := GetProductName(U1.GetPowerName(AExponent), U2.GetPowerName(AExponent));
 end;
 
 { TReciprocalUnit }
@@ -846,14 +942,14 @@ end;
 
 { TFactoredRatioUnit }
 
-class function TFactoredRatioUnit.Symbol: string;
+class function TFactoredRatioUnit.GetPowerSymbol(AExponent: integer): string;
 begin
-  result := GetRatioSymbol(NumeratorU.Symbol, DenomU.Symbol);
+  result := GetRatioSymbol(NumeratorU.GetPowerSymbol(AExponent), DenomU.GetPowerSymbol(AExponent));
 end;
 
-class function TFactoredRatioUnit.Name: string;
+class function TFactoredRatioUnit.GetPowerName(AExponent: integer): string;
 begin
-  result := GetRatioName(NumeratorU.Name, DenomU.Name);
+  result := GetRatioName(NumeratorU.GetPowerName(AExponent), DenomU.GetPowerName(AExponent));
 end;
 
 class function TFactoredRatioUnit.Factor: double;
@@ -863,14 +959,14 @@ end;
 
 { TFactoredNumeratorUnit }
 
-class function TFactoredNumeratorUnit.Symbol: string;
+class function TFactoredNumeratorUnit.GetPowerSymbol(AExponent: integer): string;
 begin
-  result := GetRatioSymbol(NumeratorU.Symbol, DenomU.Symbol);
+  result := GetRatioSymbol(NumeratorU.GetPowerSymbol(AExponent), DenomU.GetPowerSymbol(AExponent));
 end;
 
-class function TFactoredNumeratorUnit.Name: string;
+class function TFactoredNumeratorUnit.GetPowerName(AExponent: integer): string;
 begin
-  result := GetRatioName(NumeratorU.Name, DenomU.Name);
+  result := GetRatioName(NumeratorU.GetPowerName(AExponent), DenomU.GetPowerName(AExponent));
 end;
 
 class function TFactoredNumeratorUnit.Factor: double;
@@ -880,14 +976,14 @@ end;
 
 { TFactoredDenominatorUnit }
 
-class function TFactoredDenominatorUnit.Symbol: string;
+class function TFactoredDenominatorUnit.GetPowerSymbol(AExponent: integer): string;
 begin
-  result := GetRatioSymbol(NumeratorU.Symbol, DenomU.Symbol);
+  result := GetRatioSymbol(NumeratorU.GetPowerSymbol(AExponent), DenomU.GetPowerSymbol(AExponent));
 end;
 
-class function TFactoredDenominatorUnit.Name: string;
+class function TFactoredDenominatorUnit.GetPowerName(AExponent: integer): string;
 begin
-  result := GetRatioName(NumeratorU.Name, DenomU.Name);
+  result := GetRatioName(NumeratorU.GetPowerName(AExponent), DenomU.GetPowerName(AExponent));
 end;
 
 class function TFactoredDenominatorUnit.Factor: double;
@@ -897,14 +993,14 @@ end;
 
 { TFactoredUnitProduct }
 
-class function TFactoredUnitProduct.Symbol: string;
+class function TFactoredUnitProduct.GetPowerSymbol(AExponent: integer): string;
 begin
-  result := GetProductSymbol(U1.Symbol, U2.Symbol);
+  result := GetProductSymbol(U1.GetPowerSymbol(AExponent), U2.GetPowerSymbol(AExponent));
 end;
 
-class function TFactoredUnitProduct.Name: string;
+class function TFactoredUnitProduct.GetPowerName(AExponent: integer): string;
 begin
-  result := GetProductName(U1.Name, U2.Name);
+  result := GetProductName(U1.GetPowerName(AExponent), U2.GetPowerName(AExponent));
 end;
 
 class function TFactoredUnitProduct.Factor: double;
@@ -914,14 +1010,14 @@ end;
 
 { TLeftFactoredUnitProduct }
 
-class function TLeftFactoredUnitProduct.Symbol: string;
+class function TLeftFactoredUnitProduct.GetPowerSymbol(AExponent: integer): string;
 begin
-  result := GetProductSymbol(U1.Symbol, U2.Symbol);
+  result := GetProductSymbol(U1.GetPowerSymbol(AExponent), U2.GetPowerSymbol(AExponent));
 end;
 
-class function TLeftFactoredUnitProduct.Name: string;
+class function TLeftFactoredUnitProduct.GetPowerName(AExponent: integer): string;
 begin
-  result := GetProductName(U1.Name, U2.Name);
+  result := GetProductName(U1.GetPowerName(AExponent), U2.GetPowerName(AExponent));
 end;
 
 class function TLeftFactoredUnitProduct.Factor: double;
@@ -931,14 +1027,14 @@ end;
 
 { TRightFactoredUnitProduct }
 
-class function TRightFactoredUnitProduct.Symbol: string;
+class function TRightFactoredUnitProduct.GetPowerSymbol(AExponent: integer): string;
 begin
-  result := GetProductSymbol(U1.Symbol, U2.Symbol);
+  result := GetProductSymbol(U1.GetPowerSymbol(AExponent), U2.GetPowerSymbol(AExponent));
 end;
 
-class function TRightFactoredUnitProduct.Name: string;
+class function TRightFactoredUnitProduct.GetPowerName(AExponent: integer): string;
 begin
-  result := GetProductName(U1.Name, U2.Name);
+  result := GetProductName(U1.GetPowerName(AExponent), U2.GetPowerName(AExponent));
 end;
 
 class function TRightFactoredUnitProduct.Factor: double;
@@ -1048,7 +1144,7 @@ end;
     result := AQuantity;
   end;
 {$ENDIF}{$UNDEF UNIT_ID_IMPL}
-{$IFDEF SQUARABLE_UNIT_ID_IMPL}
+{$IFDEF POWERABLE_UNIT_ID_IMPL}
   class operator T_UNIT_ID.*(const TheUnit1, TheUnit2: TSelf): TSquareId;
   begin end;
 
@@ -1096,7 +1192,7 @@ end;
   begin
     result.Value := System.Exp(System.Ln(ACubicQuantity.Value) / 3);
   end;
-{$ENDIF}{$UNDEF SQUARABLE_UNIT_ID_IMPL}
+{$ENDIF}{$UNDEF POWERABLE_UNIT_ID_IMPL}
 {$IFDEF FACTORED_UNIT_ID_IMPL}
   class function T_UNIT_ID.From(const AQuantity: TBaseQuantity): TQuantity;
   begin
@@ -1138,7 +1234,7 @@ end;
 {$DEFINE UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TSquareUnitId}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
+{$DEFINE UNIT_ID_IMPL}{$DEFINE POWERABLE_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}
@@ -1150,11 +1246,17 @@ end;
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RECIP_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredReciprocalUnitId}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
+{$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TRatioUnitId}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
+{$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TUnitProductId}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}{$DEFINE POWERABLE_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TPowerableRatioUnitId}{$i dim.pas}
+
+{$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}{$DEFINE POWERABLE_UNIT_ID_IMPL}
+{$DEFINE T_UNIT_ID:=TPowerableUnitProductId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredQuarticUnitId}{$i dim.pas}
@@ -1165,7 +1267,7 @@ end;
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredSquareUnitId}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE SQUARABLE_UNIT_ID_IMPL}
+{$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE POWERABLE_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredUnitId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
@@ -1271,7 +1373,7 @@ end;
   end;
 
 {$ENDIF}{$UNDEF QTY_IMPL}
-{$IFDEF SQUARABLE_QTY_IMPL}
+{$IFDEF POWERABLE_QTY_IMPL}
   class operator T_QUANTITY.*(const AQuantity1, AQuantity2: TSelf): TSquareQuantity;
   begin
     result.Value := AQuantity1.Value * AQuantity2.Value;
@@ -1337,7 +1439,7 @@ end;
     result.Value := sqr(self.Value) * sqr(self.Value);
   end;
 
-{$ENDIF}{$UNDEF SQUARABLE_QTY_IMPL}
+{$ENDIF}{$UNDEF POWERABLE_QTY_IMPL}
 {$IFDEF RECIP_QTY_IMPL}
   class operator T_QUANTITY./(
     const AValue: double; const ASelf: TSelf): TDenomQuantity;
@@ -1448,7 +1550,7 @@ end;
 {$DEFINE QTY_IMPL}
 {$DEFINE T_QUANTITY:=TSquareQuantity}{$i dim.pas}
 
-{$DEFINE QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
+{$DEFINE QTY_IMPL}{$DEFINE POWERABLE_QTY_IMPL}
 {$DEFINE T_QUANTITY:=TQuantity}{$i dim.pas}
 
 {$DEFINE BASIC_QTY_IMPL}
@@ -1463,6 +1565,12 @@ end;
 {$DEFINE QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
 {$DEFINE T_QUANTITY:=TQuantityProduct}{$i dim.pas}
 
+{$DEFINE QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}{$DEFINE POWERABLE_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TPowerableRatioQuantity}{$i dim.pas}
+
+{$DEFINE QTY_IMPL}{$DEFINE QTY_PROD_IMPL}{$DEFINE POWERABLE_QTY_IMPL}
+{$DEFINE T_QUANTITY:=TPowerableQuantityProduct}{$i dim.pas}
+
 {$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
 {$DEFINE T_QUANTITY:=TFactoredQuarticQuantity}{$i dim.pas}
 
@@ -1472,7 +1580,7 @@ end;
 {$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
 {$DEFINE T_QUANTITY:=TFactoredSquareQuantity}{$i dim.pas}
 
-{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE SQUARABLE_QTY_IMPL}
+{$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE POWERABLE_QTY_IMPL}
 {$DEFINE T_QUANTITY:=TFactoredQuantity}{$i dim.pas}
 
 {$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}{$DEFINE RECIP_QTY_IMPL}

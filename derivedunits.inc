@@ -4,8 +4,8 @@
 {$IFDEF INTF}
 type
   TMeterPerSecond = specialize TRatioUnit<TMeter, TSecond>;
-  TMeterPerSecondId = specialize TRatioUnitId<TMeter, TSecond>;
-  TMetersPerSecond = specialize TRatioQuantity<TMeter, TSecond>;
+  TMeterPerSecondId = specialize TPowerableRatioUnitId<TMeter, TSecond>;
+  TMetersPerSecond = specialize TPowerableRatioQuantity<TMeter, TSecond>;
 
   TMillimeterPerSecond = specialize TFactoredNumeratorUnit<TMilliMeter, TSecond>;
   TMillimeterPerSecondId = specialize TFactoredNumeratorUnitId<TMeter, TSecond, TMilliMeter>;
@@ -31,7 +31,7 @@ type
 {$DEFINE NumQty:=TKilometers}{$DEFINE DenomQty:=THours}{$DEFINE RatioQty:=TKilometersPerHour}
 {$DEFINE DEF_RATIO}{$i dim.pas}
 
-{ Units of squared speed }
+{ Units of square speed }
 {$IFDEF INTF}
 type
   TSquareMeterPerSquareSecond = specialize TSquareUnit<TMeterPerSecond>;
@@ -40,18 +40,6 @@ type
   TSquareMetersPerSquareSecond = specialize TSquareQuantity<TMeterPerSecond>;
   TSquareMetersPerSquareSecondFactor = specialize TQuantity<TSquareMeterPerSquareSecond>;
 {$ENDIF}
-
-{ main definition [ m2/s2 ] = [ m/s ] * [ m/s ] }
-operator *(const {%H-}ALeft: TMeterPerSecondId; const {%H-}ARight: TMeterPerSecondId): TSquareMeterPerSquareSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const ALeft: TMetersPerSecond; const ARight: TMetersPerSecond): TSquareMetersPerSquareSecond; inline;
-{$IFDEF IMPL}begin result.Value := ALeft.Value * ARight.Value; end;{$ENDIF}
-
-{ alternatve definition [ m2/s2 ] / [ m/s ] = [ m/s ] }
-operator /(const {%H-}ANum: TSquareMeterPerSquareSecondId; const {%H-}ADenom: TMeterPerSecondId): TMeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ANum: TSquareMetersPerSquareSecond; const ADenom: TMetersPerSecond): TMetersPerSecond; inline;
-{$IFDEF IMPL}begin result.Value := ANum.Value / ADenom.Value; end;{$ENDIF}
 
 { alternative definition [ m2/s2 ] = [ m2 ] / [ s2 ] }
 {$DEFINE NumId:=TSquareMeterId}{$DEFINE DenomId:=TSquareSecondId}{$DEFINE RatioId:=TSquareMeterPerSquareSecondId}
