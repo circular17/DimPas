@@ -1,6 +1,6 @@
 ////////////////////// UNITS DERIVED FROM SPECIAL UNITS ////////////////////////
 
-{ Units of speed }
+{ Units of angular speed }
 {$IFDEF INTF}
 type
   TRadianPerSecond = specialize TRatioUnit<TRadian, TSecond>;
@@ -8,14 +8,55 @@ type
   TRadiansPerSecond = specialize TRatioQuantity<TRadian, TSecond>;
 {$ENDIF}
 
+{ main definition [ rad/s ] = [ rad ] / [ s ] }
 {$DEFINE NumId:=TRadianId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TRadianPerSecondId}
 {$DEFINE NumQty:=TRadians}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TRadiansPerSecond}
-{$DEFINE DEF_RATIO}{$i dim.pas} // rad/s = rad / s
+{$DEFINE DEF_RATIO}{$i dim.pas}
 
-// alternative definition
-{$DEFINE LeftId:=TRadianPerSecondId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TMeterPerSecondId}
-{$DEFINE LeftQty:=TRadiansPerSecond}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TMetersPerSecond}
-{$DEFINE ALT_PROD}{$i dim.pas} // rad/s * m = m/s
+{ alternative definition [ rad/s ] = [ m/s ] / [ m ] }
+{$DEFINE NumtId:=TMeterPerSecondId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatiodId:=TRadianPerSecondId}
+{$DEFINE NumQty:=TMetersPerSecond}{$DEFINE DenomQty:=TMeters}{$DEFINE RatiodQty:=TRadiansPerSecond}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ Units of squared angular speed }
+{$IFDEF INTF}
+type
+  TSteradianPerSquareSecond = specialize TSquareUnit<TRadianPerSecond>;
+  TSteradianPerSquareSecondId = specialize TSquareUnitId<TRadianPerSecond>;
+  TSteradianPerSquareSecondFactorId = specialize TUnitId<TSteradianPerSquareSecond>;
+  TSteradiansPerSquareSecond = specialize TSquareQuantity<TRadianPerSecond>;
+  TSteradiansPerSquareSecondFactor = specialize TQuantity<TSteradianPerSquareSecond>;
+{$ENDIF}
+
+{ main definition [ sr/s2 ] = [ rad/s ] * [ rad/s ] }
+operator *(const {%H-}ALeft: TRadianPerSecondId; const {%H-}ARight: TRadianPerSecondId): TSteradianPerSquareSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator *(const ALeft: TRadiansPerSecond; const ARight: TRadiansPerSecond): TSteradiansPerSquareSecond; inline;
+{$IFDEF IMPL}begin result.Value := ALeft.Value * ARight.Value; end;{$ENDIF}
+
+{ alternative definition [ sr/s2 ] / [ rad/s ] = [ rad/s ] }
+operator /(const {%H-}ANum: TSteradianPerSquareSecondId; const {%H-}ADenom: TRadianPerSecondId): TRadianPerSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const ANum: TSteradiansPerSquareSecond; const ADenom: TRadiansPerSecond): TRadiansPerSecond; inline;
+{$IFDEF IMPL}begin result.Value := ANum.Value / ADenom.Value; end;{$ENDIF}
+
+{ alternative definition [ sr/s2 ] = [ sr ] / [ s2 ] }
+{$DEFINE NumId:=TSteradianId}{$DEFINE DenomId:=TSquareSecondId}{$DEFINE RatioId:=TSteradianPerSquareSecondId}
+{$DEFINE NumQty:=TSteradians}{$DEFINE DenomQty:=TSquareSeconds}{$DEFINE RatioQty:=TSteradiansPerSquareSecond}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ sr/s2 ] = [ m/s2 ] / [ m ] }
+{$DEFINE NumId:=TMeterPerSecondSquaredId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TSteradianPerSquareSecondId}
+{$DEFINE NumQty:=TMetersPerSecondSquared}{$DEFINE DenomQty:=TMeters}{$DEFINE RatioQty:=TSteradiansPerSquareSecond}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+// equivalences
+operator:=(const {%H-}AQuantityId: TSteradianPerSquareSecondId): TSteradianPerSquareSecondFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const AQuantity: TSteradiansPerSquareSecond): TSteradiansPerSquareSecondFactor; inline;
+{$IFDEF IMPL}begin result.Value := AQuantity.Value; end;{$ENDIF}
+operator:=(const AQuantity: TSteradiansPerSquareSecondFactor): TSteradiansPerSquareSecond; inline;
+{$IFDEF IMPL}begin result.Value := AQuantity.Value; end;{$ENDIF}
 
 { Units of acceleration }
 {$IFDEF INTF}
@@ -24,14 +65,15 @@ type
   TRadiansPerSecondSquared = specialize TRatioQuantity<TRadianPerSecond, TSecond>;
 {$ENDIF}
 
+{ main definition [ rad/s2 ] = [ rad/s ] / [ s ] }
 {$DEFINE NumId:=TRadianPerSecondId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TRadianPerSecondSquaredId}
 {$DEFINE NumQty:=TRadiansPerSecond}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TRadiansPerSecondSquared}
-{$DEFINE DEF_RATIO}{$i dim.pas} // rad/s2 = rad/s / s
+{$DEFINE DEF_RATIO}{$i dim.pas}
 
-// alternate definitions
+{ alternate definition [ rad/s2 ] * [ s2 ] = [ rad ] }
 {$DEFINE LeftId:=TRadianPerSecondSquaredId}{$DEFINE RightId:=TSquareSecondId}{$DEFINE ProdId:=TRadianId}
 {$DEFINE LeftQty:=TRadiansPerSecondSquared}{$DEFINE RightQty:=TSquareSeconds}{$DEFINE ProdQty:=TRadians}
-{$DEFINE ALT_PROD}{$i dim.pas} // rad = rad/s2 * s2
+{$DEFINE ALT_PROD}{$i dim.pas}
 
 { Mechanical derived units }
 {$IFDEF INTF}
@@ -64,9 +106,9 @@ type
   TKilogramSquareMeterId = specialize TUnitProductId<TBaseKilogram, TSquareMeter>;
   TKilogramSquareMeters = specialize TQuantityProduct<TBaseKilogram, TSquareMeter>;
 
-  TKilogramSquareMeterPerSecond = specialize TUnitProduct<TKilogramSquareMeter, TRadianPerSecond>;
-  TKilogramSquareMeterPerSecondId = specialize TUnitProductId<TKilogramSquareMeter, TRadianPerSecond>;
-  TKilogramSquareMetersPerSecond = specialize TQuantityProduct<TKilogramSquareMeter, TRadianPerSecond>;
+  TKilogramSquareMeterPerSecond = specialize TUnitProduct<TKilogramSquareMeter, TSecond>;
+  TKilogramSquareMeterPerSecondId = specialize TUnitProductId<TKilogramSquareMeter, TSecond>;
+  TKilogramSquareMetersPerSecond = specialize TQuantityProduct<TKilogramSquareMeter, TSecond>;
 {$ENDIF}
 
 {$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TNewtonPerMeterId}
@@ -125,10 +167,15 @@ type
 {$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TSquareMeters}{$DEFINE ProdQty:=TKilogramSquareMeters}
 {$DEFINE DEF_PROD}{$i dim.pas}
 
-{ main definition [ kg*m2/s ] = [ kg*m2 ] * [ rad/s ] }
+{ main definition [ kg*m2/s ] = [ kg*m2 ] / [ s ] }
+{$DEFINE NumId:=TKilogramSquareMeterId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TKilogramSquareMeterPerSecondId}
+{$DEFINE NumQty:=TKilogramSquareMeters}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TKilogramSquareMetersPerSecond}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ alternative definition [ kg*m2/s ] = [ kg*m2 ] * [ rad/s ] }
 {$DEFINE LeftId:=TKilogramSquareMeterId}{$DEFINE RightId:=TRadianPerSecondId}{$DEFINE ProdId:=TKilogramSquareMeterPerSecondId}
 {$DEFINE LeftQty:=TKilogramSquareMeters}{$DEFINE RightQty:=TRadiansPerSecond}{$DEFINE ProdQty:=TKilogramSquareMetersPerSecond}
-{$DEFINE DEF_PROD}{$i dim.pas}
+{$DEFINE ALT_PROD}{$i dim.pas}
 
 { alternative definition [ kg*m2/s ] = [ N*m ] * [s] = [ J ] * [ s ] }
 {$DEFINE LeftId:=TJouleId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:=TKilogramSquareMeterPerSecondId}
@@ -206,6 +253,7 @@ type
 
   TReciprocalKelvinId = specialize TReciprocalUnitId<TKelvin>;
   TReciprocalKelvins = specialize TReciprocalQuantity<TKelvin>;
+
 {$ENDIF}
 
 // HEAT CAPACITY
