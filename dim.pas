@@ -602,77 +602,81 @@ function GetProductName(ALeftName, ARightName: string): string;
 
 {$UNDEF DIM}{$ENDIF}
 {$IF defined(DEF_PROD) or defined(ALT_PROD)}
-operator *(const {%H-}ALeft: LeftId; const {%H-}ARight: RightId): ProdId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const {%H-}ARight: RightId; const {%H-}ALeft: LeftId): ProdId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-{$IFDEF NO_DIV_LEFT}{$UNDEF NO_DIV_LEFT}{$ELSE}
-operator /(const {%H-}AProd: ProdId; const {%H-}ALeft: LeftId): RightId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-{$ENDIF}
-{$IFNDEF DEF_PROD}
-operator /(const {%H-}AProd: ProdId; const {%H-}ARight: RightId): LeftId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-{$ENDIF}
+  operator *(const {%H-}ALeft: LeftId; const {%H-}ARight: RightId): ProdId; inline;
+  {$IFDEF IMPL}begin end;{$ENDIF}
+  operator *(const {%H-}ARight: RightId; const {%H-}ALeft: LeftId): ProdId; inline;
+  {$IFDEF IMPL}begin end;{$ENDIF}
+  {$IFNDEF NO_DIV_LEFT}
+    operator /(const {%H-}AProd: ProdId; const {%H-}ALeft: LeftId): RightId; inline;
+    {$IFDEF IMPL}begin end;{$ENDIF}
+  {$ENDIF}
+  {$IFNDEF DEF_PROD}
+    operator /(const {%H-}AProd: ProdId; const {%H-}ARight: RightId): LeftId; inline;
+    {$IFDEF IMPL}begin end;{$ENDIF}
+  {$ENDIF}
 
-operator *(const {%H-}ALeft: LeftQty; const {%H-}ARight: RightQty): ProdQty; inline;
-{$IFDEF IMPL}begin result.Value := ALeft.Value * ARight.Value; end;{$ENDIF}
-operator *(const {%H-}ARight: RightQty; const {%H-}ALeft: LeftQty): ProdQty; inline;
-{$IFDEF IMPL}begin result.Value := ARight.Value * ALeft.Value; end;{$ENDIF}
-operator /(const {%H-}AProd: ProdQty; const {%H-}ALeft: LeftQty): RightQty; inline;
-{$IFDEF IMPL}begin result.Value := AProd.Value / ALeft.Value; end;{$ENDIF}
-operator /(const {%H-}AProd: ProdQty; const {%H-}ARight: RightQty): LeftQty; inline;
-{$IFDEF IMPL}begin result.Value := AProd.Value / ARight.Value; end;{$ENDIF}
-{$UNDEF ALT_PROD}{$UNDEF DEF_PROD}{$ENDIF}
+  operator *(const {%H-}ALeft: LeftQty; const {%H-}ARight: RightQty): ProdQty; inline;
+  {$IFDEF IMPL}begin result.Value := ALeft.Value * ARight.Value; end;{$ENDIF}
+  operator *(const {%H-}ARight: RightQty; const {%H-}ALeft: LeftQty): ProdQty; inline;
+  {$IFDEF IMPL}begin result.Value := ARight.Value * ALeft.Value; end;{$ENDIF}
+  {$IFNDEF NO_DIV_LEFT}
+    operator /(const {%H-}AProd: ProdQty; const {%H-}ALeft: LeftQty): RightQty; inline;
+    {$IFDEF IMPL}begin result.Value := AProd.Value / ALeft.Value; end;{$ENDIF}
+  {$ENDIF}
+  {$IFNDEF DEF_PROD}
+    operator /(const {%H-}AProd: ProdQty; const {%H-}ARight: RightQty): LeftQty; inline;
+    {$IFDEF IMPL}begin result.Value := AProd.Value / ARight.Value; end;{$ENDIF}
+  {$ENDIF}
+{$UNDEF ALT_PROD}{$UNDEF DEF_PROD}{$UNDEF NO_DIV_LEFT}{$ENDIF}
 
 {$IF defined(DEF_RATIO) or defined(ALT_RATIO)}
-operator /(const {%H-}ANum: NumId; const {%H-}ADenom: DenomId): RatioId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ANum: NumQty; const ADenom: DenomQty): RatioQty; inline;
-{$IFDEF IMPL}begin result.Value:= ANum.Value / ADenom.Value; end;{$ENDIF}
-{$IFNDEF DEF_RATIO}
-operator *(const {%H-}ARatio: RatioId; const {%H-}ADenom: DenomId): NumId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const ARatio: RatioQty; const ADenom: DenomQty): NumQty; inline;
-{$IFDEF IMPL}begin result.Value:= ARatio.Value * ADenom.Value; end;{$ENDIF}
-operator *(const {%H-}ADenom: DenomId; const {%H-}ARatio: RatioId): NumId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const ADenom: DenomQty; const ARatio: RatioQty): NumQty; inline;
-{$IFDEF IMPL}begin result.Value:= ADenom.Value * ARatio.Value; end;{$ENDIF}
-operator /(const {%H-}ANum: NumId; const {%H-}ARatio: RatioId): DenomId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ANum: NumQty; const ARatio: RatioQty): DenomQty; inline;
-{$IFDEF IMPL}begin result.Value:= ANum.Value / ARatio.Value; end;{$ENDIF}
-{$ENDIF}
+  operator /(const {%H-}ANum: NumId; const {%H-}ADenom: DenomId): RatioId; inline;
+  {$IFDEF IMPL}begin end;{$ENDIF}
+  operator /(const ANum: NumQty; const ADenom: DenomQty): RatioQty; inline;
+  {$IFDEF IMPL}begin result.Value:= ANum.Value / ADenom.Value; end;{$ENDIF}
+  {$IFNDEF DEF_RATIO}
+    operator *(const {%H-}ARatio: RatioId; const {%H-}ADenom: DenomId): NumId; inline;
+    {$IFDEF IMPL}begin end;{$ENDIF}
+    operator *(const ARatio: RatioQty; const ADenom: DenomQty): NumQty; inline;
+    {$IFDEF IMPL}begin result.Value:= ARatio.Value * ADenom.Value; end;{$ENDIF}
+    operator *(const {%H-}ADenom: DenomId; const {%H-}ARatio: RatioId): NumId; inline;
+    {$IFDEF IMPL}begin end;{$ENDIF}
+    operator *(const ADenom: DenomQty; const ARatio: RatioQty): NumQty; inline;
+    {$IFDEF IMPL}begin result.Value:= ADenom.Value * ARatio.Value; end;{$ENDIF}
+    operator /(const {%H-}ANum: NumId; const {%H-}ARatio: RatioId): DenomId; inline;
+    {$IFDEF IMPL}begin end;{$ENDIF}
+    operator /(const ANum: NumQty; const ARatio: RatioQty): DenomQty; inline;
+    {$IFDEF IMPL}begin result.Value:= ANum.Value / ARatio.Value; end;{$ENDIF}
+  {$ENDIF}
 {$UNDEF ALT_RATIO}{$UNDEF DEF_RATIO}{$ENDIF}
 
 {$IF defined(DEF_RECIP) or defined(ALT_RECIP)}
-operator /(const {%H-}AValue: double; const {%H-}ADenom: DenomId): RecipId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
-operator /(const {%H-}AValue: double; const {%H-}ARecip: RecipId): DenomId; inline;
-{$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
+  operator /(const {%H-}AValue: double; const {%H-}ADenom: DenomId): RecipId; inline;
+  {$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
+  operator /(const {%H-}AValue: double; const {%H-}ARecip: RecipId): DenomId; inline;
+  {$IFDEF IMPL}begin if AValue <> 1 then raise Exception.Create('Factor must be 1') end;{$ENDIF}
 
-operator /(const AValue: double; const ADenom: DenomQty): RecipQty; inline;
-{$IFDEF IMPL}begin result.Value := AValue / ADenom.Value; end;{$ENDIF}
-operator /(const AValue: double; const ARecip: RecipQty): DenomQty; inline;
-{$IFDEF IMPL}begin result.Value := AValue / ARecip.Value; end;{$ENDIF}
+  operator /(const AValue: double; const ADenom: DenomQty): RecipQty; inline;
+  {$IFDEF IMPL}begin result.Value := AValue / ADenom.Value; end;{$ENDIF}
+  operator /(const AValue: double; const ARecip: RecipQty): DenomQty; inline;
+  {$IFDEF IMPL}begin result.Value := AValue / ARecip.Value; end;{$ENDIF}
 {$UNDEF ALT_RECIP}{$UNDEF DEF_RECIP}{$ENDIF}
 
 {$IFDEF DEF_POWER}
-operator /(const {%H-}ACube: Id3; const {%H-}ASquare: Id2): Id1; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ACube: Qty3; const ASquare: Qty2): Qty1; inline;
-{$IFDEF IMPL}begin result.Value := ACube.Value / ASquare.Value; end;{$ENDIF}
+  operator /(const {%H-}ACube: Id3; const {%H-}ASquare: Id2): Id1; inline;
+  {$IFDEF IMPL}begin end;{$ENDIF}
+  operator /(const ACube: Qty3; const ASquare: Qty2): Qty1; inline;
+  {$IFDEF IMPL}begin result.Value := ACube.Value / ASquare.Value; end;{$ENDIF}
 
-operator /(const {%H-}AHypercube: Id4; const {%H-}ACube: Id3): Id1; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AHypercube: Qty4; const ACube: Qty3): Qty1; inline;
-{$IFDEF IMPL}begin result.Value := AHypercube.Value / ACube.Value; end;{$ENDIF}
+  operator /(const {%H-}AHypercube: Id4; const {%H-}ACube: Id3): Id1; inline;
+  {$IFDEF IMPL}begin end;{$ENDIF}
+  operator /(const AHypercube: Qty4; const ACube: Qty3): Qty1; inline;
+  {$IFDEF IMPL}begin result.Value := AHypercube.Value / ACube.Value; end;{$ENDIF}
 
-operator /(const {%H-}AHypercube: Id4; const {%H-}ASquare: Id2): Id2; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const AHypercube: Qty4; const ASquare: Qty2): Qty2; inline;
-{$IFDEF IMPL}begin result.Value := AHypercube.Value / ASquare.Value; end;{$ENDIF}
+  operator /(const {%H-}AHypercube: Id4; const {%H-}ASquare: Id2): Id2; inline;
+  {$IFDEF IMPL}begin end;{$ENDIF}
+  operator /(const AHypercube: Qty4; const ASquare: Qty2): Qty2; inline;
+  {$IFDEF IMPL}begin result.Value := AHypercube.Value / ASquare.Value; end;{$ENDIF}
 {$UNDEF DEF_POWER}{$ENDIF}
 
 {$IFNDEF DIM}{$DEFINE DIM}
