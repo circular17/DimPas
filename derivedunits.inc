@@ -16,17 +16,55 @@ type
   TKilometersPerHour = specialize TFactoredRatioQuantity<TMeter, TSecond, TKilometer, THour>;
 {$ENDIF}
 
+{ main definition [ m/s ] = [ m ] / [ s ] }
 {$DEFINE NumId:=TMeterId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TMeterPerSecondId}
 {$DEFINE NumQty:=TMeters}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TMetersPerSecond}
-{$DEFINE DEF_RATIO}{$i dim.pas} // m/s = m / s
+{$DEFINE DEF_RATIO}{$i dim.pas}
 
+{ main definition [ mm/s ] = [ mm ] / [ s ] }
 {$DEFINE NumId:=TMillimeterId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TMillimeterPerSecondId}
 {$DEFINE NumQty:=TMillimeters}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TMillimetersPerSecond}
-{$DEFINE DEF_RATIO}{$i dim.pas} // mm/s = mm / s
+{$DEFINE DEF_RATIO}{$i dim.pas}
 
+{ main definition [ km/h ] = [ km ] / [ h ] }
 {$DEFINE NumId:=TKilometerId}{$DEFINE DenomId:=THourId}{$DEFINE RatioId:=TKilometerPerHourId}
 {$DEFINE NumQty:=TKilometers}{$DEFINE DenomQty:=THours}{$DEFINE RatioQty:=TKilometersPerHour}
-{$DEFINE DEF_RATIO}{$i dim.pas} // km/h = km / h
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{ Units of squared speed }
+{$IFDEF INTF}
+type
+  TSquareMeterPerSquareSecond = specialize TSquareUnit<TMeterPerSecond>;
+  TSquareMeterPerSquareSecondId = specialize TSquareUnitId<TMeterPerSecond>;
+  TSquareMeterPerSquareSecondFactorId = specialize TUnitId<TSquareMeterPerSquareSecond>;
+  TSquareMetersPerSquareSecond = specialize TSquareQuantity<TMeterPerSecond>;
+  TSquareMetersPerSquareSecondFactor = specialize TQuantity<TSquareMeterPerSquareSecond>;
+{$ENDIF}
+
+{ main definition [ m2/s2 ] = [ m/s ] * [ m/s ] }
+operator *(const {%H-}ALeft: TMeterPerSecondId; const {%H-}ARight: TMeterPerSecondId): TSquareMeterPerSquareSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator *(const ALeft: TMetersPerSecond; const ARight: TMetersPerSecond): TSquareMetersPerSquareSecond; inline;
+{$IFDEF IMPL}begin result.Value := ALeft.Value * ARight.Value; end;{$ENDIF}
+
+{ alternatve definition [ m2/s2 ] / [ m/s ] = [ m/s ] }
+operator /(const {%H-}ANum: TSquareMeterPerSquareSecondId; const {%H-}ADenom: TMeterPerSecondId): TMeterPerSecondId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator /(const ANum: TSquareMetersPerSquareSecond; const ADenom: TMetersPerSecond): TMetersPerSecond; inline;
+{$IFDEF IMPL}begin result.Value := ANum.Value / ADenom.Value; end;{$ENDIF}
+
+{ alternative definition [ m2/s2 ] = [ m2 ] / [ s2 ] }
+{$DEFINE NumId:=TSquareMeterId}{$DEFINE DenomId:=TSquareSecondId}{$DEFINE RatioId:=TSquareMeterPerSquareSecondId}
+{$DEFINE NumQty:=TSquareMeters}{$DEFINE DenomQty:=TSquareSeconds}{$DEFINE RatioQty:=TSquareMetersPerSquareSecond}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ equivalences }
+operator:=(const {%H-}AQuantityId: TSquareMeterPerSquareSecondId): TSquareMeterPerSquareSecondFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const AQuantity: TSquareMetersPerSquareSecond): TSquareMetersPerSquareSecondFactor; inline;
+{$IFDEF IMPL}begin result.Value := AQuantity.Value; end;{$ENDIF}
+operator:=(const AQuantity: TSquareMetersPerSquareSecondFactor): TSquareMetersPerSquareSecond; inline;
+{$IFDEF IMPL}begin result.Value := AQuantity.Value; end;{$ENDIF}
 
 { Units of acceleration }
 {$IFDEF INTF}
@@ -39,38 +77,27 @@ type
                                             <TMeterPerSecond, TSecond, TKilometerPerHour>;
   TKilometersPerHourPerSecond = specialize TFactoredNumeratorQuantity
                                            <TMeterPerSecond, TSecond, TKilometerPerHour>;
-
-  TSquareMeterPerSquareSecond = specialize TRatioUnit<TSquareMeter, TSquareSecond>;
-  TSquareMeterPerSquareSecondId = specialize TRatioUnitId<TSquareMeter, TSquareSecond>;
-  TSquareMetersPerSquareSecond = specialize TRatioQuantity<TSquareMeter, TSquareSecond>;
 {$ENDIF}
 
+{ main definition [ m/s2 ] = [ m/s ] / [ s ] }
 {$DEFINE NumId:=TMeterPerSecondId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TMeterPerSecondSquaredId}
 {$DEFINE NumQty:=TMetersPerSecond}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TMetersPerSecondSquared}
-{$DEFINE DEF_RATIO}{$i dim.pas} // m/s2 = (m/s) / s
+{$DEFINE DEF_RATIO}{$i dim.pas}
 
+{ alternate definition [ m/s2 ] = [ m ] / [ s2 ] }
+{$DEFINE NumId:=TMeterId}{$DEFINE DenomId:=TSquareSecondId}{$DEFINE RatioId:=TMeterPerSecondSquaredId}
+{$DEFINE NumQty:=TMeters}{$DEFINE DenomQty:=TSquareSeconds}{$DEFINE RatioQty:=TMetersPerSecondSquared}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ m/s2 ] = [ m2/s2 ] / [ m ] }
+{$DEFINE NumId:=TSquareMeterPerSquareSecondId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TMeterPerSecondSquaredId}
+{$DEFINE NumQty:=TSquareMetersPerSquareSecond}{$DEFINE DenomQty:=TMeters}{$DEFINE RatioQty:=TMetersPerSecondSquared}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ main definition [ km/h/s ] = [ km/h ] / [ s ] }
 {$DEFINE NumId:=TKilometerPerHourId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TKilometerPerHourPerSecondId}
 {$DEFINE NumQty:=TKilometersPerHour}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TKilometersPerHourPerSecond}
-{$DEFINE DEF_RATIO}{$i dim.pas} // km/h/s = (km/h) / s
-
-{$DEFINE NumId:=TSquareMeterId}{$DEFINE DenomId:=TSquareSecondId}{$DEFINE RatioId:=TSquareMeterPerSquareSecondId}
-{$DEFINE NumQty:=TSquareMeters}{$DEFINE DenomQty:=TSquareSeconds}{$DEFINE RatioQty:=TSquareMetersPerSquareSecond}
-{$DEFINE DEF_RATIO}{$i dim.pas} // m2/s2 = m2 / s2
-
-// alternate definitions
-{$DEFINE LeftId:=TMeterPerSecondSquaredId}{$DEFINE RightId:=TSquareSecondId}{$DEFINE ProdId:=TMeterId}
-{$DEFINE LeftQty:=TMetersPerSecondSquared}{$DEFINE RightQty:=TSquareSeconds}{$DEFINE ProdQty:=TMeters}
-{$DEFINE ALT_PROD}{$i dim.pas} // m = m/s2 * s2
-
-// m2/s2 = m/s * m/s
-operator *(const {%H-}m_s: TMeterPerSecondId; const {%H-}m_s_: TMeterPerSecondId): TSquareMeterPerSquareSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator *(const ASpeed1: TMetersPerSecond; const ASpeed2: TMetersPerSecond): TSquareMetersPerSquareSecond; inline;
-{$IFDEF IMPL}begin result.Value := ASpeed1.Value * ASpeed2.Value; end;{$ENDIF}
-operator /(const {%H-}m2_s2: TSquareMeterPerSquareSecondId; const {%H-}m_s: TMeterPerSecondId): TMeterPerSecondId; inline;
-{$IFDEF IMPL}begin end;{$ENDIF}
-operator /(const ASquareSpeed: TSquareMetersPerSquareSecond; const ASpeed: TMetersPerSecond): TMetersPerSecond; inline;
-{$IFDEF IMPL}begin result.Value := ASquareSpeed.Value / ASpeed.Value; end;{$ENDIF}
+{$DEFINE DEF_RATIO}{$i dim.pas}
 
 { Mechanical derived units }
 {$IFDEF INTF}
