@@ -171,7 +171,7 @@ type
     class operator :=(const ASelf: TSelf): TRatio;
     {$IFDEF FACTORED_QTY_INTF}
     class operator :=(const ASelf: TSelf): TBaseRatio;
-    class function From(const AQuantity: TPowerableBaseQuantity): TSelf; static; inline;
+    class function From(const AQuantity: TBaseRatio): TSelf; static; inline;
     {$ENDIF}
   {$ENDIF}{$UNDEF RATIO_QTY_INTF}
   {$IFDEF QTY_PROD_INTF}
@@ -181,7 +181,7 @@ type
     class operator :=(const ASelf: TSelf): TProduct;
     {$IFDEF FACTORED_QTY_INTF}
     class operator :=(const ASelf: TSelf): TBaseProduct;
-    class function From(const AQuantity: TPowerableBaseQuantity): TSelf; static; inline;
+    class function From(const AQuantity: TBaseProduct): TSelf; static; inline;
     {$ENDIF}
   {$ENDIF}{$UNDEF QTY_PROD_INTF}
   {$IFDEF RECIP_QTY_INTF}
@@ -241,33 +241,15 @@ type
     type TNumeratorQuantity = specialize TQuantity<NumeratorU>;
     type TDenomQuantity = specialize TQuantity<DenomU>;
     type TRatio = specialize TQuantity<U>;
-    {$DEFINE QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$i dim.pas}
-  end;
-
-  generic TQuantityProduct<U1, U2: TUnit> = record
-    type U = specialize TUnitProduct<U1, U2>;
-    type TSelf = specialize TQuantityProduct<U1, U2>;
-    type TQuantity1 = specialize TQuantity<U1>;
-    type TQuantity2 = specialize TQuantity<U2>;
-    type TProduct = specialize TQuantity<U>;
-    {$DEFINE QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
-  end;
-
-  generic TPowerableRatioQuantity<NumeratorU, DenomU: TUnit> = record
-    type U = specialize TRatioUnit<NumeratorU, DenomU>;
-    type TSelf = specialize TPowerableRatioQuantity<NumeratorU, DenomU>;
-    type TNumeratorQuantity = specialize TQuantity<NumeratorU>;
-    type TDenomQuantity = specialize TQuantity<DenomU>;
-    type TRatio = specialize TQuantity<U>;
     type TSquareQuantity = specialize TSquareQuantity<U>;
     type TCubicQuantity = specialize TCubicQuantity<U>;
     type TQuarticQuantity = specialize TQuarticQuantity<U>;
     {$DEFINE QTY_INTF}{$DEFINE RATIO_QTY_INTF}{$DEFINE POWERABLE_QTY_INTF}{$i dim.pas}
   end;
 
-  generic TPowerableQuantityProduct<U1, U2: TUnit> = record
+  generic TQuantityProduct<U1, U2: TUnit> = record
     type U = specialize TUnitProduct<U1, U2>;
-    type TSelf = specialize TPowerableQuantityProduct<U1, U2>;
+    type TSelf = specialize TQuantityProduct<U1, U2>;
     type TQuantity1 = specialize TQuantity<U1>;
     type TQuantity2 = specialize TQuantity<U2>;
     type TProduct = specialize TQuantity<U>;
@@ -320,7 +302,6 @@ type
                                             NumeratorU, DenomU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
     type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
-    type TPowerableBaseQuantity = specialize TPowerableRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type U = specialize TFactoredRatioUnit<NumeratorU, DenomU>;
     type TSelf = specialize TFactoredRatioQuantity
                  <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
@@ -335,7 +316,6 @@ type
                                                 NumeratorU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
     type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
-    type TPowerableBaseQuantity = specialize TPowerableRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type DenomU = BaseDenomU;
     type U = specialize TFactoredNumeratorUnit<NumeratorU, DenomU>;
     type TSelf = specialize TFactoredNumeratorQuantity
@@ -351,7 +331,6 @@ type
                                                   DenomU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
     type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
-    type TPowerableBaseQuantity = specialize TPowerableRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type NumeratorU = BaseNumeratorU;
     type U = specialize TFactoredDenominatorUnit<NumeratorU, DenomU>;
     type TSelf = specialize TFactoredDenominatorQuantity
@@ -369,7 +348,6 @@ type
     type TQuantity1 = specialize TFactoredQuantity<BaseU1, U1>;
     type TQuantity2 = specialize TFactoredQuantity<BaseU2, U2>;
     type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
-    type TPowerableBaseQuantity = specialize TPowerableQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
     type TProduct = specialize TFactoredQuantity<BaseU, U>;
     type TBaseProduct = specialize TQuantity<BaseU>;
@@ -383,7 +361,6 @@ type
     type TQuantity1 = specialize TFactoredQuantity<BaseU1, U1>;
     type TQuantity2 = specialize TQuantity<U2>;
     type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
-    type TPowerableBaseQuantity = specialize TPowerableQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
     type TProduct = specialize TFactoredQuantity<BaseU, U>;
     type TBaseProduct = specialize TQuantity<BaseU>;
@@ -397,7 +374,6 @@ type
     type TQuantity1 = specialize TQuantity<U1>;
     type TQuantity2 = specialize TFactoredQuantity<BaseU2, U2>;
     type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
-    type TPowerableBaseQuantity = specialize TPowerableQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
     type TProduct = specialize TFactoredQuantity<BaseU, U>;
     type TBaseProduct = specialize TQuantity<BaseU>;
@@ -552,24 +528,6 @@ type
     type TQuantity = specialize TRatioQuantity<NumeratorU, DenomU>;
     type TNumeratorId = specialize TUnitId<NumeratorU>;
     type TDenomId = specialize TUnitId<DenomU>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$i dim.pas}
-  end;
-
-  generic TUnitProductId<U1, U2: TUnit> = record
-    type TSelf = specialize TUnitProductId<U1, U2>;
-    type U = specialize TUnitProduct<U1, U2>;
-    type TQuantity = specialize TQuantityProduct<U1, U2>;
-    type TId1 = specialize TUnitId<U1>;
-    type TId2 = specialize TUnitId<U2>;
-    {$DEFINE UNIT_ID_INTF}{$DEFINE UNIT_PROD_ID_INTF}{$i dim.pas}
-  end;
-
-  generic TPowerableRatioUnitId<NumeratorU, DenomU: TUnit> = record
-    type U = specialize TRatioUnit<NumeratorU, DenomU>;
-    type TSelf = specialize TPowerableRatioUnitId<NumeratorU, DenomU>;
-    type TQuantity = specialize TPowerableRatioQuantity<NumeratorU, DenomU>;
-    type TNumeratorId = specialize TUnitId<NumeratorU>;
-    type TDenomId = specialize TUnitId<DenomU>;
     type TSquareId = specialize TSquareUnitId<U>;
     type TSquareQuantity = specialize TSquareQuantity<U>;
     type TCubicId = specialize TCubicUnitId<U>;
@@ -578,10 +536,10 @@ type
     {$DEFINE UNIT_ID_INTF}{$DEFINE RATIO_UNIT_ID_INTF}{$DEFINE POWERABLE_UNIT_ID_INTF}{$i dim.pas}
   end;
 
-  generic TPowerableUnitProductId<U1, U2: TUnit> = record
-    type TSelf = specialize TPowerableUnitProductId<U1, U2>;
+  generic TUnitProductId<U1, U2: TUnit> = record
+    type TSelf = specialize TUnitProductId<U1, U2>;
     type U = specialize TUnitProduct<U1, U2>;
-    type TQuantity = specialize TPowerableQuantityProduct<U1, U2>;
+    type TQuantity = specialize TQuantityProduct<U1, U2>;
     type TId1 = specialize TUnitId<U1>;
     type TId2 = specialize TUnitId<U2>;
     type TSquareId = specialize TSquareUnitId<U>;
@@ -1260,17 +1218,11 @@ end;
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}{$DEFINE RECIP_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredReciprocalUnitId}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}
+{$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}{$DEFINE POWERABLE_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TRatioUnitId}{$i dim.pas}
 
-{$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TUnitProductId}{$i dim.pas}
-
-{$DEFINE UNIT_ID_IMPL}{$DEFINE RATIO_UNIT_ID_IMPL}{$DEFINE POWERABLE_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TPowerableRatioUnitId}{$i dim.pas}
-
 {$DEFINE UNIT_ID_IMPL}{$DEFINE UNIT_PROD_ID_IMPL}{$DEFINE POWERABLE_UNIT_ID_IMPL}
-{$DEFINE T_UNIT_ID:=TPowerableUnitProductId}{$i dim.pas}
+{$DEFINE T_UNIT_ID:=TUnitProductId}{$i dim.pas}
 
 {$DEFINE UNIT_ID_IMPL}{$DEFINE FACTORED_UNIT_ID_IMPL}
 {$DEFINE T_UNIT_ID:=TFactoredQuarticUnitId}{$i dim.pas}
@@ -1506,7 +1458,7 @@ end;
   begin
     result.Value := ASelf.ToBase.Value;
   end;
-  class function T_QUANTITY.From(const AQuantity: TPowerableBaseQuantity): TSelf;
+  class function T_QUANTITY.From(const AQuantity: TBaseRatio): TSelf;
   begin
     result.Value := AQuantity.Value / U.Factor;
   end;
@@ -1539,7 +1491,7 @@ end;
   begin
     result.Value := ASelf.ToBase.Value;
   end;
-  class function T_QUANTITY.From(const AQuantity: TPowerableBaseQuantity): TSelf;
+  class function T_QUANTITY.From(const AQuantity: TBaseProduct): TSelf;
   begin
     result.Value := AQuantity.Value / U.Factor;
   end;
@@ -1587,17 +1539,11 @@ end;
 {$DEFINE QTY_IMPL}{$DEFINE RECIP_QTY_IMPL}
 {$DEFINE T_QUANTITY:=TReciprocalQuantity}{$i dim.pas}
 
-{$DEFINE QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}
+{$DEFINE QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}{$DEFINE POWERABLE_QTY_IMPL}
 {$DEFINE T_QUANTITY:=TRatioQuantity}{$i dim.pas}
 
-{$DEFINE QTY_IMPL}{$DEFINE QTY_PROD_IMPL}
-{$DEFINE T_QUANTITY:=TQuantityProduct}{$i dim.pas}
-
-{$DEFINE QTY_IMPL}{$DEFINE RATIO_QTY_IMPL}{$DEFINE POWERABLE_QTY_IMPL}
-{$DEFINE T_QUANTITY:=TPowerableRatioQuantity}{$i dim.pas}
-
 {$DEFINE QTY_IMPL}{$DEFINE QTY_PROD_IMPL}{$DEFINE POWERABLE_QTY_IMPL}
-{$DEFINE T_QUANTITY:=TPowerableQuantityProduct}{$i dim.pas}
+{$DEFINE T_QUANTITY:=TQuantityProduct}{$i dim.pas}
 
 {$DEFINE QTY_IMPL}{$DEFINE FACTORED_QTY_IMPL}
 {$DEFINE T_QUANTITY:=TFactoredQuarticQuantity}{$i dim.pas}

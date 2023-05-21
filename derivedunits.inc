@@ -4,8 +4,8 @@
 {$IFDEF INTF}
 type
   TMeterPerSecond = specialize TRatioUnit<TMeter, TSecond>;
-  TMeterPerSecondId = specialize TPowerableRatioUnitId<TMeter, TSecond>;
-  TMetersPerSecond = specialize TPowerableRatioQuantity<TMeter, TSecond>;
+  TMeterPerSecondId = specialize TRatioUnitId<TMeter, TSecond>;
+  TMetersPerSecond = specialize TRatioQuantity<TMeter, TSecond>;
 
   TMillimeterPerSecond = specialize TFactoredNumeratorUnit<TMilliMeter, TSecond>;
   TMillimeterPerSecondId = specialize TFactoredNumeratorUnitId<TMeter, TSecond, TMilliMeter>;
