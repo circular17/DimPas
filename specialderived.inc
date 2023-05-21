@@ -106,9 +106,9 @@ type
   TKilogramSquareMeterId = specialize TUnitProductId<TBaseKilogram, TSquareMeter>;
   TKilogramSquareMeters = specialize TQuantityProduct<TBaseKilogram, TSquareMeter>;
 
-  TKilogramSquareMeterPerSecond = specialize TUnitProduct<TKilogramSquareMeter, TSecond>;
-  TKilogramSquareMeterPerSecondId = specialize TUnitProductId<TKilogramSquareMeter, TSecond>;
-  TKilogramSquareMetersPerSecond = specialize TQuantityProduct<TKilogramSquareMeter, TSecond>;
+  TKilogramSquareMeterPerSecond = specialize TRatioUnit<TKilogramSquareMeter, TSecond>;
+  TKilogramSquareMeterPerSecondId = specialize TRatioUnitId<TKilogramSquareMeter, TSecond>;
+  TKilogramSquareMetersPerSecond = specialize TRatioQuantity<TKilogramSquareMeter, TSecond>;
 {$ENDIF}
 
 {$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TNewtonPerMeterId}
