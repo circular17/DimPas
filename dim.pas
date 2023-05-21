@@ -567,7 +567,7 @@ type
   generic TPowerableRatioUnitId<NumeratorU, DenomU: TUnit> = record
     type U = specialize TRatioUnit<NumeratorU, DenomU>;
     type TSelf = specialize TPowerableRatioUnitId<NumeratorU, DenomU>;
-    type TQuantity = specialize TRatioQuantity<NumeratorU, DenomU>;
+    type TQuantity = specialize TPowerableRatioQuantity<NumeratorU, DenomU>;
     type TNumeratorId = specialize TUnitId<NumeratorU>;
     type TDenomId = specialize TUnitId<DenomU>;
     type TSquareId = specialize TSquareUnitId<U>;
@@ -581,7 +581,7 @@ type
   generic TPowerableUnitProductId<U1, U2: TUnit> = record
     type TSelf = specialize TPowerableUnitProductId<U1, U2>;
     type U = specialize TUnitProduct<U1, U2>;
-    type TQuantity = specialize TQuantityProduct<U1, U2>;
+    type TQuantity = specialize TPowerableQuantityProduct<U1, U2>;
     type TId1 = specialize TUnitId<U1>;
     type TId2 = specialize TUnitId<U2>;
     type TSquareId = specialize TSquareUnitId<U>;
