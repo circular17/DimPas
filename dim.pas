@@ -171,6 +171,7 @@ type
     class operator :=(const ASelf: TSelf): TRatio;
     {$IFDEF FACTORED_QTY_INTF}
     class operator :=(const ASelf: TSelf): TBaseRatio;
+    class function From(const AQuantity: TPowerableBaseQuantity): TSelf; static; inline;
     {$ENDIF}
   {$ENDIF}{$UNDEF RATIO_QTY_INTF}
   {$IFDEF QTY_PROD_INTF}
@@ -178,6 +179,10 @@ type
     class operator /(const ASelf: TSelf; const AQuantity2: TQuantity2): TQuantity1;
     class operator :=(const AProduct: TProduct): TSelf;
     class operator :=(const ASelf: TSelf): TProduct;
+    {$IFDEF FACTORED_QTY_INTF}
+    class operator :=(const ASelf: TSelf): TBaseProduct;
+    class function From(const AQuantity: TPowerableBaseQuantity): TSelf; static; inline;
+    {$ENDIF}
   {$ENDIF}{$UNDEF QTY_PROD_INTF}
   {$IFDEF RECIP_QTY_INTF}
     class operator /(const AValue: double; const ASelf: TSelf): TDenomQuantity;
@@ -315,6 +320,7 @@ type
                                             NumeratorU, DenomU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
     type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
+    type TPowerableBaseQuantity = specialize TPowerableRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type U = specialize TFactoredRatioUnit<NumeratorU, DenomU>;
     type TSelf = specialize TFactoredRatioQuantity
                  <BaseNumeratorU, BaseDenomU, NumeratorU, DenomU>;
@@ -329,6 +335,7 @@ type
                                                 NumeratorU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
     type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
+    type TPowerableBaseQuantity = specialize TPowerableRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type DenomU = BaseDenomU;
     type U = specialize TFactoredNumeratorUnit<NumeratorU, DenomU>;
     type TSelf = specialize TFactoredNumeratorQuantity
@@ -344,6 +351,7 @@ type
                                                   DenomU: TFactoredUnit> = record
     type BaseU = specialize TRatioUnit<BaseNumeratorU, BaseDenomU>;
     type TBaseQuantity = specialize TRatioQuantity<BaseNumeratorU, BaseDenomU>;
+    type TPowerableBaseQuantity = specialize TPowerableRatioQuantity<BaseNumeratorU, BaseDenomU>;
     type NumeratorU = BaseNumeratorU;
     type U = specialize TFactoredDenominatorUnit<NumeratorU, DenomU>;
     type TSelf = specialize TFactoredDenominatorQuantity
@@ -361,8 +369,10 @@ type
     type TQuantity1 = specialize TFactoredQuantity<BaseU1, U1>;
     type TQuantity2 = specialize TFactoredQuantity<BaseU2, U2>;
     type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
+    type TPowerableBaseQuantity = specialize TPowerableQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
     type TProduct = specialize TFactoredQuantity<BaseU, U>;
+    type TBaseProduct = specialize TQuantity<BaseU>;
     {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
@@ -373,8 +383,10 @@ type
     type TQuantity1 = specialize TFactoredQuantity<BaseU1, U1>;
     type TQuantity2 = specialize TQuantity<U2>;
     type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
+    type TPowerableBaseQuantity = specialize TPowerableQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
     type TProduct = specialize TFactoredQuantity<BaseU, U>;
+    type TBaseProduct = specialize TQuantity<BaseU>;
     {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
@@ -385,8 +397,10 @@ type
     type TQuantity1 = specialize TQuantity<U1>;
     type TQuantity2 = specialize TFactoredQuantity<BaseU2, U2>;
     type TBaseQuantity = specialize TQuantityProduct<BaseU1, BaseU2>;
+    type TPowerableBaseQuantity = specialize TPowerableQuantityProduct<BaseU1, BaseU2>;
     type BaseU = specialize TUnitProduct<BaseU1, BaseU2>;
     type TProduct = specialize TFactoredQuantity<BaseU, U>;
+    type TBaseProduct = specialize TQuantity<BaseU>;
     {$DEFINE QTY_INTF}{$DEFINE FACTORED_QTY_INTF}{$DEFINE QTY_PROD_INTF}{$i dim.pas}
   end;
 
@@ -1492,6 +1506,10 @@ end;
   begin
     result.Value := ASelf.ToBase.Value;
   end;
+  class function T_QUANTITY.From(const AQuantity: TPowerableBaseQuantity): TSelf;
+  begin
+    result.Value := AQuantity.Value / U.Factor;
+  end;
   {$ENDIF}
 {$ENDIF}{$UNDEF RATIO_QTY_IMPL}
 {$IFDEF QTY_PROD_IMPL}
@@ -1516,6 +1534,16 @@ end;
   begin
     result.Value := ASelf.Value;
   end;
+  {$IFDEF FACTORED_QTY_IMPL}
+  class operator T_QUANTITY.:=(const ASelf: TSelf): TBaseProduct;
+  begin
+    result.Value := ASelf.ToBase.Value;
+  end;
+  class function T_QUANTITY.From(const AQuantity: TPowerableBaseQuantity): TSelf;
+  begin
+    result.Value := AQuantity.Value / U.Factor;
+  end;
+  {$ENDIF}
 {$ENDIF}{$UNDEF QTY_PROD_IMPL}
 {$IFDEF FACTORED_QTY_IMPL}
   function T_QUANTITY.ToBase: TBaseQuantity;
