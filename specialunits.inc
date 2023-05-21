@@ -336,18 +336,32 @@ var
   W: TWattId;
 {$ENDIF}
 
-{$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TWattId}
-{$DEFINE NumQty:=TJoules}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TWatts}
-{$DEFINE DEF_RATIO}{$i dim.pas} // W = J * s
-
+{ main definition [ J ] = [ N ] * [ m ] }
 {$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TMeterId}{$DEFINE ProdId:=TJouleId}
 {$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TMeters}{$DEFINE ProdQty:=TJoules}
-{$DEFINE DEF_PROD}{$i dim.pas} // J = N * m
+{$DEFINE DEF_PROD}{$i dim.pas}
 
-// alternate definitions
+{ alternative definition [ J ] = [ kg ] * [ m2/s2 ] }
 {$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TSquareMeterPerSquareSecondId}{$DEFINE ProdId:=TJouleId}
 {$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TSquareMetersPerSquareSecond}{$DEFINE ProdQty:=TJoules}
-{$DEFINE ALT_PROD}{$DEFINE NO_DIV_LEFT}{$i dim.pas} // J = kg * m2/s2
+{$DEFINE ALT_PROD}{$DEFINE NO_DIV_LEFT}{$i dim.pas}
+
+{ alternative definition [ J ] = [ Pa ] * [ m3 ] }
+{$DEFINE LeftId:=TPascalId}{$DEFINE RightId:=TCubicMeterId}{$DEFINE ProdId:=TJouleId}
+{$DEFINE LeftQty:=TPascals}{$DEFINE RightQty:=TCubicMeters}{$DEFINE ProdQty:=TJoules}
+{$DEFINE ALT_PROD}{$i dim.pas}
+
+{ main definition [ W ] = [ J ] / [ s ] }
+{$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TWattId}
+{$DEFINE NumQty:=TJoules}{$DEFINE DenomQty:=TSeconds}{$DEFINE RatioQty:=TWatts}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+(*
+{ alternative definition [ W ] = [ J ] * [ rad/s ] }
+{$DEFINE LeftId:=TJouleId}{$DEFINE RightId:=TRadianPerSecondId}{$DEFINE ProdId:=TWattId}
+{$DEFINE LeftQty:=TJoules}{$DEFINE RightQty:=TRadiansPerSecond}{$DEFINE ProdQty:=TWatts}
+{$DEFINE ALT_PROD}{$i dim.pas}
+*)
 
 { units of charge and electric pontential }
 {$IFDEF INTF}
