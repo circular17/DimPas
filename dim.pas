@@ -726,6 +726,8 @@ function GetProductName(ALeftName, ARightName: string): string;
 {$i derivedunits.inc}
 {$i specialunits.inc}
 {$i specialderived.inc}
+{$i magneticfield.inc}
+{$i electricfield.inc}
 {$UNDEF INTF}
 
 implementation uses Math;
@@ -1660,6 +1662,8 @@ end;
 {$i derivedunits.inc}
 {$i specialunits.inc}
 {$i specialderived.inc}
+{$i magneticfield.inc}
+{$i electricfield.inc}
 {$UNDEF IMPL}
 
 end.{$UNDEF DIM}{$ENDIF}

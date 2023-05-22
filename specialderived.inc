@@ -58,7 +58,7 @@ operator:=(const AQuantity: TSteradiansPerSquareSecond): TSteradiansPerSquareSec
 operator:=(const AQuantity: TSteradiansPerSquareSecondFactor): TSteradiansPerSquareSecond; inline;
 {$IFDEF IMPL}begin result.Value := AQuantity.Value; end;{$ENDIF}
 
-{ Units of acceleration }
+{ Units of angular acceleration }
 {$IFDEF INTF}
 type
   TRadianPerSecondSquaredId = specialize TRatioUnitId<TRadianPerSecond, TSecond>;
@@ -93,22 +93,6 @@ type
   TPascalSecond = specialize TUnitProduct<TPascal, TSecond>;
   TPascalSecondId = specialize TUnitProductId<TPascal, TSecond>;
   TPascalSeconds = specialize TQuantityProduct<TPascal, TSecond>;
-
-  // MOMENTUM & IMPULSE
-
-  TKilogramMeterPerSecond = specialize TUnitProduct<TBaseKilogram, TMeterPerSecond>;
-  TKilogramMeterPerSecondId = specialize TUnitProductId<TBaseKilogram, TMeterPerSecond>;
-  TKilogramMetersPerSecond = specialize TQuantityProduct<TBaseKilogram, TMeterPerSecond>;
-
-  // ANGULAR MOMENTUM & ANGULAR IMPULSE
-
-  TKilogramSquareMeter = specialize TUnitProduct<TBaseKilogram, TSquareMeter>;
-  TKilogramSquareMeterId = specialize TUnitProductId<TBaseKilogram, TSquareMeter>;
-  TKilogramSquareMeters = specialize TQuantityProduct<TBaseKilogram, TSquareMeter>;
-
-  TKilogramSquareMeterPerSecond = specialize TRatioUnit<TKilogramSquareMeter, TSecond>;
-  TKilogramSquareMeterPerSecondId = specialize TRatioUnitId<TKilogramSquareMeter, TSecond>;
-  TKilogramSquareMetersPerSecond = specialize TRatioQuantity<TKilogramSquareMeter, TSecond>;
 {$ENDIF}
 
 {$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TNewtonPerMeterId}
@@ -150,22 +134,50 @@ type
 
 // MOMENTUM & IMPULSE
 
+{$IFDEF INTF}
+type
+  TKilogramMeterPerSecond = specialize TUnitProduct<TBaseKilogram, TMeterPerSecond>;
+  TKilogramMeterPerSecondId = specialize TUnitProductId<TBaseKilogram, TMeterPerSecond>;
+  TKilogramMetersPerSecond = specialize TQuantityProduct<TBaseKilogram, TMeterPerSecond>;
+{$ENDIF}
+
 { main definition [ kg*m/s ] = [kg ] * [ m/s ] }
 {$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TMeterPerSecondId}{$DEFINE ProdId:=TKilogramMeterPerSecondId}
 {$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TMetersPerSecond}{$DEFINE ProdQty:=TKilogramMetersPerSecond}
 {$DEFINE DEF_PROD}{$i dim.pas}
 
-{ alternative definition [ kg*m/s ] = [ N*s ] = [ N ] * [ s ] }
+{ alternative definition [ kg*m/s ] = [ N ] * [ s ] }
 {$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TSecondId}{$DEFINE ProdId:= TKilogramMeterPerSecondId}
 {$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TSeconds}{$DEFINE ProdQty:=TKilogramMetersPerSecond}
 {$DEFINE ALT_PROD}{$i dim.pas}
 
 // ANGULAR MOMENTUM & ANGULAR IMPULSE
 
+{$IFDEF INTF}
+type
+  TKilogramSquareMeter = specialize TUnitProduct<TBaseKilogram, TSquareMeter>;
+  TKilogramSquareMeterId = specialize TUnitProductId<TBaseKilogram, TSquareMeter>;
+  TKilogramSquareMeters = specialize TQuantityProduct<TBaseKilogram, TSquareMeter>;
+{$ENDIF}
+
 { main definition [ kg*m2 ] = [ kg ] * [ m2 ] }
 {$DEFINE LeftId:=TKilogramId}{$DEFINE RightId:=TSquareMeterId}{$DEFINE ProdId:=TKilogramSquareMeterId}
 {$DEFINE LeftQty:=TKilograms}{$DEFINE RightQty:=TSquareMeters}{$DEFINE ProdQty:=TKilogramSquareMeters}
 {$DEFINE DEF_PROD}{$i dim.pas}
+
+{ alternative definition [ kg*m2 ] * [ sr/s2 ] = [ J ] }
+{$DEFINE LeftId:=TKilogramSquareMeterId}{$DEFINE RightId:=TSteradianPerSquareSecondId}{$DEFINE ProdId:=TJouleId}
+{$DEFINE LeftQty:=TKilogramSquareMeters}{$DEFINE RightQty:=TSteradiansPerSquareSecond}{$DEFINE ProdQty:=TJoules}
+{$DEFINE ALT_PROD}{$i dim.pas}
+
+// ANGULAR MOMENTUM & ANGULAR IMPULSE
+
+{$IFDEF INTF}
+type
+  TKilogramSquareMeterPerSecond = specialize TRatioUnit<TKilogramSquareMeter, TSecond>;
+  TKilogramSquareMeterPerSecondId = specialize TRatioUnitId<TKilogramSquareMeter, TSecond>;
+  TKilogramSquareMetersPerSecond = specialize TRatioQuantity<TKilogramSquareMeter, TSecond>;
+{$ENDIF}
 
 { main definition [ kg*m2/s ] = [ kg*m2 ] / [ s ] }
 {$DEFINE NumId:=TKilogramSquareMeterId}{$DEFINE DenomId:=TSecondId}{$DEFINE RatioId:=TKilogramSquareMeterPerSecondId}
@@ -183,6 +195,7 @@ type
 {$DEFINE ALT_PROD}{$i dim.pas}
 
 { Heat and Thermodynamics }
+
 {$IFDEF INTF}
 type
   // HEAT CAPACITY
