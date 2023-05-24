@@ -93,18 +93,6 @@ type
 {$DEFINE NumQty:=TNewtons}{$DEFINE DenomQty:=TSquareCoulombs}{$DEFINE RatioQty:=TNewtonsPerSquareCoulomb}
 {$DEFINE DEF_RATIO}{$i dim.pas}
 
-{$IFDEF INTF}
-type
-  TNewtonSquareMeter = specialize TUnitProduct<TNewton, TSquareMeter>;
-  TNewtonSquareMeterId = specialize TUnitProductId<TNewton, TSquareMeter>;
-  TNewtonSquareMeters = specialize TQuantityProduct<TNewton, TSquareMeter>;
-{$ENDIF}
-
-{ main definition [ N*m2 ] = [ N ] * [ m2 ] }
-{$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TSquareMeterId}{$DEFINE ProdId:=TNewtonSquareMeterId}
-{$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TSquareMeters}{$DEFINE ProdQty:=TNewtonSquareMeters}
-{$DEFINE DEF_PROD}{$i dim.pas}
-
 { Units of Coulomb constant }
 {$IFDEF INTF}
 type

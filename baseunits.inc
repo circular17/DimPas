@@ -263,6 +263,10 @@ type
   TKilogramId = specialize TFactoredUnitId<TGram, TKilogram>;
   TKilograms = specialize TFactoredQuantity<TGram, TKilogram>;
 
+  TSquareGram = specialize TSquareUnit<TGram>;
+  TSquareGramId = specialize TSquareUnitId<TGram>;
+  TSquareGrams = specialize TSquareQuantity<TGram>;
+
   TTon = specialize TMegaUnit<TGram>;
   TTonId = specialize TFactoredUnitId<TGram, TTon>;
   TTons = specialize TFactoredQuantity<TGram, TTon>;
@@ -270,6 +274,7 @@ type
 var
   mg: specialize TFactoredUnitId<TGram, TMilligram>;
   g: TGramId;
+  g2: TSquareGramId;
   kg: TKilogramId;
   ton: TTonId;
 {$ENDIF}{$IFDEF IMPL}

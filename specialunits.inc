@@ -234,6 +234,15 @@ type
   // the kg is also a base unit for special units in SI
   TBaseKilogram = {$DEFINE UNIT_OV_INTF}{$i dim.pas}
   TBaseKilograms = specialize TQuantity<TBaseKilogram>;
+
+  TSquareKilogram = specialize TSquareUnit<TBaseKilogram>;
+  TSquareKilogramId = specialize TSquareUnitId<TBaseKilogram>;
+  TSquareKilogramFactorId = specialize TUnitId<TSquareKilogram>;
+  TSquareKilograms = specialize TSquareQuantity<TBaseKilogram>;
+  TSquareKilogramsFactor = specialize TQuantity<TSquareKilogram>;
+
+var
+  kg2: TSquareKilogramId;
 {$ENDIF}{$IFDEF IMPL}
 class function TBaseKilogram.Symbol: string; begin result := 'kg'; end;
 class function TBaseKilogram.Name: string;   begin result := 'kilogram'; end;
@@ -248,6 +257,24 @@ operator:=(const AWeight: TBaseKilograms): TKilograms;
 {$IFDEF IMPL}begin result.Value := AWeight.Value; end;{$ENDIF}
 operator:=(const AWeight: TBaseKilograms): TGrams;
 {$IFDEF IMPL}begin result.Value := AWeight.Value * 1000; end;{$ENDIF}
+
+operator:=(const AWeight: specialize TFactoredSquareQuantity<TGram, TKilogram>): TSquareKilograms;
+{$IFDEF IMPL}begin result.Value := AWeight.Value; end;{$ENDIF}
+operator:=(const AWeight: TSquareGrams): TSquareKilograms;
+{$IFDEF IMPL}begin result.Value := AWeight.Value * 1e-6; end;{$ENDIF}
+operator:=(const AWeight: TSquareKilograms): specialize TFactoredSquareQuantity<TGram, TKilogram>;
+{$IFDEF IMPL}begin result.Value := AWeight.Value; end;{$ENDIF}
+operator:=(const AWeight: TSquareKilograms): TSquareGrams;
+{$IFDEF IMPL}begin result.Value := AWeight.Value * 1e6; end;{$ENDIF}
+
+operator:=(const {%H-}ASquareUnit: specialize TFactoredSquareUnitId<TGram, TKilogram>): TSquareKilogramId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const {%H-}ASquareUnit: TSquareKilogramId): TSquareKilogramFactorId; inline;
+{$IFDEF IMPL}begin end;{$ENDIF}
+operator:=(const AQuantity: TSquareKilograms): TSquareKilogramsFactor; inline;
+{$IFDEF IMPL}begin result.Value := AQuantity.Value; end;{$ENDIF}
+operator:=(const AQuantity: TSquareKilogramsFactor): TSquareKilograms; inline;
+{$IFDEF IMPL}begin result.Value := AQuantity.Value; end;{$ENDIF}
 
 { units of force : N = kg*m/s2 }
 {$IFDEF INTF}

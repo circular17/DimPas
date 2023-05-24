@@ -398,3 +398,98 @@ type
 {$DEFINE DenomQty:=TKelvins}{$DEFINE RecipQty:=TReciprocalKelvins}
 {$DEFINE DEF_RECIP}{$i dim.pas} // K-1 = 1 / K
 
+// GRAVITATIONAL POTENTIAL ENERGY
+
+{$IFDEF INTF}
+type
+  TSquareKilogramPerMeter = specialize TRatioUnit<TSquareKilogram, TMeter>;
+  TSquareKilogramPerMeterId = specialize TRatioUnitId<TSquareKilogram, TMeter>;
+  TSquareKilogramsPerMeter = specialize TRatioQuantity<TSquareKilogram, TMeter>;
+{$ENDIF}
+
+{ main definition [ kg2/m ] = [ kg2 ] / [ m ] }
+{$DEFINE NumId:=TSquareKilogramId}{$DEFINE DenomId:=TMeterId}{$DEFINE RatioId:=TSquareKilogramPerMeterId}
+{$DEFINE NumQty:=TSquareKilograms}{$DEFINE DenomQty:=TMeters}{$DEFINE RatioQty:=TSquareKilogramsPerMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{$IFDEF INTF}
+type
+  TSquareKilogramPerSquareMeter = specialize TRatioUnit<TSquareKilogram, TSquareMeter>;
+  TSquareKilogramPerSquareMeterId = specialize TRatioUnitId<TSquareKilogram, TSquareMeter>;
+  TSquareKilogramsPerSquareMeter = specialize TRatioQuantity<TSquareKilogram, TSquareMeter>;
+{$ENDIF}
+
+{ main definition [ kg2/m2 ] = [ kg2 ] / [ m2 ] }
+{$DEFINE NumId:=TSquareKilogramId}{$DEFINE DenomId:=TSquareMeterId}{$DEFINE RatioId:=TSquareKilogramPerSquareMeterId}
+{$DEFINE NumQty:=TSquareKilograms}{$DEFINE DenomQty:=TSquareMeters}{$DEFINE RatioQty:=TSquareKilogramsPerSquareMeter}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{$IFDEF INTF}
+type
+  TSquareMeterPerSquareKilogram = specialize TRatioUnit<TSquareMeter, TSquareKilogram>;
+  TSquareMeterPerSquareKilogramId = specialize TRatioUnitId<TSquareMeter, TSquareKilogram>;
+  TSquareMetersPerSquareKilogram = specialize TRatioQuantity<TSquareMeter, TSquareKilogram>;
+{$ENDIF}
+
+{ main definition [ m2/kg2 ] = [ m2 ] / [ kg2 ] }
+{$DEFINE NumId:=TSquareMeterId}{$DEFINE DenomId:=TSquareKilogramId}{$DEFINE RatioId:=TSquareMeterPerSquareKilogramId}
+{$DEFINE NumQty:=TSquareMeters}{$DEFINE DenomQty:=TSquareKilograms}{$DEFINE RatioQty:=TSquareMetersPerSquareKilogram}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{$IFDEF INTF}
+type
+  TNewtonPerSquareKilogram = specialize TRatioUnit<TNewton, TSquareKilogram>;
+  TNewtonPerSquareKilogramId = specialize TRatioUnitId<TNewton, TSquareKilogram>;
+  TNewtonsPerSquareKilogram = specialize TRatioQuantity<TNewton, TSquareKilogram>;
+{$ENDIF}
+
+{ main definition [ N/kg2 ] = [ N ] / [ kg2 ] }
+{$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TSquareKilogramId}{$DEFINE RatioId:=TNewtonPerSquareKilogramId}
+{$DEFINE NumQty:=TNewtons}{$DEFINE DenomQty:=TSquareKilograms}{$DEFINE RatioQty:=TNewtonsPerSquareKilogram}
+{$DEFINE DEF_RATIO}{$i dim.pas}
+
+{$IFDEF INTF}
+type
+  TNewtonSquareMeter = specialize TUnitProduct<TNewton, TSquareMeter>;
+  TNewtonSquareMeterId = specialize TUnitProductId<TNewton, TSquareMeter>;
+  TNewtonSquareMeters = specialize TQuantityProduct<TNewton, TSquareMeter>;
+{$ENDIF}
+
+{ main definition [ N*m2 ] = [ N ] * [ m2 ] }
+{$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TSquareMeterId}{$DEFINE ProdId:=TNewtonSquareMeterId}
+{$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TSquareMeters}{$DEFINE ProdQty:=TNewtonSquareMeters}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ Units of gravitational constant }
+{$IFDEF INTF}
+type
+  TNewtonSquareMeterPerSquareKilogram = specialize TUnitProduct<TNewton, TSquareMeterPerSquareKilogram>;
+  TNewtonSquareMeterPerSquareKilogramId = specialize TUnitProductId<TNewton, TSquareMeterPerSquareKilogram>;
+  TNewtonSquareMetersPerSquareKilogram = specialize TQuantityProduct<TNewton, TSquareMeterPerSquareKilogram>;
+{$ENDIF}
+
+{ main definition [ N*m2/kg2 ] = [ N ] * [ m2/kg2 ] }
+{$DEFINE LeftId:=TNewtonId}{$DEFINE RightId:=TSquareMeterPerSquareKilogramId}{$DEFINE ProdId:=TNewtonSquareMeterPerSquareKilogramId}
+{$DEFINE LeftQty:=TNewtons}{$DEFINE RightQty:=TSquareMetersPerSquareKilogram}{$DEFINE ProdQty:=TNewtonSquareMetersPerSquareKilogram}
+{$DEFINE DEF_PROD}{$i dim.pas}
+
+{ alternative definition [ N*m2/kg2 ] = [ N ] / [ kg2/m2 ] }
+{$DEFINE NumId:=TNewtonId}{$DEFINE DenomId:=TSquareKilogramPerSquareMeterId}{$DEFINE RatioId:=TNewtonSquareMeterPerSquareKilogramId}
+{$DEFINE NumQty:=TNewtons}{$DEFINE DenomQty:=TSquareKilogramsPerSquareMeter}{$DEFINE RatioQty:=TNewtonSquareMetersPerSquareKilogram}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ N*m2/kg2 ] = [ N*m2 ] / [ kg2 ] }
+{$DEFINE NumId:=TNewtonSquareMeterId}{$DEFINE DenomId:=TSquareKilogramId}{$DEFINE RatioId:=TNewtonSquareMeterPerSquareKilogramId}
+{$DEFINE NumQty:=TNewtonSquareMeters}{$DEFINE DenomQty:=TSquareKilograms}{$DEFINE RatioQty:=TNewtonSquareMetersPerSquareKilogram}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
+{ alternative definition [ N*m2/kg2 ] = [ N/kg2 ] * [ m2 ] }
+{$DEFINE LeftId:=TNewtonPerSquareKilogramId}{$DEFINE RightId:=TSquareMeterId}{$DEFINE ProdId:=TNewtonSquareMeterPerSquareKilogramId}
+{$DEFINE LeftQty:=TNewtonsPerSquareKilogram}{$DEFINE RightQty:=TSquareMeters}{$DEFINE ProdQty:=TNewtonSquareMetersPerSquareKilogram}
+{$DEFINE ALT_PROD}{$i dim.pas}
+
+{ alternative definition [ N*m2/kg2 ] = [ J ] / [ kg2/m ] }
+{$DEFINE NumId:=TJouleId}{$DEFINE DenomId:=TSquareKilogramPerMeterId}{$DEFINE RatioId:=TNewtonSquareMeterPerSquareKilogramId}
+{$DEFINE NumQty:=TJoules}{$DEFINE DenomQty:=TSquareKilogramsPerMeter}{$DEFINE RatioQty:=TNewtonSquareMetersPerSquareKilogram}
+{$DEFINE ALT_RATIO}{$i dim.pas}
+
