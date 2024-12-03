@@ -1,10 +1,5 @@
-
 backup/
-
-unitsOfMeasurement.lps
-
-unitsOfMeasurement
-
+src/*.lps
+src/unitsOfMeasurement
 lib/
-
 .DS_Store
