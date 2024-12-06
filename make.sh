@@ -21,7 +21,7 @@ function priv_lazbuild
         esac
     fi
     declare -r COMPONENTS='use/components.txt'
-    if [[ -f "${COMPONENTS%%/*}" ]]; then
+    if [[ -d "${COMPONENTS%%/*}" ]]; then
         git submodule update --init --recursive --force --remote
         if [[ -f "${COMPONENTS}" ]]; then
             while read -r; do
