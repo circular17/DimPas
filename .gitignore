@@ -1,5 +1,9 @@
-backup/
+src/backup/
 src/*.lps
+src/*.res
+src/*.o
+src/*.ppu
+use/*/
 src/unitsOfMeasurement
 lib/
 .DS_Store
