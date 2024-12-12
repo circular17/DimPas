@@ -43,7 +43,7 @@ function priv_lazbuild
             lazbuild --add-package-link {} +
     fi
     find 'src' -type 'f' -name '*.lpi' -exec \
-        lazbuild --no-write-project --recursive --no-write-project --build-mode=release {} + 1>&2
+        lazbuild --no-write-project --recursive --no-write-project {} + 1>&2
 )
 
 function priv_main
