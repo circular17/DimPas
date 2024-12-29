@@ -11,39 +11,63 @@ EOF
 
 function priv_lazbuild
 (
-    if ! (which lazbuild); then
+    if ! (command -v lazbuild); then
         source '/etc/os-release'
         case ${ID:?} in
             debian | ubuntu)
                 sudo apt-get update
-                sudo apt-get install -y lazarus
+                sudo apt-get install -y lazarus &
                 ;;
         esac
     fi
-    declare -r COMPONENTS='use/components.txt'
-    if [[ -d "${COMPONENTS%%/*}" ]]; then
-        git submodule update --init --recursive --force --remote
-        if [[ -f "${COMPONENTS}" ]]; then
+    if [[ -f '.gitmodules' ]]; then
+        git submodule update --init --recursive --force --remote &
+    fi
+    wait
+    declare -rA VAR=(
+        [src]='src'
+        [use]='use'
+        [pkg]='use/components.txt'
+    )
+    if [[ -d "${VAR[use]}" ]]; then
+        if [[ -f "${VAR[pkg]}" ]]; then
             while read -r; do
                 if [[ -n "${REPLY}" ]] &&
+                    ! [[ -d "${VAR[use]}/${REPLY}" ]] &&
                     ! (lazbuild --verbose-pkgsearch "${REPLY}") &&
-                    ! (lazbuild --add-package "${REPLY}") &&
-                    ! [[ -d "${COMPONENTS%%/*}/${REPLY}" ]]; then
-                        declare -A VAR=(
+                    ! (lazbuild --add-package "${REPLY}"); then
+                        declare -A TMP=(
                             [url]="https://packages.lazarus-ide.org/${REPLY}.zip"
+                            [dir]="${VAR[use]}/${REPLY}"
                             [out]=$(mktemp)
                         )
-                        wget --output-document "${VAR[out]}" "${VAR[url]}" >/dev/null
-                        unzip -o "${VAR[out]}" -d "${COMPONENTS%%/*}/${REPLY}"
-                        rm --verbose "${VAR[out]}"
+                        wget --quiet --output-document "${TMP[out]}" "${TMP[url]}"
+                        unzip -o "${TMP[out]}" -d "${TMP[dir]}"
+                        rm --verbose "${TMP[out]}"
                     fi
-            done < "${COMPONENTS}"
+            done < "${VAR[pkg]}"
         fi
-        find "${COMPONENTS%%/*}" -type 'f' -name '*.lpk' -exec \
-            lazbuild --add-package-link {} +
+        find "${VAR[use]}" -type 'f' -name '*.lpk' -printf '\033[32m\tadd package link\t%p\033[0m\n' -exec \
+            lazbuild --add-package-link {} + 1>&2
     fi
-    find 'src' -type 'f' -name '*.lpi' -exec \
-        lazbuild --no-write-project --recursive --no-write-project {} + 1>&2
+    if [[ -d "${VAR[src]}" ]]; then
+        declare -i errors=0
+        while read -r; do
+            declare -A TMP=(
+                [out]=$(mktemp)
+            )
+            if (lazbuild --build-all --recursive --no-write-project --build-mode='release' "${REPLY}" > "${TMP[out]}"); then
+                printf '\x1b[32m\t[%s]\t%s\x1b[0m\n' "${?}" "${REPLY}"
+                grep --color='always' 'Linking' "${TMP[out]}"
+            else
+                printf '\x1b[31m\t[%s]\t%s\x1b[0m\n' "${?}" "${REPLY}"
+                grep --color='always' --extended-regexp '(Error|Fatal):' "${TMP[out]}"
+                ((errors+=1))
+            fi 1>&2
+            rm "${TMP[out]}"
+        done < <(find "${VAR[src]}" -type 'f' -name '*.lpi' | sort)
+        exit "${errors}"
+    fi
 )
 
 function priv_main
