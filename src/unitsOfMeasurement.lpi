@@ -53,7 +53,7 @@
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="unitsOfMeasurement"/>
+            <Filename Value="bin/unitsOfMeasurement"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -113,7 +113,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="unitsOfMeasurement"/>
+      <Filename Value="bin/unitsOfMeasurement"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

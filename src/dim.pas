@@ -171,7 +171,7 @@ type
     class operator :=(const ASelf: TSelf): TRatio;
     {$IFDEF FACTORED_QTY_INTF}
     class operator :=(const ASelf: TSelf): TBaseRatio;
-    class function From(const AQuantity: TBaseRatio): TSelf; static; inline;
+    class function From(const AQuantity: TBaseRatio): TSelf; static;
     {$ENDIF}
   {$ENDIF}{$UNDEF RATIO_QTY_INTF}
   {$IFDEF QTY_PROD_INTF}
@@ -181,7 +181,7 @@ type
     class operator :=(const ASelf: TSelf): TProduct;
     {$IFDEF FACTORED_QTY_INTF}
     class operator :=(const ASelf: TSelf): TBaseProduct;
-    class function From(const AQuantity: TBaseProduct): TSelf; static; inline;
+    class function From(const AQuantity: TBaseProduct): TSelf; static;
     {$ENDIF}
   {$ENDIF}{$UNDEF QTY_PROD_INTF}
   {$IFDEF RECIP_QTY_INTF}
@@ -193,7 +193,7 @@ type
     function ToBase: TBaseQuantity;
     constructor Assign(const AQuantity: TBaseQuantity); overload;
     class operator :=(const AQuantity: TSelf): TBaseQuantity;
-    class function From(const AQuantity: TBaseQuantity): TSelf; static; inline;
+    class function From(const AQuantity: TBaseQuantity): TSelf; static;
   {$ENDIF}{$UNDEF FACTORED_QTY_INTF}
   {$IFNDEF DIM}{$DEFINE DIM}
 
@@ -391,7 +391,7 @@ type
     class operator =(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): boolean;
     class function Name: string; inline; static;
     class function Symbol: string; inline; static;
-    class function From(const AQuantity: TQuantity): TQuantity; inline; static;
+    class function From(const AQuantity: TQuantity): TQuantity; static;
   {$ENDIF}{$UNDEF UNIT_ID_INTF}
   {$IFDEF POWERABLE_UNIT_ID_INTF}
     class operator *(const {%H-}TheUnit1, {%H-}TheUnit2: TSelf): TSquareId;
@@ -411,7 +411,7 @@ type
     function CubicRoot(const ACubicQuantity: TCubicQuantity): TQuantity;
   {$ENDIF}{$UNDEF POWERABLE_UNIT_ID_INTF}
   {$IFDEF FACTORED_UNIT_ID_INTF}
-    class function From(const AQuantity: TBaseQuantity): TQuantity; inline; static;
+    class function From(const AQuantity: TBaseQuantity): TQuantity; static;
     class function BaseUnit: TBaseUnitId; inline; static;
     class function Factor: double; inline; static;
   {$ENDIF}{$UNDEF FACTORED_UNIT_ID_INTF}
