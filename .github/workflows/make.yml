@@ -42,7 +42,8 @@ jobs:
       run: pwsh -File make.ps1 build
 
     - name: Archive
+      if: runner.os == 'Windows'
       uses: actions/upload-artifact@v4
       with:
         retention-days: 1
-        path: src/bin/*
+        path: src\bin\*.exe

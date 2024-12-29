@@ -80,24 +80,25 @@ Function Build-Project {
                 Return ".... [$($LastExitCode)] add package link $($_)"
             } | Out-Host
     }
-    Exit (
-        (Get-ChildItem -Filter '*.lpi' -Recurse -File –Path $Env:Src).FullName |
-            Sort-Object |
-            ForEach-Object {
-                $error = 0
-                $Output = (& lazbuild --build-all --recursive --no-write-project --build-mode='release' $_)
-                $Result = @(".... [$($LastExitCode)] build project $($_)")
-                If ($LastExitCode -eq 0) {
-                    $Result += $Output | Select-String -Pattern 'Linking'
-                } Else {
-                    $error = 1
-                    $Result += $Output | Select-String -Pattern 'Error:', 'Fatal:'
-                }
-                $Result | Out-Host
-                Return $error
-            } |
-            Measure-Object -Sum
-    ).Sum
+    If (Test-Path -Path $Env:Src) {
+        Exit (
+            (Get-ChildItem -Filter '*.lpi' -Recurse -File –Path $Env:Src).FullName |
+                Sort-Object |
+                ForEach-Object {
+                    $error = 0
+                    $Output = (& lazbuild --build-all --recursive --no-write-project --build-mode='release' $_)
+                    $Result = @(".... [$($LastExitCode)] build project $($_)")
+                    If ($LastExitCode -eq 0) {
+                        $Result += $Output | Select-String -Pattern 'Linking'
+                    } Else {
+                        $error = 1
+                        $Result += $Output | Select-String -Pattern 'Error:', 'Fatal:'
+                    }
+                    $Result | Out-Host
+                    Return $error
+                } | Measure-Object -Sum
+        ).Sum
+    }
 }
 
 Function Switch-Action {
