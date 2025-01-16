@@ -23,14 +23,13 @@ type
     Output: ansistring;
   end;
 
-  procedure OutLog(Knd: string, Msg: string);
+  procedure OutLog(Knd: string; Msg: string);
   begin
-    if Knd = 'error' then
-       Writeln(stderr, #27'[31m', Msg, #27'[0m')
-    else if Knd = 'info' then
-       Writeln(stderr, #27'[32m', Msg, #27'[0m')
-    else if Knd = 'audit'
-       Writeln(stderr, #27'[33m', Msg, #27'[0m');
+    case Knd of
+        'error': Writeln(stderr, #27'[31m', Msg, #27'[0m');
+        'info':  Writeln(stderr, #27'[32m', Msg, #27'[0m');
+        'audit': Writeln(stderr, #27'[33m', Msg, #27'[0m');
+    end;
   end;
 
   function CheckModules: Output;
@@ -116,7 +115,7 @@ type
 
   function InstallOPM(Each: string): string;
   var
-    OutFile, Url: string;
+    OutFile, Uri: string;
     Zip: TStream;
   begin
     Result :=
@@ -196,9 +195,9 @@ type
       List.Free;
     end;
     if ExitCode <> 0 then
-      OutLog('error', #10 + 'Errors: ' + ExitCode);
+      OutLog('error', #10 + 'Errors: ' + IntToStr(ExitCode))
     else
-      OutLog('info', #10 + 'Errors: ' + ExitCode);
+      OutLog('info', #10 + 'Errors: ' + IntToStr(ExitCode));
   end;
 
 begin
