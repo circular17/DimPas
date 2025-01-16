@@ -18,17 +18,19 @@ const
   Dependencies: array of string = ();
 
 type
+  TLog = (audit, info, error);
   Output = record
-    Code: boolean;
-    Output: ansistring;
+    Success: boolean;
+    Output: string;
   end;
 
-  procedure OutLog(Knd: string; Msg: string);
+
+  procedure OutLog(Knd: TLog; Msg: string);
   begin
     case Knd of
-        'error': Writeln(stderr, #27'[31m', Msg, #27'[0m');
-        'info':  Writeln(stderr, #27'[32m', Msg, #27'[0m');
-        'audit': Writeln(stderr, #27'[33m', Msg, #27'[0m');
+        error: Writeln(stderr, #27'[31m', Msg, #27'[0m');
+        info:  Writeln(stderr, #27'[32m', Msg, #27'[0m');
+        audit: Writeln(stderr, #27'[33m', Msg, #27'[0m');
     end;
   end;
 
@@ -37,7 +39,7 @@ type
     if FileExists('.gitmodules') then
       if RunCommand('git', ['submodule', 'update', '--init', '--recursive',
         '--force', '--remote'], Result.Output) then
-        OutLog('info', Result.Output);
+        OutLog(info, Result.Output);
   end;
 
   function AddPackage(Path: string): Output;
@@ -53,7 +55,7 @@ type
       ;
       if not Exec(Path) and RunCommand('lazbuild', ['--add-package-link', Path],
         Result.Output) then
-        OutLog('audit', 'added ' + Path);
+        OutLog(audit, 'added ' + Path);
       Free;
     end;
   end;
@@ -62,17 +64,17 @@ type
   var
     Line: string;
   begin
-    OutLog('audit', 'build from ' + Path);
+    OutLog(audit, 'build from ' + Path);
     try
-      Result.Code := RunCommand('lazbuild', ['--build-all', '--recursive',
+      Result.Success := RunCommand('lazbuild', ['--build-all', '--recursive',
         '--no-write-project', Path], Result.Output);
-      if Result.Code then
+      if Result.Success then
         for Line in SplitString(Result.Output, LineEnding) do
         begin
           if ContainsStr(Line, 'Linking') then
           begin
             Result.Output := SplitString(Line, ' ')[2];
-            OutLog('info', ' to ' + Result.Output);
+            OutLog(info, ' to ' + Result.Output);
             break;
           end;
         end
@@ -84,13 +86,13 @@ type
           begin
             Expression := '(Fatal|Error):';
             if Exec(Line) then
-              OutLog('error', #10 + Line);
+              OutLog(error, #10 + Line);
             Free;
           end;
       end;
     except
       on E: Exception do
-        OutLog('error', E.ClassName + #13#10 + E.Message);
+        OutLog(error, E.ClassName + #13#10 + E.Message);
     end;
   end;
 
@@ -100,16 +102,16 @@ type
   begin
     Result := BuildProject(Path);
     Temp:= Result.Output;
-    if Result.Code then
+    if Result.Success then
         try
           if not RunCommand(Temp, ['--all', '--format=plain', '--progress'], Result.Output) then
           begin
             ExitCode += 1;
-            OutLog('error', Result.Output);
+            OutLog(error, Result.Output);
           end;
         except
           on E: Exception do
-            OutLog('error', E.ClassName + #13#10 + E.Message);
+            OutLog(error, E.ClassName + #13#10 + E.Message);
         end;
   end;
 
@@ -136,7 +138,7 @@ type
           AddHeader('User-Agent', 'Mozilla/5.0 (compatible; fpweb)');
           AllowRedirect := True;
           Get(Uri, Zip);
-          OutLog('audit', 'Download from ' + Uri + ' to ' + OutFile);
+          OutLog(audit, 'Download from ' + Uri + ' to ' + OutFile);
         finally
           Free;
         end;
@@ -150,7 +152,7 @@ type
           OutputPath := Result;
           Examine;
           UnZipAllFiles;
-          OutLog('audit', 'Unzip from ' + OutFile + ' to ' + Result);
+          OutLog(audit, 'Unzip from ' + OutFile + ' to ' + Result);
         finally
           Free;
         end;
@@ -195,9 +197,9 @@ type
       List.Free;
     end;
     if ExitCode <> 0 then
-      OutLog('error', #10 + 'Errors: ' + IntToStr(ExitCode))
+      OutLog(error, #10 + 'Errors: ' + IntToStr(ExitCode))
     else
-      OutLog('info', #10 + 'Errors: ' + IntToStr(ExitCode));
+      OutLog(info, #10 + 'Errors: ' + IntToStr(ExitCode));
   end;
 
 begin
