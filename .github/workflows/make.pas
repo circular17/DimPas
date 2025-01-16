@@ -30,7 +30,7 @@ type
     else if Knd = 'info' then
        Writeln(stderr, #27'[32m', Msg, #27'[0m')
     else if Knd = 'audit'
-       Writeln(stderr, #27'[33m', Msg, #27'[0m')
+       Writeln(stderr, #27'[33m', Msg, #27'[0m');
   end;
 
   function CheckModules: Output;
